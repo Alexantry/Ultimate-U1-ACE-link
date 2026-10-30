@@ -66,7 +66,7 @@ OpenRFID 使用 [GPLv3](https://github.com/suchmememanyskill/OpenRFID/blob/f2608
 
 OpenRFID 是 U1 已有的独立组件，也是文档和技术参考来源。
 ACE 路径接收的是 ACE 固件已经解码的信息。
-[NFC 指南](nfc.zh-CN.md)中的示例只使用配置名称和占位符，不包含复制来的专有密钥。
+[NFC 指南](nfc.zh-CN.md)说明 ACE 的识别流程及支持范围，不包含密钥填写步骤或专有密钥。
 未来如果实际复制 OpenRFID 代码，仍需保留相应通知、署名和许可条件。
 
 ## OpenCubic：固件和 Qt 刷写工具不是同一种许可

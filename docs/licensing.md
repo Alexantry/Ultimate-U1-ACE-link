@@ -69,7 +69,7 @@ That comparison supports the recorded scope; it does not prove every historical 
 
 OpenRFID is an existing U1 component and a documentation/reference source.
 The ACE path receives decoded information from ACE firmware instead.
-The key examples in [the NFC guide](nfc.md) use configuration names and placeholders, not copied proprietary keys.
+The [NFC guide](nfc.md) describes ACE recognition and its support limits. It contains no key-entry procedure or proprietary keys.
 Future copied OpenRFID code would need its applicable notices, attribution, and license treatment.
 
 ## OpenCubic: firmware and Qt flash tool differ

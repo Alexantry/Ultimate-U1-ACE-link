@@ -8,7 +8,7 @@
 
 ## [安装向导入口：下载、双击、跟着提示操作](docs/quick-start.zh-CN.md)
 
-**[下载 v0.1.4 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
+**[下载 v0.1.5 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
 尚未安装 U1 扩展固件时，在同一向导选择“准备 U1 固件”，自动下载、校验并复制到 U 盘。
 
 ## [手动安装入口：查看源码，逐条执行命令](docs/installation.md)
@@ -36,7 +36,7 @@
 不熟悉下载、解压和双击操作，请看[逐步图文指南](docs/quick-start.zh-CN.md)。
 安装包里的 **START-HERE.html**（中文）和 **START-HERE.en.html**（英文）也可以双击打开，离线阅读。
 
-**v0.1.0 至 v0.1.3 的原安装包均保留，文件未被新版覆盖。**
+**v0.1.0 至 v0.1.4 的原安装包均保留，文件未被新版覆盖。**
 
 > [!IMPORTANT]
 > **首次更新固件和开启访问权限，仍需在打印机屏幕操作。** 向导会准备文件并逐步引导，不能在尚未开放访问时替你完成屏幕授权。
@@ -102,18 +102,25 @@ U 盘准备不会格式化磁盘，不覆盖内容不同的同名文件。
 **这些长度仅适用于对应管路，不是所有机器的通用值。新装默认关闭回送，校准后才启用。**
 请看[如何测量料管、填写参数并验证](docs/configuration.zh-CN.md)。
 
-## NFC 支持与密钥说明
+## NFC 支持范围
 
 本项目已实测成功：**拓竹品牌、耗材类型和耗材颜色的识别与同步**。
-固定 ACE 固件还支持 Anycubic 和部分开放标签格式，**但本项目尚未实际测试这些标签**；上游支持不等于本项目实测通过。
-**创想三维和 QIDI 在本项目固定 ACE 固件中尚无可用读取实现。**
+固定 OpenCubic 固件的支持范围如下；上游支持和本项目实测分别列明。
+**以下多品牌 NFC 解码支持来自 [OpenCubic 项目](https://github.com/Jupsi/OpenCubic)。本项目负责把 ACE 已识别的材料信息同步到 U1。**
+
+| 品牌或标签格式 | 验证状态 |
+| --- | --- |
+| Bambu Lab／拓竹 | 上游确认；本项目已实测品牌、耗材类型和颜色。 |
+| Anycubic 第一代／第二代标签、TigerTag、OpenSpool | 上游确认；本项目尚未实测。 |
+| Elegoo／智能派、OpenPrintTag（含 Prusa 格式） | 上游已实现解析，尚未实测；本项目也未实测。 |
+| Creality／创想三维、QIDI／起迪 | **当前固定固件不支持。** |
 
 **读取和解码 NFC 标签由 ACE 完成。** U1 上的适配程序通过 USB 查询 ACE 已识别的材料信息，整理品牌名称、材料类型和颜色格式后写入 U1。
 本项目不会把原始 NFC 标签交给 U1 的 OpenRFID 服务解码。
 
-[NFC 支持表及密钥填写说明](docs/nfc.zh-CN.md)区分了 ACE 与 U1 内置 OpenRFID。
-U1 内置读卡器的私人文件是 `extended/openrfid_user.cfg`；**这里的密钥不会发送给 ACE**。
-已测试的 ACE 拓竹读取不需要在本项目额外填密钥。项目不提供任何专有密钥或密钥来源链接。
+**使用固定 OpenCubic 固件支持的标签，不需要用户自行寻找或填写 NFC 密钥。**
+安装器自动设置 **External**，无需配置 U1 内置 OpenRFID。无法识别的耗材可手动填写材料信息。
+详见 [NFC 支持表和识别流程](docs/nfc.zh-CN.md)。
 
 ## 项目是谁做的？
 
@@ -121,7 +128,7 @@ U1 内置读卡器的私人文件是 `extended/openrfid_user.cfg`；**这里的�
 本项目基于 [SnapAce](https://github.com/BlackFrogKok/SnapAce)、[U1 扩展固件](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware)、[Snapmaker U1 Klipper](https://github.com/Snapmaker/u1-klipper)、[OpenCubic](https://github.com/Jupsi/OpenCubic) 等项目。
 [项目来源与许可](THIRD_PARTY.md)列明上游作者、贡献和改进范围。
 
-安装不需要 Codex、ChatGPT 订阅或 API 密钥。仓库不提供 NFC 密钥，所需专有密钥由用户自行寻找。
+安装不需要 Codex、ChatGPT 订阅或 API 密钥，也没有 NFC 密钥填写步骤。
 英文说明按 ASD-STE100 简洁写作原则编写，不宣称正式认证。
 
 ## 可以使用、修改和分享吗？

@@ -6,7 +6,7 @@ Unload to ACE, keep material information, and reduce loose loops with calibrated
 
 **Built with OpenAI Codex. You do not need Codex, programming knowledge, or an API key to install this project.**
 
-[简体中文](README.zh-CN.md) · [Download v0.1.4 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip) · [SHA-256](downloads/SHA256SUMS)
+[简体中文](README.zh-CN.md) · [Download v0.1.5 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip) · [SHA-256](downloads/SHA256SUMS)
 
 ## [GUIDED INSTALLATION — start here](docs/quick-start.md)
 
@@ -106,20 +106,25 @@ Forward take-up has no tension feedback and does not independently drive the spo
 **New installations start with take-up disabled.** Calibrate it before expecting automatic slack removal.
 See [tube measurement and parameter editing](docs/configuration.md), [daily operation](docs/daily-use.md), and [validation limits](docs/validation.md).
 
-## NFC support and keys
+## NFC support
 
 **This project has physically verified Bambu brand, filament type, and filament color recognition and synchronization.**
-The pinned ACE firmware also reports support for Anycubic and several open tag formats.
-**This project has not physically tested those tags.** Upstream support is separate from this project's test results.
-**Creality and QIDI are not usable decoders in the pinned ACE release.**
+The table separates upstream support for the pinned OpenCubic firmware from this project's physical tests.
+**Multi-brand NFC decoding is provided by [OpenCubic](https://github.com/Jupsi/OpenCubic). This project synchronizes the material data recognized by ACE with U1.**
+
+| Brand or tag format | Validation status |
+| --- | --- |
+| Bambu Lab | Confirmed upstream; this project verified brand, filament type, and color. |
+| Anycubic Gen 1 / Gen 2 tags, TigerTag, OpenSpool | Confirmed upstream; not physically tested by this project. |
+| Elegoo, OpenPrintTag (including Prusa format) | Parsers implemented upstream, not physically tested; not tested by this project. |
+| Creality, QIDI | **Not supported by the pinned firmware.** |
 
 **ACE reads and decodes the NFC tag.** The integration on U1 queries the decoded material data through USB.
 It converts names and data formats, then writes the U1 material settings. This path does not use U1 OpenRFID to decode raw tags.
 
-Read the [brand support table and key-entry instructions](docs/nfc.md).
-The separate U1 internal-reader file is `extended/openrfid_user.cfg`.
-**Keys in that file do not configure ACE.** The tested Bambu ACE workflow needs no extra key entry in this project.
-No keys or links to proprietary key sources are included.
+**For tags supported by the pinned OpenCubic firmware, users do not need to find or enter NFC keys.**
+The installer sets **External**. No U1 internal OpenRFID configuration is required.
+Enter material details manually for an unrecognized spool. See [NFC support and recognition](docs/nfc.md).
 
 ## Project sources and development
 
@@ -136,7 +141,7 @@ The user supplied requirements and performed physical tests.
 **OpenAI Codex wrote and integrated this project's code, installation tools, and documentation.**
 Upstream authors retain their credits and licenses. See [THIRD_PARTY.md](THIRD_PARTY.md) and [SOURCES.json](SOURCES.json).
 
-This repository contains no NFC keys. Users must obtain required proprietary keys independently.
+There is no NFC key-entry step in this installation workflow.
 English procedures follow ASD-STE100 writing principles; this is not a certification claim.
 
 ## Use and sharing

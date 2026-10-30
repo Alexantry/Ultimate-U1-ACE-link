@@ -57,6 +57,15 @@ Each version has its own archive name.
 The archive also includes `PACKAGE-SHA256SUMS` for its source files.
 A matching hash checks file integrity; it does not replace source review or hardware validation.
 
+## Retained v0.1.4
+
+- [Download the unchanged v0.1.4 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/c3cab67b49157fea251d44ac720ee00043b8f850/downloads/Ultimate-U1-ACE-link-v0.1.4.zip).
+- [Read its fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/c3cab67b49157fea251d44ac720ee00043b8f850).
+
+SHA-256: `9ab8c4ff1b0ef2f6319f7478a684ffec381ab21c2a666f0e7f3ea27e22b8a6e1`.
+The current release removes key-entry guidance that is not needed for the OpenCubic ACE workflow.
+Installer behavior and production modules remain unchanged.
+
 ## Retained v0.1.3
 
 - [Download the unchanged v0.1.3 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/4229c6fd384e1821268d2d61f7c2d2992bc91a9e/downloads/Ultimate-U1-ACE-link-v0.1.3.zip).
@@ -109,5 +118,6 @@ SHA-256:
 **v0.1.1** 也保留原样。最新版增加 U1 固件准备，不会覆盖这两个旧压缩包。
 **v0.1.2** 同样保留原样。最新版增加 ACE 引导更新，不会改变之前的安装包。
 **v0.1.3** 也保留原样。v0.1.4 仅更正说明，安装器行为及生产模块不变。
+**v0.1.4** 同样保留。v0.1.5 删除本方案不需要的密钥填写教程，并补充 OpenCubic 支持列表和署名。
 旧版需自己设置 **External**；新版安装器会自动设置并检查。
 请使用同一版本的文件与说明，不要混装。

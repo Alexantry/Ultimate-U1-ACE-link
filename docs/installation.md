@@ -110,7 +110,7 @@ See the [upstream RFID design](https://snapmakeru1-extended-firmware.pages.dev/d
 ### Obtain and inspect the source
 
 Choose one complete version from [the version and download page](install-options.md).
-For this procedure, download [v0.1.4](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip) and inspect [the current source](https://github.com/Alexantry/Ultimate-U1-ACE-link).
+For this procedure, download [v0.1.5](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip) and inspect [the current source](https://github.com/Alexantry/Ultimate-U1-ACE-link).
 Use its matching entry in [SHA256SUMS](../downloads/SHA256SUMS).
 The checksum applies to the named project archive, not GitHub's generated source ZIP.
 Earlier archives, fixed checksums, and their original instructions remain on the [version page](install-options.md).

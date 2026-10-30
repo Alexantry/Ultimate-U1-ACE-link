@@ -36,7 +36,7 @@ Follow [the bilingual ACE prompts](ace-wizard.md); no shell commands or device-p
 
 ## Install with the launcher
 
-1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip).
+1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip).
 2. Right-click the ZIP in your Downloads folder.
 3. Select Extract All.
 4. Open the extracted `Ultimate-U1-ACE-link` folder.
@@ -74,6 +74,8 @@ Use `START-HERE.html` for the Chinese guide.
 The setting name is **External**.
 The word **extended** describes the firmware and its configuration files.
 You do not need to select External manually before guided installation.
+For tags supported by the pinned OpenCubic firmware, you do not need to find or enter NFC keys.
+See [the support table](nfc.md). Use manual material details for unsupported or unrecognized tags.
 
 ## Values that depend on your machine
 

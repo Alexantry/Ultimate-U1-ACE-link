@@ -151,7 +151,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <div class="steps"><div><b>① 已经解压了吗？</b>如果还在压缩包里，先右键压缩文件，选择“全部解压缩”。</div>
 <div><b>② 打开这个文件夹</b>找到 START-HERE.cmd，快速点鼠标左键两次。</div>
 <div><b>③ 跟着窗口回答</b>输入地址和密码；新装时确认管路长度。向导负责执行命令。</div></div>
-<div class="note"><p><strong>External 已自动处理。</strong>向导会设置耗材来源、处理内置读卡服务，并保存备份。不要手动编辑 NFC 密钥文件。</p></div>
+<div class="note"><p><strong>External 已自动处理。</strong>向导会设置耗材来源、处理内置读卡服务，并保存备份。受支持标签无需自行寻找或填写 NFC 密钥。</p></div>
 <details id="prepare"><summary>机器还没准备好？从这里展开<small>固件、访问开关、网络、线缆和 ACE 代际；已完成的人可以跳过。</small></summary>''' + prepare + '''</details>
 <section id="start">''' + quick + '''</section>
 <footer>说明中的链接需要网络；本页和步骤示意图可以离线阅读。图为概念示意，不是硬件接线尺寸图。</footer>
@@ -163,7 +163,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
     for section, name, title in [('firmware', 'u1-preparation.zh-CN.md', 'U1 固件与访问设置'),
                                  ('ace-firmware', 'ace-wizard.zh-CN.md', 'ACE 固件：跟着窗口更新和查询结果'),
                                  ('parameters', 'configuration.zh-CN.md', '料管长度、退料及回送参数'),
-                                 ('nfc', 'nfc.zh-CN.md', 'NFC 支持范围与密钥位置'),
+                                 ('nfc', 'nfc.zh-CN.md', 'NFC 支持范围与识别流程'),
                                  ('daily', 'daily-use.zh-CN.md', '日常进退料与远程操作'),
                                  ('licensing', 'licensing.zh-CN.md', '使用、分享和再分发许可')]:
         extra += '<details id="%s"><summary>%s</summary>%s</details>' % (section, title, render(ROOT / 'docs' / name))
@@ -194,7 +194,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
     for section, name, title in [('firmware', 'u1-preparation.md', 'U1 firmware and access setup'),
                                  ('ace-firmware', 'ace-wizard.md', 'ACE firmware: guided preparation and result checks'),
                                  ('parameters', 'configuration.md', 'Tube lengths and take-up settings'),
-                                 ('nfc', 'nfc.md', 'NFC support and key configuration'),
+                                 ('nfc', 'nfc.md', 'NFC support and recognition'),
                                  ('daily', 'daily-use.md', 'Daily use and remote controls'),
                                  ('licensing', 'licensing.md', 'Use, sharing, and redistribution')]:
         extra_en += '<details id="%s"><summary>%s</summary>%s</details>' % (section, title, render(ROOT / 'docs' / name))

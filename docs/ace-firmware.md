@@ -407,10 +407,10 @@ Seven additional tests check locked draft generation, freshness, source compatib
 
 Tests need no binary download, pyserial installation, printer connection, or private device profile.
 
-## NFC credentials
+## NFC recognition
 
-The ACE firmware decodes supported tags and returns metadata. This host integration contains no proprietary NFC keys.
-
-The U1's separate internal OpenRFID configuration remains unchanged. Users needing its keys must find them independently.
+The ACE firmware decodes supported tags and returns metadata.
+For tags supported by the pinned OpenCubic firmware, users do not need to find or enter NFC keys.
+Use manual material details for unsupported or unrecognized tags. See [the support table](nfc.md).
 
 External mode disables the U1's internal readers. It does not restrict the ACE firmware's supported tag formats.

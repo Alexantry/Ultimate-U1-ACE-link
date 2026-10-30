@@ -34,10 +34,10 @@ ACE 固件检查、下载校验及受支持的刷写，已纳入后续双语向�
 
 ## 1. 下载
 
-1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip)。
+1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip)。
 2. 等待浏览器下载完成。
 3. 打开电脑的“下载”文件夹。
-4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.4` 的压缩文件。
+4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.5` 的压缩文件。
 
 ## 2. 解压
 
@@ -141,7 +141,7 @@ ACE 固件检查、下载校验及受支持的刷写，已纳入后续双语向�
 本项目由用户提出需求、观察设备并完成实机测试，使用 **OpenAI Codex** 编写和整合代码、安装工具及文档。
 安装或使用本项目不需要 Codex、ChatGPT 订阅或 API 密钥。
 SnapAce、扩展固件、OpenCubic 等上游项目的作者和许可见[项目来源](../THIRD_PARTY.md)。
-本项目不提供 NFC 密钥；需要的专有密钥由用户自行寻找。
+使用固定 OpenCubic 固件支持的标签，无需自行寻找或填写 NFC 密钥。
 
 ## 故障处理：先看窗口停在哪一步
 

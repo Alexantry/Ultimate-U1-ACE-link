@@ -1,5 +1,15 @@
 # Changes
 
+## 0.1.5 — 2026-10-30
+
+This is a documentation revision. Installer behavior and production modules are unchanged.
+
+- List supported brands and tag formats on both home pages. Credit OpenCubic for multi-brand NFC decoding.
+- Distinguish upstream-confirmed formats, implemented but untested formats, and unsupported formats.
+- Remove unrelated U1 internal-reader key-entry tutorials and instructions to obtain NFC keys.
+- State that supported OpenCubic tags need no user-supplied NFC keys. Keep the Bambu physical-test evidence separate.
+- Update bilingual offline guides and retain every earlier archive.
+
 ## 0.1.4 — 2026-10-30
 
 This is a documentation correction. Installer behavior and production modules are unchanged.

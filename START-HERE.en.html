@@ -64,7 +64,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p><strong>Existing installation:</strong> an update does not require all four channels to be emptied.</p>
 <h3 id="install-with-the-launcher">Install with the launcher</h3>
 <ol>
-<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip">the project ZIP</a>.</li>
+<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip">the project ZIP</a>.</li>
 <li>Right-click the ZIP in your Downloads folder.</li>
 <li>Select Extract All.</li>
 <li>Open the extracted <code>Ultimate-U1-ACE-link</code> folder.</li>
@@ -97,6 +97,8 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>The setting name is <strong>External</strong>.</p>
 <p>The word <strong>extended</strong> describes the firmware and its configuration files.</p>
 <p>You do not need to select External manually before guided installation.</p>
+<p>For tags supported by the pinned OpenCubic firmware, you do not need to find or enter NFC keys.</p>
+<p>See <a href="#nfc">the support table</a>. Use manual material details for unsupported or unrecognized tags.</p>
 <h3 id="values-that-depend-on-your-machine">Values that depend on your machine</h3>
 <aside class="alert important"><div class="alert-title">IMPORTANT</div>
 <p><strong>Do not copy the example lengths without checking your tube arrangement.</strong></p>
@@ -656,7 +658,7 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <p>The installer restarts Klipper and verifies the loaded configuration.</p>
 <p>It preserves NFC secrets and checks existing material data.</p>
 <p>If installation fails, read the automatic rollback result before proceeding.</p>
-<p>Use <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/update-and-rollback.md">Update and rollback</a> when recovery is needed.</p></details><details id="nfc"><summary>NFC support and key configuration</summary><h2 id="nfc-and-material-data">NFC and material data</h2>
+<p>Use <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/update-and-rollback.md">Update and rollback</a> when recovery is needed.</p></details><details id="nfc"><summary>NFC support and recognition</summary><h2 id="nfc-and-material-data">NFC and material data</h2>
 <p><a href="START-HERE.html#nfc">简体中文</a></p>
 <p>With compatible ACE firmware, this project synchronizes recognized brand, material, subtype, and color with the U1.</p>
 <p>It receives decoded tag data; it does not add tag decoders to ACE firmware.</p>
@@ -665,8 +667,8 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <p><strong>This project has not physically tested those tags.</strong></p>
 <aside class="alert important"><div class="alert-title">IMPORTANT</div>
 <p><strong>ACE and the U1 internal reader are separate systems.</strong></p>
-<p>The tested ACE setup needs no additional Bambu key entry in this project&#x27;s installer.</p>
-<p>The key-file instructions below apply only to the U1 internal OpenRFID reader.</p>
+<p><strong>With the pinned OpenCubic firmware, users do not need to find or enter NFC keys for its supported tags.</strong></p>
+<p>Keep the U1 reader mode set to External.</p>
 </aside>
 <h3 id="what-you-need-for-ace-recognition">What you need for ACE recognition</h3>
 <div class="table"><table><thead><tr><th>Item</th><th>Required setup</th></tr></thead><tbody>
@@ -680,12 +682,11 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <p>Use <a href="#ace-firmware">the bilingual ACE firmware wizard</a> to prepare the supported version.</p>
 <p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">manual firmware procedure</a> remains available for source-based maintenance.</p>
 <p>Do not use an ACE 2 firmware image on ACE Pro Gen 1.</p>
-<p>The tested ACE firmware reads supported Bambu tags without a separate key supplied by this host project.</p>
-<p>The project provides no ACE key-entry field.</p>
-<p>The pinned OpenCubic documentation provides no supported runtime procedure for adding proprietary keys to ACE.</p>
-<p>Do not put keys in this project&#x27;s settings JSON.</p>
+<p>OpenCubic handles the supported tag formats inside ACE.</p>
+<p>No user-supplied NFC key is part of this installation.</p>
 <h3 id="supported-tags-upstream-status-and-our-tests">Supported tags: upstream status and our tests</h3>
 <p>The following table follows <a href="https://github.com/Jupsi/OpenCubic/blob/v1.0.2/docs/supported-spools.md">OpenCubic&#x27;s detailed v1.0.2 support document</a>.</p>
+<p><strong>OpenCubic provides multi-brand NFC decoding. Ultimate U1-ACE link queries the results from ACE and synchronizes them with U1.</strong></p>
 <p>The Anycubic generation labels describe tag variants, not the required ACE hardware generation.</p>
 <div class="table"><table><thead><tr><th>Tag brand or format</th><th>Status in the detailed upstream document</th><th>Physical validation in this project</th></tr></thead><tbody>
 <tr><td>Anycubic Gen 1 tags</td><td>Confirmed</td><td>Not tested here.</td></tr>
@@ -695,15 +696,15 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <tr><td>OpenSpool</td><td>Confirmed on ACE Pro Gen 1</td><td>Not tested here.</td></tr>
 <tr><td>Elegoo</td><td>Implemented, untested</td><td>Not tested here.</td></tr>
 <tr><td>OpenPrintTag, including Prusa format</td><td>Implemented, untested</td><td>Not tested here.</td></tr>
-<tr><td>QIDI</td><td>Not supported; upstream reports unknown AES keys and a stub</td><td>Not tested here.</td></tr>
-<tr><td>Creality</td><td>Not supported; upstream reports unknown AES keys and a stub</td><td>Not tested here.</td></tr>
+<tr><td>QIDI</td><td>Not supported; placeholder implementation only</td><td>Not tested here.</td></tr>
+<tr><td>Creality</td><td>Not supported; placeholder implementation only</td><td>Not tested here.</td></tr>
 </tbody></table></div>
 <p>The same release&#x27;s README still labels TigerTag and OpenSpool as untested.</p>
 <p>Its detailed support document reports physical confirmation; this table uses that more specific document.</p>
 <p>Our own physical NFC evidence is limited to Bambu tags.</p>
 <p>It does not establish compatibility with every spool, production batch, or tag placement.</p>
-<p><strong>Adding a key to the U1 configuration does not add QIDI or Creality support to ACE.</strong></p>
-<p>Brand-name conversion also cannot add that support.</p>
+<p><strong>QIDI and Creality tag recognition is not implemented in the pinned ACE firmware.</strong></p>
+<p>Use manual material settings for those spools. Brand-name conversion cannot add tag support.</p>
 <p>The supported OpenRFID formats on the U1 internal reader are a different compatibility list.</p>
 <h3 id="two-separate-reader-paths">Two separate reader paths</h3>
 <pre><code>
@@ -713,7 +714,6 @@ flowchart LR
     Data --&gt;|USB query response| Port[Integration running on U1]
     Port --&gt;|Name and format conversion| U1[U1 material data]
     Internal[U1 internal reader] --&gt; OpenRFID[U1 OpenRFID service]
-    Keys[Private openrfid_user.cfg] --&gt; OpenRFID
 </code></pre>
 <ol>
 <li>The ACE reader reads the tag. ACE firmware decodes the tag and identifies the material.</li>
@@ -726,8 +726,8 @@ flowchart LR
 <p>The integration converts these to <code>Bambu</code>, <code>PLA</code> / <code>Matte</code>, and the U1 color value.</p>
 <p>The <code>rfid</code> field is a recognition state. It is not raw tag data for U1 to decode.</p>
 <p>The U1 internal reader cannot read a spool remotely through the ACE USB connection.</p>
-<p>The U1 OpenRFID service uses its own reader and private configuration.</p>
-<p>Preserving that configuration does not transfer its keys to ACE.</p>
+<p>The U1 OpenRFID service uses its own reader and configuration.</p>
+<p>It is separate from the ACE decoding path and stays inactive in this setup.</p>
 <h3 id="select-external-mode">Select External mode</h3>
 <p>The current installer sets <strong>External</strong>, disables the internal reader path, and stops the U1 OpenRFID service.</p>
 <p>It verifies those changes and backs up the previous configuration and service state.</p>
@@ -747,7 +747,7 @@ flowchart LR
 <p>ACE recognition depends on its own firmware and tags.</p>
 <aside class="alert caution"><div class="alert-title">CAUTION</div>
 <p><strong>Keep External selected while using this ACE integration.</strong></p>
-<p>Do not enable internal OpenRFID merely to enter keys or improve ACE recognition.</p>
+<p>Do not enable internal OpenRFID to improve ACE recognition.</p>
 <p>That change activates a separate reader path and can conflict with ACE material handling.</p>
 </aside>
 <h3 id="check-recognition-and-material-retention">Check recognition and material retention</h3>
@@ -779,92 +779,21 @@ flowchart LR
 <tr><td>Empty brand</td><td><code>Generic</code></td></tr>
 </tbody></table></div>
 <p>These conversions normalize names after a successful read.</p>
-<p>They do not add a tag decoder or authentication key to ACE firmware.</p>
+<p>They do not add a tag decoder to ACE firmware.</p>
 <p>For example, <code>PLA Matte</code> becomes material type <code>PLA</code> and subtype <code>Matte</code>.</p>
 <p>Color transfers separately.</p>
 <p>A valid brand does not guarantee that a slicer contains a matching filament profile.</p>
-<h3 id="u1-internal-openrfid-key-file-reference-only">U1 internal OpenRFID key file: reference only</h3>
-<p><strong>Skip this section for normal ACE installation.</strong></p>
-<p>It explains an existing U1 internal-reader configuration, not a missing ACE installation step.</p>
-<p>The installer preserves this private file without reading its keys into ACE.</p>
-<div class="table"><table><thead><tr><th>Location</th><th>Path</th></tr></thead><tbody>
-<tr><td>Canonical printer path</td><td><code>/oem/printer_data/config/extended/openrfid_user.cfg</code></td></tr>
-<tr><td>Equivalent path on supported U1 firmware</td><td><code>/home/lava/printer_data/config/extended/openrfid_user.cfg</code></td></tr>
-<tr><td>Web file manager</td><td><strong>Configuration → extended → openrfid_user.cfg</strong></td></tr>
-</tbody></table></div>
-<h4 id="find-the-file-and-save-a-private-backup">Find the file and save a private backup</h4>
-<ol>
-<li>Open the printer&#x27;s normal web interface in your browser.</li>
-<li>Open <strong>Configuration</strong>.</li>
-<li>Open the <code>extended</code> folder.</li>
-<li>Find <code>openrfid_user.cfg</code>.</li>
-<li>Download a private backup with the file menu.</li>
-<li>Store the backup outside the public project folder.</li>
-<li>Open the original file in the web editor.</li>
-</ol>
-<p>A missing file does not prevent ACE recognition.</p>
-<p>Do not create it to fix ACE recognition.</p>
-<p>For a separate U1 internal-reader configuration, create this exact filename only if it does not already exist.</p>
-<p>The <a href="https://snapmakeru1-extended-firmware.pages.dev/design/rfid">upstream RFID design</a> describes that separate reader system.</p>
-<h4 id="edit-existing-sections">Edit existing sections</h4>
-<p>A leading <code>#</code> makes a configuration line a comment.</p>
-<p>Removing that <code>#</code> activates the line in the file; it does not start the disabled OpenRFID service.</p>
-<p>Use an existing section when present.</p>
-<p>Do not create a second section with the same name.</p>
-<p>Keep unrelated sections and existing working values unchanged.</p>
-<ol>
-<li>Find <code>[bambu_lab_tag_processor]</code> or its commented form.</li>
-<li>Remove the leading <code>#</code> from the section header when configuring this internal reader.</li>
-<li>Remove the leading <code>#</code> from its <code>key</code> line.</li>
-<li>Replace its value with your independently obtained Bambu key.</li>
-</ol>
-<p>Bambu configuration has one field:</p>
-<pre><code>
-[bambu_lab_tag_processor]
-key = &lt;YOUR_BAMBU_KEY_32_HEX&gt;
-</code></pre>
-<p>The angle-bracket text is a placeholder, not a key.</p>
-<p>Do not save that placeholder as a working value.</p>
-<p>A key must contain exactly 32 hexadecimal characters: <code>0</code>–<code>9</code>, <code>a</code>–<code>f</code>, or <code>A</code>–<code>F</code>.</p>
-<p>Do not add <code>0x</code>, quotation marks, spaces, or angle brackets.</p>
-<p>A correctly formatted value is not necessarily the correct authentication key.</p>
-<ol>
-<li>Check that no duplicate section or placeholder remains.</li>
-<li>Save the file.</li>
-</ol>
-<p>Creality internal-reader configuration has two separate fields:</p>
-<pre><code>
-[creality_tag_processor]
-key = &lt;YOUR_CREALITY_KEY_32_HEX&gt;
-encryption_key = &lt;YOUR_CREALITY_ENCRYPTION_KEY_32_HEX&gt;
-</code></pre>
-<ol>
-<li>Find the existing <code>[creality_tag_processor]</code> section when configuring the U1 internal reader.</li>
-<li>Remove the leading <code>#</code> from that header.</li>
-<li>Remove the leading <code>#</code> from the <code>key</code> line.</li>
-<li>Remove the leading <code>#</code> from the <code>encryption_key</code> line.</li>
-<li>Put the correct 32-character value in <code>key</code>.</li>
-<li>Put the correct 32-character value in <code>encryption_key</code>.</li>
-<li>Check that no duplicate section or placeholder remains.</li>
-<li>Save the file.</li>
-</ol>
-<p><strong>Do not assume <code>key</code> and <code>encryption_key</code> have the same value.</strong></p>
-<p>The two fields serve different roles and require their corresponding values.</p>
-<p>These settings do not enable Creality support in ACE.</p>
-<p>Keep External selected for this project; the saved internal-reader configuration remains inactive.</p>
-<h3 id="keep-keys-private">Keep keys private</h3>
-<p>Users must obtain required proprietary keys independently.</p>
-<p>This project provides neither keys nor links to key sources.</p>
-<p>Do not publish the file, its backup, screenshots containing keys, or keys in issue reports.</p>
-<p>Do not add keys to the installer JSON, firmware download profile, or repository.</p>
-<p>Keep private configuration when changing firmware or reinstalling the host integration.</p>
+<h3 id="keep-private-configuration">Keep private configuration</h3>
+<p>This project contains no proprietary NFC keys.</p>
+<p>Keep your private configuration before an update or reinstallation.</p>
+<p>Do not publish configuration backups, credentials, or unredacted maintenance logs.</p>
 <h3 id="if-recognition-fails">If recognition fails</h3>
 <div class="table"><table><thead><tr><th>Observation</th><th>Next check</th></tr></thead><tbody>
 <tr><td>No tag on the spool</td><td>Enter material data manually.</td></tr>
 <tr><td>Type and color appear, but brand is Generic</td><td>Check whether ACE supplied a nonempty brand.</td></tr>
 <tr><td>A supported tag is not recognized</td><td>Check the exact ACE firmware, original tag presence, and tag position.</td></tr>
 <tr><td>Recognition is still running</td><td>Wait for completion before starting a load.</td></tr>
-<tr><td>QIDI or Creality fails on the pinned ACE firmware</td><td>Use manual material data; the U1 key file does not add ACE support.</td></tr>
+<tr><td>QIDI or Creality fails on the pinned ACE firmware</td><td>Use manual material data. These tag decoders are not implemented.</td></tr>
 <tr><td>U1 shows Bambu, but the slicer does not</td><td>Check the slicer&#x27;s available filament profiles separately.</td></tr>
 </tbody></table></div>
 <p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/troubleshooting.md">troubleshooting</a> and <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">the physical validation limits</a>.</p></details><details id="daily"><summary>Daily use and remote controls</summary><h2 id="daily-loading-and-unloading">Daily loading and unloading</h2>
@@ -986,7 +915,7 @@ AUTO_FEEDING EXTRUDER=0 UNLOAD=1
 <p>That comparison supports the recorded scope; it does not prove every historical source relationship.</p>
 <p>OpenRFID is an existing U1 component and a documentation/reference source.</p>
 <p>The ACE path receives decoded information from ACE firmware instead.</p>
-<p>The key examples in <a href="#nfc">the NFC guide</a> use configuration names and placeholders, not copied proprietary keys.</p>
+<p>The <a href="#nfc">NFC guide</a> describes ACE recognition and its support limits. It contains no key-entry procedure or proprietary keys.</p>
 <p>Future copied OpenRFID code would need its applicable notices, attribution, and license treatment.</p>
 <h3 id="opencubic-firmware-and-qt-flash-tool-differ">OpenCubic: firmware and Qt flash tool differ</h3>
 <p>The pinned <a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/README.md#firmware-source">OpenCubic README</a> states that firmware source remains private.</p>
