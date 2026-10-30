@@ -4,6 +4,8 @@ This lab runs in a disposable GitHub-hosted Ubuntu virtual machine.
 It never connects to a printer. All SSH and HTTP traffic for the simulated printer stays on loopback.
 It does not replace physical acceptance of U1 or ACE.
 
+Read the [recorded results / 已记录的验证结果](RESULTS.md).
+
 The lab keeps the release installer, manifest, payload, and Windows launcher unchanged.
 The Linux filesystem, SSH/SCP processes, permissions, backups, and file replacement are real.
 Lab-only executable-name adapters select an isolated SSH configuration and start real OpenSSH.

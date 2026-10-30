@@ -49,7 +49,10 @@ The `openrfid_user.cfg` path in the guest is created from a fixed synthetic text
 - The HTTP responder is a limited Moonraker substitute on guest loopback port 80.
 - `S60klipper` is a laboratory service wrapper. It does not start Klipper, MCU firmware, motors, heaters, or a printer daemon.
 - Material values, cold/idle state, head sensors, and ACE status are synthetic.
-- The reported module version is parsed from the installed source; this does not prove that real Klipper loaded the module.
+- Configuration, module hashes, and the version string are captured only at a successful simulated service start.
+  HTTP responses keep that captured view until the next successful start. Writing files alone does not update it.
+  `load_generation` and `service_actions` let the driver verify the restart boundary.
+  The version is parsed from source; the modules are not executed. This does not prove that real Klipper loaded them.
 - The USB VID/PID and serial identity are synthetic. The PTY is not an ACE emulator and never returns NFC or flash results.
 - The tested host flow selects the known-target/KEEP branch. It does not prove ACE firmware preparation or flashing.
 - Any unexpected bytes written to the synthetic serial endpoint cause the final assertions to fail.
@@ -73,7 +76,7 @@ The SSH service must pass these laboratory environment values to its child sessi
 | --- | --- |
 | `guest.py setup` | Initialize once, verify fixture hashes, and install the isolated filesystem. |
 | `guest.py serve --ready-file /run/ultimate-u1-ace-link-vm-lab/ready.json` | Keep HTTP and the PTY alive. |
-| `guest.py snapshot` | Read laboratory state and managed-file identities. |
+| `guest.py snapshot` | Read laboratory state, file identities, service actions, load generation, and the last simulated loaded view. |
 | `guest.py set-state idle` | Return synthetic status to idle and capture an unchanged-files checkpoint. |
 | `guest.py set-state busy` / `hot` | Inject a rejected printer state and capture a checkpoint. |
 | `guest.py set-state service-failure` | Fail the next service start once; later rollback starts may recover. |

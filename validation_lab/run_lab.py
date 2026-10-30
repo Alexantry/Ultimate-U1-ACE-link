@@ -7,6 +7,7 @@ It does not emulate the U1 board, ACE firmware, NFC, or filament movement.
 SPDX-License-Identifier: GPL-3.0-only
 """
 import argparse
+import configparser
 import contextlib
 import hashlib
 import json
@@ -205,6 +206,45 @@ def filesystem_snapshot(bundle):
     return result
 
 
+def service_snapshot():
+    return json.loads(guest('snapshot').stdout)
+
+
+def verify_service_reload(before, bundle, status, expected_actions=('stop', 'start')):
+    """Require an actual service cycle and a snapshot captured at successful start."""
+    after = service_snapshot()
+    prior_actions = before['service_actions']
+    actions = after['service_actions']
+    require(actions[:len(prior_actions)] == prior_actions, 'Service history was changed')
+    delta = actions[len(prior_actions):]
+    require(delta == list(expected_actions), 'Unexpected service sequence: ' + repr(delta))
+    require(after['load_generation'] == before['load_generation'] + 1,
+            'Service did not load a new configuration exactly once')
+    require(after['service_running'] and after['last_start_error'] is None,
+            'Service did not finish with a successful start')
+    config = configparser.RawConfigParser(inline_comment_prefixes=('#', ';'))
+    config.read('/oem/printer_data/config/extended/klipper/ace.cfg')
+    expected_ace = {key: value if key == 'serial' else int(value)
+                    for key, value in config.items('ace')} if config.has_section('ace') else {}
+    require(after['loaded_settings'].get('ace', {}) == expected_ace,
+            'Service retained a stale ACE configuration after file changes')
+    require(all(expected_ace.get(key) == value for key, value in status['ace_settings'].items()),
+            'Installer status differs from the configuration loaded at start')
+    require(after['loaded_port_version'] == status['ace_version'],
+            'Installer status differs from the integration version loaded at start')
+    manifest = json.loads((bundle / 'manifest.json').read_text())
+    expected_hashes = {entry['destination']:
+                       hashlib.sha256(Path(entry['destination']).read_bytes()).hexdigest()
+                       if Path(entry['destination']).exists() else None
+                       for entry in manifest['files']}
+    require(after['loaded_module_hashes'] == expected_hashes,
+            'Service did not load the current installed module files')
+    return {'actions': delta, 'load_generation_before': before['load_generation'],
+            'load_generation_after': after['load_generation'],
+            'loaded_port_version': after['loaded_port_version'],
+            'configuration_and_module_hashes_match_disk': True}
+
+
 def wizard(bundle, output, language, scenario):
     logs = output / (scenario + '-' + language)
     logs.mkdir()
@@ -267,12 +307,15 @@ def main():
         baseline = filesystem_snapshot(bundle)
         result['cases'].append({'name': 'release_integrity_and_real_strict_ssh', 'passed': True})
 
+        service_before = service_snapshot()
         stage = wizard(bundle, output, 'en', 'fresh')
         status = remote_json(stage, 'status')
         require(status['managed'] and status['filament_detection'] == 'external' and
                 status['ace_settings']['retract_length'] == 1370, 'First installation did not become managed')
         guest('assert', 'installed')
-        result['cases'].append({'name': 'english_fresh_wizard_real_transfer_and_install', 'passed': True})
+        service_evidence = verify_service_reload(service_before, bundle, status)
+        result['cases'].append({'name': 'english_fresh_wizard_real_transfer_and_install', 'passed': True,
+                                'service': service_evidence})
 
         settings = json.loads((bundle / 'config/settings.example.json').read_text())
         settings.update(calibrated_acknowledged=True, apply_existing_settings=True,
@@ -281,20 +324,28 @@ def main():
         settings_path = STATE / 'settings.lab.json'
         settings_path.write_text(json.dumps(settings))
         run(['/usr/bin/scp', '-F', SSH_CONFIG, '-O', settings_path, TARGET + ':' + stage + '/config/settings.lab.json'])
+        service_before = service_snapshot()
         change = remote_json(stage, 'install --settings config/settings.lab.json')
         require(change['installed'] and change['settings']['forward_takeup_length'] == 210,
                 'Custom parameters did not install')
-        custom_state = remote_json(stage, 'status')['ace_settings']
+        status = remote_json(stage, 'status')
+        custom_state = status['ace_settings']
+        service_evidence = verify_service_reload(service_before, bundle, status)
         manifest = json.loads((bundle / 'manifest.json').read_text())
         module_hashes = {entry['destination']: hashlib.sha256(Path(entry['destination']).read_bytes()).hexdigest()
                          for entry in manifest['files']}
-        result['cases'].append({'name': 'explicit_parameter_update_through_real_cli', 'passed': True})
+        result['cases'].append({'name': 'explicit_parameter_update_through_real_cli', 'passed': True,
+                                'service': service_evidence})
 
+        service_before = service_snapshot()
         stage = wizard(bundle, output, 'zh', 'update')
-        require(remote_json(stage, 'status')['ace_settings'] == custom_state, 'Ordinary update changed custom parameters')
+        status = remote_json(stage, 'status')
+        require(status['ace_settings'] == custom_state, 'Ordinary update changed custom parameters')
         require(all(hashlib.sha256(Path(path).read_bytes()).hexdigest() == digest
                     for path, digest in module_hashes.items()), 'Update changed staged-load module constants')
-        result['cases'].append({'name': 'chinese_update_preserves_parameters', 'passed': True})
+        service_evidence = verify_service_reload(service_before, bundle, status)
+        result['cases'].append({'name': 'chinese_update_preserves_parameters', 'passed': True,
+                                'service': service_evidence})
 
         for state, expected in (('busy', 'Printer must be idle'), ('hot', 'Heater or motion is active')):
             guest('set-state', state)
@@ -324,28 +375,42 @@ def main():
 
         before = filesystem_snapshot(bundle)
         guest('set-state', 'service-failure')
+        service_before = service_snapshot()
         failed = remote_json(stage, 'install --settings config/settings.local.json', check=False)
         require(failed.returncode != 0 and 'Automatic rollback VERIFIED' in failed.stderr,
                 'One failed service start did not trigger verified rollback')
         require(filesystem_snapshot(bundle) == before, 'Automatic rollback did not restore exact managed files')
-        require(remote_json(stage, 'status')['ace_settings'] == custom_state, 'Failure changed loaded settings')
+        status = remote_json(stage, 'status')
+        require(status['ace_settings'] == custom_state, 'Failure changed loaded settings')
         guest('assert', 'service-recovered')
         guest('assert', 'unchanged')
-        result['cases'].append({'name': 'service_start_failure_restores_files_and_receipt', 'passed': True})
+        service_evidence = verify_service_reload(service_before, bundle, status,
+                                                ('stop', 'start', 'stop', 'start'))
+        result['cases'].append({'name': 'service_start_failure_restores_files_and_receipt', 'passed': True,
+                                'service': service_evidence})
 
+        rollback_service_evidence = []
         for _ in range(3):
+            service_before = service_snapshot()
             restored = remote_json(stage, 'rollback')
             require(restored['rolled_back'], 'Rollback did not report success')
+            rollback_service_evidence.append(verify_service_reload(service_before, bundle,
+                                                                   remote_json(stage, 'status')))
         require(not remote_json(stage, 'status')['managed'], 'Rollback chain did not reach uninstalled state')
         require(filesystem_snapshot(bundle) == baseline, 'Rollback did not restore original bytes and metadata')
         guest('assert', 'rolled-back')
-        result['cases'].append({'name': 'rollback_chain_restores_original_files_permissions_and_mode', 'passed': True})
+        result['cases'].append({'name': 'rollback_chain_restores_original_files_permissions_and_mode', 'passed': True,
+                                'service_cycles': rollback_service_evidence})
 
+        service_before = service_snapshot()
         stage = wizard(bundle, output, 'zh', 'fresh')
         guest('assert', 'installed')
-        require(remote_json(stage, 'status')['ace_settings']['forward_takeup_length'] == 0,
+        status = remote_json(stage, 'status')
+        require(status['ace_settings']['forward_takeup_length'] == 0,
                 'Fresh reinstall did not disable take-up')
-        result['cases'].append({'name': 'chinese_fresh_reinstall_after_rollback', 'passed': True})
+        service_evidence = verify_service_reload(service_before, bundle, status)
+        result['cases'].append({'name': 'chinese_fresh_reinstall_after_rollback', 'passed': True,
+                                'service': service_evidence})
         for name, digest in original_hashes.items():
             require(hashlib.sha256((bundle / name).read_bytes()).hexdigest() == digest,
                     'Production package changed during validation: ' + name)
@@ -355,6 +420,10 @@ def main():
         result['ace_serial_bytes'] = 0
         result['printer_http_write_attempts'] = 0
         result['bind_mount_verified'] = guest_evidence['bind_mount_verified']
+        result['service_lifecycle'] = {key: guest_evidence[key] for key in
+                                      ('service_actions', 'load_generation', 'service_running',
+                                       'loaded_settings', 'loaded_port_version', 'loaded_module_hashes',
+                                       'last_start_error')}
         result['cases'].append({'name': 'published_production_package_remains_unmodified', 'passed': True})
         result['passed'] = True
     except Exception as exc:

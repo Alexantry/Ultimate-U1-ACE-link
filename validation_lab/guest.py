@@ -175,9 +175,11 @@ def setup():
     subprocess.run(['mount', '--bind', str(synthetic_sysfs), '/sys/dev/char'], check=True)
     state = {'schema': 1, 'mode': 'idle', 'service_running': True, 'fail_starts': 0,
              'service_actions': [], 'serial_bytes': 0, 'http_write_attempts': 0, 'serial_target': None,
+             'load_generation': 0, 'last_start_error': None,
              'material': {'filament_vendor_0': 'Bambu', 'filament_type_0': 'PLA',
                           'filament_subtype_0': 'Matte', 'filament_color_0': '102030FF'},
              'baseline': controlled_files(), 'guard_baseline': None, 'guard_service_count': 0}
+    state.update(runtime_snapshot())
     atomic_json(STATE, state)
     event('setup', scope='synthetic-hardware-actual-installer')
     return snapshot()
@@ -210,9 +212,22 @@ def port_version():
     return values[0]
 
 
+def runtime_snapshot():
+    """Record the file view at a simulated start, without importing Klipper."""
+    settings = loaded_configuration()
+    manifest = json.loads((ROOT / 'manifest.json').read_text())
+    hashes = {}
+    for entry in manifest['files']:
+        source = Path(entry['destination'])
+        hashes[str(source)] = hashlib.sha256(source.read_bytes()).hexdigest() if source.exists() else None
+    return {'loaded_settings': settings,
+            'loaded_port_version': port_version() if 'ace' in settings else None,
+            'loaded_module_hashes': hashes}
+
+
 def moonraker_state():
     with locked_state() as current: value = dict(current)
-    settings = loaded_configuration()
+    settings = value['loaded_settings']
     busy = value['mode'] == 'busy'; hot = value['mode'] == 'hot'
     result = {'webhooks': {'state': 'ready' if value['service_running'] else 'shutdown'},
               'print_stats': {'state': 'printing' if busy else 'standby'},
@@ -228,7 +243,7 @@ def moonraker_state():
         result['ace'] = {'connected': True, 'status_fresh': True, 'status': 'ready',
                          'last_error': None, 'feed_assist_index': -1, 'preload_queue': [],
                          'dryer_status': {'status': 'stop'}, 'rfid_sync': [None] * 4,
-                         'gate_status': [0, 0, 0, 0], 'port_version': port_version()}
+                         'gate_status': [0, 0, 0, 0], 'port_version': value['loaded_port_version']}
     return result
 
 
@@ -312,9 +327,22 @@ def service(action):
         state['service_actions'].append(action)
         fail = action == 'start' and state['fail_starts'] > 0
         if fail: state['fail_starts'] -= 1
-        state['service_running'] = action == 'start' and not fail
+        state['service_running'] = False
+        if action == 'start':
+            state['last_start_error'] = 'Injected one-shot lab Klipper start failure' if fail else None
+            if not fail:
+                try:
+                    loaded = runtime_snapshot()
+                except Exception as exception:
+                    fail = True
+                    state['last_start_error'] = 'Lab configuration load failed: ' + str(exception)
+                else:
+                    state.update(loaded)
+                    state['load_generation'] += 1
+                    state['service_running'] = True
+        error = state['last_start_error'] if fail else None
     event('service', action=action, injected_failure=fail)
-    require(not fail, 'Injected one-shot lab Klipper start failure')
+    require(not fail, error)
     return {'service': action, 'hardware': False}
 
 
@@ -332,7 +360,9 @@ def set_state(mode):
 
 def snapshot():
     with locked_state() as state:
-        result = {name: state[name] for name in ('mode', 'service_running', 'fail_starts', 'service_actions', 'serial_bytes', 'http_write_attempts', 'serial_target', 'material')}
+        result = {name: state[name] for name in ('mode', 'service_running', 'fail_starts', 'service_actions',
+                  'serial_bytes', 'http_write_attempts', 'serial_target', 'material', 'load_generation',
+                  'loaded_settings', 'loaded_port_version', 'loaded_module_hashes', 'last_start_error')}
     result.update(files=controlled_files(), ace_config_exists=(CONFIG / 'extended/klipper/ace.cfg').exists(),
                   receipt_exists=RECEIPT.exists(), bind_mount_verified=CONFIG.samefile(CONFIG_ALIAS))
     return result
@@ -360,6 +390,9 @@ def assert_state(kind):
         require(parser.get('components', 'rfid') == 'external', 'External mode was not installed')
         require(RFID_LINK.is_symlink() and os.readlink(RFID_LINK) == str(RFID_TWEAK), 'Actual RFID symlink differs')
         require(port_version() == json.loads((ROOT / 'manifest.json').read_text())['version'], 'Wrong installed version')
+        require(value['load_generation'] > 0, 'No simulated service load occurred')
+        for field, expected in runtime_snapshot().items():
+            require(value[field] == expected, 'Disk files differ from the last simulated start: ' + field)
     elif kind == 'service-recovered':
         require(value['service_running'] and value['fail_starts'] == 0, 'Service did not recover')
     require(value['service_running'], 'Fixture service is not running')
