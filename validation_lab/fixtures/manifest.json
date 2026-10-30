@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "source_release": "v2.0.0-paxx12-24",
+  "source_asset_sha256": "42dcf59e06ef0f6fab20745883322f24ddd3c1a09da07449b356dd9dab943070",
+  "files": [
+    {
+      "path": "home/lava/klipper/klippy/extras/filament_feed.py",
+      "sha256": "174395bc9dd6cd559fe5ea00d83703560ee744ed8863e33083d1a2aa2bd53709",
+      "bytes": 103299
+    },
+    {
+      "path": "home/lava/klipper/klippy/extras/filament_detect.py",
+      "sha256": "4d1a554fd33e6f474db5be2ea14e79f56ad7ecf7a4f95b8000b8e2676e2d375b",
+      "bytes": 16875
+    },
+    {
+      "path": "home/lava/klipper/klippy/kinematics/extruder.py",
+      "sha256": "2085de67fb9a7d6c799a958c2a2ece639cc8f136f9dec792fa68eb2c359ce8f5",
+      "bytes": 124627
+    },
+    {
+      "path": "home/lava/klipper/klippy/extras/print_task_config.py",
+      "sha256": "8298babc42526ef4a4026207927e91c52fd1ca5f1e1afe6b1f08b0dbdced82c0",
+      "bytes": 85510
+    },
+    {
+      "path": "etc/init.d/S59rfid-support",
+      "sha256": "60214bc1e0188774004e32fc2a1ae860c39d7a2c89c49da8b09a119a2b94eafd",
+      "bytes": 952
+    },
+    {
+      "path": "etc/init.d/S99openrfid",
+      "sha256": "4eaf41a2c6e2c0cd72232c3f08723d3b2a3a058ae81a49d3738bdcb2b689f512",
+      "bytes": 1991
+    },
+    {
+      "path": "usr/local/bin/extended-config.py",
+      "sha256": "65f7f122b7a669eb4ae66591dc6159ed4547ba16ff4a4d302849b039cab3e3df",
+      "bytes": 7040
+    },
+    {
+      "path": "usr/local/share/firmware-config/tweaks/klipper/disable-rfid-reader.cfg",
+      "sha256": "80387430b72f73bcc459d6d5e895c2ab2c4bde58dcaf8967f871551a8dd585d3",
+      "bytes": 223
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+name: VM software installation flow
+on:
+  push:
+    branches: [validation/vm-software-flow]
+    paths:
+      - .github/workflows/vm-software-flow.yml
+      - validation_lab/**/*.py
+      - validation_lab/**/*.ps1
+      - validation_lab/fixtures/**
+      - downloads/Ultimate-U1-ACE-link-v0.1.6.zip
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux-vm-flow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare software-only VM dependencies
+        run: |
+          command -v pwsh
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends openssh-server python3-serial
+      - name: Run isolated SSH and installation flows
+        env:
+          U1_ACE_LAB_SCOPE: vm-software-flow
+        run: |
+          export U1_ACE_LAB_TOKEN="$(python3 -c 'import secrets; print(secrets.token_hex(16))')"
+          sudo --preserve-env=CI,GITHUB_ACTIONS,GITHUB_REPOSITORY,GITHUB_RUN_ID,U1_ACE_LAB_TOKEN,U1_ACE_LAB_SCOPE unshare --mount --propagation private python3 validation_lab/run_lab.py --output "$PWD/validation_lab/evidence"
+      - name: Show validation evidence and limits
+        if: always()
+        run: |
+          if [ -f validation_lab/evidence/result.json ]; then
+            sudo cat validation_lab/evidence/result.json
+            {
+              echo '## VM software validation'
+              echo 'Software-only evidence. Moonraker, Klipper service, and ACE hardware are simulated.'
+              echo 'No U1 boot, real ACE flash, NFC tag, filament movement, or tension test is performed.'
+              echo '```json'
+              sudo cat validation_lab/evidence/result.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No successful flow result was produced.' >> "$GITHUB_STEP_SUMMARY"
+          fi
