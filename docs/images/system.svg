@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc">
+<title id="title">Ultimate U1-ACE link: system connection</title><desc id="desc">One ACE Pro Gen 1 connects four filament paths to four U1 tools. A USB connection carries commands and filament data. ACE reads its own tags. U1 OpenRFID is a separate reader.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#2563eb"/></marker></defs>
+<rect width="1120" height="680" rx="20" fill="#f7f9fc"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#132238">
+<text x="40" y="50" font-size="27" font-weight="700">Ultimate U1-ACE link</text>
+<text x="40" y="81" font-size="18" fill="#526176">System connection · One ACE Pro (Gen 1) and one Snapmaker U1</text>
+<rect x="40" y="116" width="365" height="332" rx="16" fill="#ffffff" stroke="#bdcbdc" stroke-width="2"/>
+<text x="66" y="153" font-size="22" font-weight="700">ACE Pro · Gen 1</text>
+<text x="66" y="182" font-size="16" fill="#526176">OpenCubic firmware reads ACE tags.</text>
+<rect x="715" y="116" width="365" height="332" rx="16" fill="#ffffff" stroke="#bdcbdc" stroke-width="2"/>
+<text x="741" y="153" font-size="22" font-weight="700">Snapmaker U1</text>
+<text x="741" y="182" font-size="16" fill="#526176">Extended Firmware + this integration</text>
+<g font-size="18">
+<rect x="65" y="205" width="310" height="40" rx="8" fill="#e8eefb"/><text x="83" y="231">Slot 1 · internal index 0</text>
+<rect x="65" y="259" width="310" height="40" rx="8" fill="#e8eefb"/><text x="83" y="285">Slot 2 · internal index 1</text>
+<rect x="65" y="313" width="310" height="40" rx="8" fill="#e8eefb"/><text x="83" y="339">Slot 3 · internal index 2</text>
+<rect x="65" y="367" width="310" height="40" rx="8" fill="#e8eefb"/><text x="83" y="393">Slot 4 · internal index 3</text>
+<rect x="744" y="205" width="309" height="40" rx="8" fill="#e6f3ed"/><text x="762" y="231">Tool 1 · head sensor</text>
+<rect x="744" y="259" width="309" height="40" rx="8" fill="#e6f3ed"/><text x="762" y="285">Tool 2 · head sensor</text>
+<rect x="744" y="313" width="309" height="40" rx="8" fill="#e6f3ed"/><text x="762" y="339">Tool 3 · head sensor</text>
+<rect x="744" y="367" width="309" height="40" rx="8" fill="#e6f3ed"/><text x="762" y="393">Tool 4 · head sensor</text>
+</g>
+<g stroke="#8195b2" stroke-width="5" fill="none"><path d="M405 225H715"/><path d="M405 279H715"/><path d="M405 333H715"/><path d="M405 387H715"/></g>
+<rect x="469" y="293" width="180" height="26" rx="8" fill="#f7f9fc"/><text x="492" y="312" font-size="17">Four PTFE paths</text>
+<path d="M222 448V480H897V448" fill="none" stroke="#2563eb" stroke-width="4" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="374" y="462" width="371" height="35" rx="8" fill="#f7f9fc"/><text x="392" y="485" font-size="18" fill="#1d4ed8">USB: commands + filament data</text>
+<rect x="40" y="524" width="1040" height="100" rx="14" fill="#e8eefb"/>
+<text x="63" y="556" font-size="19" font-weight="700">ACE tag → ACE firmware → this integration → U1 material display</text>
+<text x="63" y="584" font-size="17">External mode prevents the internal U1 reader from replacing external filament data.</text>
+<text x="63" y="608" font-size="17">U1 OpenRFID keys do not transfer to ACE through this integration.</text>
+<text x="40" y="654" font-size="16" fill="#526176">Concept diagram. Use the upstream hardware guide for assembly and tube routing. No NFC keys are included.</text>
+</g></svg>
+

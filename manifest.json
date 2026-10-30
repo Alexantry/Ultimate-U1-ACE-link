@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "target_firmware": "2.0.0-paxx12-24",
+  "release": "0.1.0",
+  "version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+  "firmware_markers": [
+    {
+      "path": "/etc/FULLVERSION",
+      "value": "2.0.0-paxx12-24"
+    },
+    {
+      "path": "/etc/BASE_VERSION",
+      "value": "2.0.0.205_20260914173503"
+    },
+    {
+      "path": "/etc/BUILD_VERSION",
+      "value": "2.0.0-paxx12-24-0de1a77"
+    }
+  ],
+  "firmware_checks": [
+    {
+      "path": "/home/lava/klipper/klippy/extras/print_task_config.py",
+      "sha256": "8298babc42526ef4a4026207927e91c52fd1ca5f1e1afe6b1f08b0dbdced82c0"
+    }
+  ],
+  "files": [
+    {
+      "id": "ace.py",
+      "payload": "payload/ace.py",
+      "destination": "/home/lava/klipper/klippy/extras/ace.py",
+      "sha256": "b6b58232b0c0369967cdc327e986a3742c374e4b2a65e313b8242049e13c2471",
+      "accepted_source_sha256": [
+        null,
+        "35a2e25a34ea56c6ab929b8cfd5d42ace05022296cfebb7419473ab2419bfc94",
+        "0967406f193b630d7c555a4f5cad80760fc255b6c7c86a740078952d736e9cc1",
+        "0bfbae961e4d4c8bef3fe38863a95b4d6501e2ab1d77058a56e596980a7d4420",
+        "b67f5f6efdf804fb40af8ec88b66224c4080a5658a2a684f975cccb6f307da92",
+        "00f04d89e2997d40867ea43d1befc74929d25916d20812ab94c0c2ec878a7bfa",
+        "3e34b8c72c4a5a733401e3f9d4b206a9ad85f804bca377ec3c92ffdac5a0de7c",
+        "b6b58232b0c0369967cdc327e986a3742c374e4b2a65e313b8242049e13c2471"
+      ]
+    },
+    {
+      "id": "filament_feed.py",
+      "payload": "payload/filament_feed.py",
+      "destination": "/home/lava/klipper/klippy/extras/filament_feed.py",
+      "sha256": "9b4e5ed620ab2e3aa1122d188340c441735525a224c72eda9ebdf24922770520",
+      "accepted_source_sha256": [
+        "174395bc9dd6cd559fe5ea00d83703560ee744ed8863e33083d1a2aa2bd53709",
+        "d1a7fbf079067f5517120b6318693865bccfe0154c9a63de2c6bb9888ec4a9da",
+        "2653d4b59bae4942322aa8c531aa2dc988facc1d216e395a4735ef738d4e79d9",
+        "dd9575c1ce04096c1c0b91e1dce8f16d12f9faa1c288544eb8fcfc6209b9a69f",
+        "a747fbefc40276fe36178cda1910eaee3b2ecf15fcb2a2ecf46017efce03b73b",
+        "9b4e5ed620ab2e3aa1122d188340c441735525a224c72eda9ebdf24922770520"
+      ]
+    },
+    {
+      "id": "filament_detect.py",
+      "payload": "payload/filament_detect.py",
+      "destination": "/home/lava/klipper/klippy/extras/filament_detect.py",
+      "sha256": "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff",
+      "accepted_source_sha256": [
+        "4d1a554fd33e6f474db5be2ea14e79f56ad7ecf7a4f95b8000b8e2676e2d375b",
+        "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff"
+      ]
+    },
+    {
+      "id": "extruder.py",
+      "payload": "payload/extruder.py",
+      "destination": "/home/lava/klipper/klippy/kinematics/extruder.py",
+      "sha256": "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19",
+      "accepted_source_sha256": [
+        "2085de67fb9a7d6c799a958c2a2ece639cc8f136f9dec792fa68eb2c359ce8f5",
+        "1446278c2a2740f950c52cb66d3386e3f0867386cc98b1a1ba36933148bc0a1c",
+        "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19"
+      ]
+    }
+  ]
+}

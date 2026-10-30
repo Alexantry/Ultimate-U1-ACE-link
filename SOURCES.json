@@ -1,0 +1,267 @@
+{
+  "schema": 1,
+  "release": "0.1.0",
+  "recorded_date": "2026-10-30",
+  "distribution": "Source only; no firmware binaries, keys, device profiles with identities, backups, or raw printer logs",
+  "upstreams": [
+    {
+      "id": "snapace",
+      "repository": "https://github.com/BlackFrogKok/SnapAce",
+      "commit": "34a06e87bcd59ca3ebc845ed32a794627505437c",
+      "license": "GPL-3.0-only",
+      "license_url": "https://github.com/BlackFrogKok/SnapAce/blob/34a06e87bcd59ca3ebc845ed32a794627505437c/LICENSE"
+    },
+    {
+      "id": "snapmaker-u1-klipper",
+      "repository": "https://github.com/Snapmaker/u1-klipper",
+      "license_evidence_commit": "93cb12faebf6e74c51bbc5f0be66e95124af14c8",
+      "license": "GPL-3.0-only",
+      "license_url": "https://github.com/Snapmaker/u1-klipper/blob/93cb12faebf6e74c51bbc5f0be66e95124af14c8/COPYING",
+      "note": "This current source revision establishes published GPL provenance. Payload baseline is the exact paxx12-24 release extraction, not a claim that all files equal this commit. Stock extruder.py is byte-identical to git blob 6978d8a1b33c4b767e0f0cd783a2b50b6ed115dd."
+    },
+    {
+      "id": "paxx12-extended",
+      "repository": "https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware",
+      "tag": "v2.0.0-paxx12-24",
+      "commit": "417e6394f62366e010a3f76f8e567f67db770165",
+      "license": "GPL-3.0-only",
+      "license_url": "https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/LICENSE",
+      "rfid_patch_directory": "https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/tree/417e6394f62366e010a3f76f8e567f67db770165/overlays/firmware-extended/13-patch-rfid/patches"
+    },
+    {
+      "id": "godless50-usb-iap",
+      "repository": "https://github.com/Godless50/ACE-PRO-v1.-NFC-UID",
+      "commit": "ec8f37bf9928e7814efaafe6aaa794c69f8216d1",
+      "license": "GPL-3.0-only for the authors own source/documentation, not third-party binaries",
+      "license_url": "https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/LICENSE",
+      "source_url": "https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/ace_flash.py"
+    },
+    {
+      "id": "opencubic-external",
+      "repository": "https://github.com/Jupsi/OpenCubic",
+      "commit": "6a97e86eda2872e8f8046cefd9470d89906d9a36",
+      "release": "v1.0.2",
+      "license": "Firmware private-source/as-is; not redistributed or relicensed by this project. The separate upstream Qt flasher is MIT and is not bundled.",
+      "readme_url": "https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/README.md",
+      "manifest": "tools/ace_usb/images.json"
+    }
+  ],
+  "payload": [
+    {
+      "path": "payload/ace.py",
+      "sha256": "b6b58232b0c0369967cdc327e986a3742c374e4b2a65e313b8242049e13c2471",
+      "license": "GPL-3.0-only",
+      "modified_date": "2026-10-30",
+      "origin": "SnapAce and Snapmaker U1 Klipper, rebased on paxx12-24; see THIRD_PARTY.md",
+      "accepted_bases": [
+        {
+          "release": "paxx12-24-without-snapace",
+          "sha256": null
+        },
+        {
+          "release": "snapace-upstream-34a06e87",
+          "sha256": "35a2e25a34ea56c6ab929b8cfd5d42ace05022296cfebb7419473ab2419bfc94"
+        },
+        {
+          "release": "port1",
+          "sha256": "0967406f193b630d7c555a4f5cad80760fc255b6c7c86a740078952d736e9cc1"
+        },
+        {
+          "release": "port4-nfc",
+          "sha256": "0bfbae961e4d4c8bef3fe38863a95b4d6501e2ab1d77058a56e596980a7d4420"
+        },
+        {
+          "release": "port5-manual-load",
+          "sha256": "b67f5f6efdf804fb40af8ec88b66224c4080a5658a2a684f975cccb6f307da92"
+        },
+        {
+          "release": "port6-staged-load",
+          "sha256": "00f04d89e2997d40867ea43d1befc74929d25916d20812ab94c0c2ec878a7bfa"
+        },
+        {
+          "release": "port6.1-material-retain",
+          "sha256": "3e34b8c72c4a5a733401e3f9d4b206a9ad85f804bca377ec3c92ffdac5a0de7c"
+        },
+        {
+          "release": "port7-forward-takeup",
+          "sha256": "b6b58232b0c0369967cdc327e986a3742c374e4b2a65e313b8242049e13c2471"
+        }
+      ]
+    },
+    {
+      "path": "payload/filament_feed.py",
+      "sha256": "9b4e5ed620ab2e3aa1122d188340c441735525a224c72eda9ebdf24922770520",
+      "license": "GPL-3.0-only",
+      "modified_date": "2026-10-30",
+      "origin": "SnapAce and Snapmaker U1 Klipper, rebased on paxx12-24; see THIRD_PARTY.md",
+      "accepted_bases": [
+        {
+          "release": "2.0.0-paxx12-24",
+          "sha256": "174395bc9dd6cd559fe5ea00d83703560ee744ed8863e33083d1a2aa2bd53709"
+        },
+        {
+          "release": "snapace-upstream-34a06e87",
+          "sha256": "d1a7fbf079067f5517120b6318693865bccfe0154c9a63de2c6bb9888ec4a9da"
+        },
+        {
+          "release": "port1",
+          "sha256": "2653d4b59bae4942322aa8c531aa2dc988facc1d216e395a4735ef738d4e79d9"
+        },
+        {
+          "release": "port4-nfc",
+          "sha256": "2653d4b59bae4942322aa8c531aa2dc988facc1d216e395a4735ef738d4e79d9"
+        },
+        {
+          "release": "port5-manual-load",
+          "sha256": "dd9575c1ce04096c1c0b91e1dce8f16d12f9faa1c288544eb8fcfc6209b9a69f"
+        },
+        {
+          "release": "port6-staged-load",
+          "sha256": "a747fbefc40276fe36178cda1910eaee3b2ecf15fcb2a2ecf46017efce03b73b"
+        },
+        {
+          "release": "port6.1-material-retain",
+          "sha256": "a747fbefc40276fe36178cda1910eaee3b2ecf15fcb2a2ecf46017efce03b73b"
+        },
+        {
+          "release": "port7-forward-takeup",
+          "sha256": "9b4e5ed620ab2e3aa1122d188340c441735525a224c72eda9ebdf24922770520"
+        }
+      ]
+    },
+    {
+      "path": "payload/filament_detect.py",
+      "sha256": "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff",
+      "license": "GPL-3.0-only",
+      "modified_date": "2026-10-30",
+      "origin": "SnapAce and Snapmaker U1 Klipper, rebased on paxx12-24; see THIRD_PARTY.md",
+      "accepted_bases": [
+        {
+          "release": "2.0.0-paxx12-24",
+          "sha256": "4d1a554fd33e6f474db5be2ea14e79f56ad7ecf7a4f95b8000b8e2676e2d375b"
+        },
+        {
+          "release": "port6.1-material-retain",
+          "sha256": "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff"
+        },
+        {
+          "release": "port7-forward-takeup",
+          "sha256": "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff"
+        }
+      ]
+    },
+    {
+      "path": "payload/extruder.py",
+      "sha256": "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19",
+      "license": "GPL-3.0-only",
+      "modified_date": "2026-10-30",
+      "origin": "SnapAce and Snapmaker U1 Klipper, rebased on paxx12-24; see THIRD_PARTY.md",
+      "accepted_bases": [
+        {
+          "release": "2.0.0-paxx12-24",
+          "sha256": "2085de67fb9a7d6c799a958c2a2ece639cc8f136f9dec792fa68eb2c359ce8f5"
+        },
+        {
+          "release": "snapace-upstream-34a06e87",
+          "sha256": "1446278c2a2740f950c52cb66d3386e3f0867386cc98b1a1ba36933148bc0a1c"
+        },
+        {
+          "release": "port1",
+          "sha256": "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19"
+        }
+      ]
+    }
+  ],
+  "test_fixtures": [
+    {
+      "path": "tests/host/fixtures/filament_protocol.py",
+      "sha256": "92fa81468eeb149d14e33f1c0dbb5b61bc84c802d0fa42f9e6b90e2d36d97b8e",
+      "origin": "Three verbatim constant excerpts from exact paxx12-24 filament_protocol.py; unused cryptographic public keys and parser omitted; never installed",
+      "license": "GPL-3.0-only",
+      "source_sha256": "a70d2c5270f274680bba0dd8eeb2ebacdc9fa153533de7cc0c9ffe0cbe4951aa"
+    },
+    {
+      "path": "tests/host/fixtures/print_task_config.py",
+      "sha256": "8298babc42526ef4a4026207927e91c52fd1ca5f1e1afe6b1f08b0dbdced82c0",
+      "origin": "Exact paxx12-24 Klipper source; test-only, never installed",
+      "license": "GPL-3.0-only"
+    }
+  ],
+  "tests": {
+    "host": {
+      "count": 194,
+      "mode": "offline fake devices",
+      "result": "passed",
+      "changes_from_original_tests": "Payload and fixture paths adapted; only the three exact filament-protocol constants used by the tests are included, omitting unused public-key/parser code. Assertions unchanged."
+    },
+    "usb_existing": {
+      "count": 84,
+      "mode": "offline fake devices and synthetic ARM-vector images",
+      "result": "passed",
+      "changes_from_original_tests": "Original external binary-dependent entry tests now generate synthetic images. No skipped tests or downloaded binaries required."
+    },
+    "usb_fetch": {
+      "count": 5,
+      "mode": "offline mocked network responses and synthetic images",
+      "result": "passed"
+    },
+    "usb_profile_draft": {
+      "count": 7,
+      "mode": "offline synthetic probes and identities",
+      "result": "passed"
+    },
+    "usb_total": {
+      "count": 96,
+      "result": "passed"
+    }
+  },
+  "source_payload_hashes": {
+    "payload/ace.py": "b6b58232b0c0369967cdc327e986a3742c374e4b2a65e313b8242049e13c2471",
+    "payload/extruder.py": "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19",
+    "payload/filament_detect.py": "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff",
+    "payload/filament_feed.py": "9b4e5ed620ab2e3aa1122d188340c441735525a224c72eda9ebdf24922770520",
+    "tests/host/preload_replay_fixture.py": "a79db92b711200489fff5a1cae2a0476312750489166ba18c09dc8fea17e96f4",
+    "tests/host/test_controls.py": "0d9b675699210d79d364a80624b51480f8f92cfdb96b12c17bd7b9ef92f28da7",
+    "tests/host/test_fast_origin.py": "f8381c88be8488058ebf5e4fe7b70947c453540f34885a108d55d523202cebe4",
+    "tests/host/test_forward_takeup.py": "61c8f47d35624557cf44c536dc704012d0ad7f6bfd520a55d367f95f73b8501a",
+    "tests/host/test_forward_takeup_feeder.py": "3fb61eaea1655be3217251e314eac5e3d9e9d2af71362bff4549582131c971a3",
+    "tests/host/test_manual_policy.py": "4a00ea9c864b728a9a3ea963dfbdd9b79aa3076330122352fea9c3d5c44d294c",
+    "tests/host/test_material_retention.py": "0dbc1a9bef1f8e0e8a4f7f7bbbb771a0c869dbe18ac1d1518e64f10e10bd2b39",
+    "tests/host/test_protocol.py": "f611744a08712bed74ba207a6e6d2aeee61d597f166dfad978b3d22bc13a566b",
+    "tests/host/test_query.py": "ac2c6a7d6cdfce36fcee75b11ea5a88497fd6cb5f48b6e1ef261865cfd15dedc",
+    "tests/host/test_sensor_load.py": "0d5a72f0a1a3905cc69c8556888e7da3cff50265d0560bec45e366f4108d7461",
+    "tests/host/test_staged_load.py": "5eacff6503d5866a0598a7d2c10006a54edca185862f12d44d9d44fa48c8c228",
+    "tests/host/test_sync.py": "e1e3084b91a1c40f240cf17dc2f45cf51e99c5977bbc4ff0e8090b1d2f590d03",
+    "tests/host/fixtures/filament_protocol.py": "92fa81468eeb149d14e33f1c0dbb5b61bc84c802d0fa42f9e6b90e2d36d97b8e",
+    "tests/host/fixtures/print_task_config.py": "8298babc42526ef4a4026207927e91c52fd1ca5f1e1afe6b1f08b0dbdced82c0",
+    "tools/ace_usb/ace_iap.py": "28506f991f97accf470cf5d69a8b6a1d2c429bf8a7edfc91d59a57466cdac540",
+    "tools/ace_usb/device-profile.json": "e7398dd50e24f9d207447f8e3caee7bac797a6a67b60a9346ca6a43234288435",
+    "tools/ace_usb/fetch_firmware.py": "17bdc075bedb23459ecad730be34ee43348ea08cfffdf755f5ff97410cfbc952",
+    "tools/ace_usb/images.json": "447c25ec8dae42ad065a3f1ea09b0b08b5e71c945f895b36ea8fda389f25c368",
+    "tools/ace_usb/prepare_profile.py": "10f10714c3e63427685ace4c89f7c556649782d24f939311f1de5e5854cf7af6",
+    "tools/ace_usb/protocol.py": "15902409b57602e6a9c8a55d72b948618a604ebda7042451cfb69f45e3a6c88b",
+    "tools/ace_usb/test_fetch_firmware.py": "9ca2564b659c557858c564fae1edcd53737fcf6c807b12d82db26e922842c80a",
+    "tools/ace_usb/test_iap.py": "753c50a661fb9d6dc95d4dee4c8e9d651d64d09a60cebf736d67be84b1e2b6df",
+    "tools/ace_usb/test_iap_messages.py": "0fdab913b2fcfe7cc6873081f97d1d8135d0dea1d7bf95346832ccfa7f99ac5f",
+    "tools/ace_usb/test_prepare_profile.py": "d31c1754bb61428392df726eed7e3fcc884a1df37ad0397cc73bfd199e163daa",
+    "tools/ace_usb/test_protocol.py": "216c88abadee97ca458708e0e741f999f0a769f3c5d7fa6019186f1eab8163e2",
+    "tools/ace_usb/test_rpc_batches.py": "7a7cf829123d5207cf5f7e253764dccd1c41087f5ecc33db1665ff5e70d8a5d4"
+  },
+  "packaging_changes": {
+    "date": "2026-10-30",
+    "description": "Payload files are byte-identical to the tested port7 integration. Public USB tool runtime logic is unchanged; license/provenance comments and a generic write-locked profile replace the site-specific preparation text. Public host tests use bundled GPL source fixtures; USB tests use synthetic images.",
+    "runtime_equivalence_check": "AST-identical after removing the changed module documentation string for ace_iap.py and protocol.py; four payload source files byte-identical."
+  },
+  "usb_adapter_original_sha256": {
+    "ace_iap.py": "70c623067c50f6c967a1f63f86d72d66442d0fea937d00a66f4ce0b2c869bc38",
+    "protocol.py": "92cb1ff5b74910e970566018413d5323e10570de0f9e54a25d900040842ff5c2"
+  },
+  "supported_physical_upgrade": {
+    "source_application": "V1.3.856",
+    "boot_firmware": "V1.0.1",
+    "target_application": "CV1.3.863",
+    "target_sha256": "95e0b6ddb1e77d624d127ac91d9b3e21caf58adc5e1598faf2be3feacf9b4048",
+    "other_routes_validated": false,
+    "stock_rollback_physically_tested": false
+  }
+}

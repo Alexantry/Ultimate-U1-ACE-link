@@ -1,0 +1,24 @@
+name: Offline verification
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Installer transaction checks
+        run: python -B -m unittest discover -s tests -p test_installer.py -v
+      - name: Host integration checks
+        run: python -B -m unittest discover -s tests/host -p 'test_*.py' -q
+      - name: ACE USB tool checks
+        run: python -B -m unittest discover -s tools/ace_usb -p 'test_*.py' -q
+      - name: Build the public archive
+        run: python -B tools/build_release.py
+

@@ -1,0 +1,3 @@
+# Preserve the exact bytes used by the source manifests and release archive.
+* -text
+

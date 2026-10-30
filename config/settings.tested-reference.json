@@ -1,0 +1,17 @@
+{
+  "serial": "/dev/serial/by-id/usb-ANYCUBIC_ACE_1-if00",
+  "baud": 115200,
+  "feed_speed": 200,
+  "feed_length": 1250,
+  "retract_speed": 80,
+  "retract_length": 1250,
+  "forward_takeup_length": 300,
+  "forward_takeup_speed": 50,
+  "max_dryer_temperature": 55,
+  "fast_load_length": 1150,
+  "fast_load_speed": 200,
+  "sensor_load_speed": 50,
+  "sensor_load_max_length": 2500,
+  "calibrated_acknowledged": false,
+  "apply_existing_settings": true
+}

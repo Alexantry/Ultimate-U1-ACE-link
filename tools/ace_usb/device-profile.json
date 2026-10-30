@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "write_enabled": false,
+  "device": null,
+  "source_firmware": null,
+  "boot_firmware": null,
+  "device_info_id": null,
+  "usb_identity": null,
+  "reviewed_at_utc": null,
+  "probe_sha256": null,
+  "image_sha256": "95e0b6ddb1e77d624d127ac91d9b3e21caf58adc5e1598faf2be3feacf9b4048",
+  "checks": {
+    "idle_state_verified": false,
+    "heaters_and_dryer_off_verified": false,
+    "klipper_stopped_and_port_released": false,
+    "source_version_reviewed": false,
+    "rollback_path_reviewed": false
+  },
+  "pending": [
+    "Identify the exact Gen1 hardware and installed application and boot firmware with a fresh read-only probe.",
+    "Verify idle state, all heaters and drying off, and exclusive ownership of the selected serial device.",
+    "Review source-version compatibility and the exact image; verify a rollback image before enabling writes.",
+    "Create a separate local, short-lived, exact-device and exact-image profile only after that review. Never commit device profiles, probes, or logs.",
+    "No automated retry or service restart is performed after an uncertain update."
+  ]
+}

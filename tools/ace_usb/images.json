@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "target_generation": "ACE Pro Gen1 USB JSON",
+  "max_image_bytes": 114688,
+  "application_base": "0x08008000",
+  "staging_base": "0x08024000",
+  "images": {
+    "opencubic-gen1": {
+      "file": "firmware/ACE_V1.3.863_20260716.bin",
+      "size": 113720,
+      "sha256": "95e0b6ddb1e77d624d127ac91d9b3e21caf58adc5e1598faf2be3feacf9b4048",
+      "md5": "9f7b9a678a96caf98d6a08842d3ff971",
+      "expected_runtime_version": "CV1.3.863",
+      "announced_version": "1.3.863",
+      "source": "https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2",
+      "download_url": "https://github.com/Jupsi/OpenCubic/releases/download/v1.0.2/ACE_V1.3.863_20260716.bin",
+      "identity_evidence": "SHA256 and size from GitHub release asset metadata; MD5 corroborated by Gen1 research README. Firmware source is private.",
+      "role": "Optional OpenCubic Gen1 CFW 1.1.1; unmodified upstream release image",
+      "crc16_mcrf4xx": 49424,
+      "initial_sp": "0x20009b20",
+      "reset_vector": "0x801a855",
+      "size_headroom": 968
+    },
+    "stock-gen1-863": {
+      "file": "firmware/ACE_V1.3.863_20250518.bin",
+      "size": 105652,
+      "sha256": "3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63",
+      "md5": "dcd04589dcadd5b4feab66d33e772531",
+      "git_blob_sha1": "b4b7ee5ba69faa0c8b6071043fdff2df2c093ac4",
+      "expected_runtime_version": "V1.3.863",
+      "announced_version": "1.3.863",
+      "source": "https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin",
+      "download_url": "https://raw.githubusercontent.com/Jupsi/OpenCubic/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin",
+      "identity_evidence": "Git blob SHA1 verified against pinned repository metadata; MD5 corroborated by independent Gen1 research README. Community-hosted vendor image, not a vendor signature.",
+      "role": "Community-hosted stock V1.3.863 rollback reference; not a backup of the recipient device",
+      "crc16_mcrf4xx": 57083,
+      "initial_sp": "0x20009c68",
+      "reset_vector": "0x8008211",
+      "size_headroom": 9036
+    }
+  }
+}
