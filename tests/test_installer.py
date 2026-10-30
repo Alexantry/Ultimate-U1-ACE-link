@@ -64,6 +64,13 @@ class FakeHost(I.Host):
         if self.fail_write == name:
             self.fail_write = None
             raise OSError('simulated atomic-write failure')
+        if metadata is not None:
+            # The virtual printer's root-owned backup files belong to the test
+            # account on the host. Keep actual chmod/fsync/replace operations;
+            # ordinary Linux CI must not need permission to chown files to root.
+            metadata = dict(metadata,
+                            uid=os.getuid() if hasattr(os, 'getuid') else metadata['uid'],
+                            gid=os.getgid() if hasattr(os, 'getgid') else metadata['gid'])
         super().write(name, data, metadata)
 
 
@@ -114,6 +121,18 @@ class InstallerTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
         self.f = Fixture(self.temp.name)
+
+    def test_virtual_root_ownership_maps_to_test_account_without_skipping_write(self):
+        with patch.object(I.os, 'getuid', return_value=1234, create=True), \
+                patch.object(I.os, 'getgid', return_value=5678, create=True), \
+                patch.object(I.os, 'chown', create=True) as chown, \
+                patch.object(I.os, 'chmod', wraps=I.os.chmod) as chmod:
+            self.f.host.write('/ownership-test', b'atomic bytes',
+                              {'mode': 0o600, 'uid': 0, 'gid': 0})
+        self.assertEqual(self.f.host.read('/ownership-test'), b'atomic bytes')
+        chown.assert_called_once()
+        self.assertEqual(chown.call_args.args[1:], (1234, 5678))
+        chmod.assert_called_once_with(chown.call_args.args[0], 0o600)
 
     def test_check_does_not_write_or_restart(self):
         before = self.f.bytes(); plan = self.f.installer.prepare(self.f.settings)

@@ -2,15 +2,15 @@
 
 ## Public installer checks
 
-The public installer includes 24 transaction tests.
+The public installer includes 25 transaction tests.
 A 22-test baseline passed with Python 3.11 on Linux.
-The two additional tests check failure reporting and recovery results.
+The additional tests check failure reporting, recovery results, and temporary-file ownership on ordinary test accounts.
 These tests use temporary directories, simulated services, and simulated printer status.
 They do not install files into the printer's operating paths.
 The read-only `status` command also passed on the tested U1 firmware.
 
 The optional USB tools passed 96 offline tests with simulated transport and generated test images.
-The package contains 314 tests across the host integration, installer, and USB tools.
+The package contains 315 tests across the host integration, installer, and USB tools.
 
 The tested production modules remain byte-for-byte unchanged in this package.
 A fresh installation with the generic installer has not received a separate physical acceptance test.
