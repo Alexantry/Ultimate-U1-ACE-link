@@ -64,7 +64,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p><strong>Existing installation:</strong> an update does not require all four channels to be emptied.</p>
 <h3 id="install-with-the-launcher">Install with the launcher</h3>
 <ol>
-<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip">the project ZIP</a>.</li>
+<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip">the project ZIP</a>.</li>
 <li>Right-click the ZIP in your Downloads folder.</li>
 <li>Select Extract All.</li>
 <li>Open the extracted <code>Ultimate-U1-ACE-link</code> folder.</li>
@@ -660,6 +660,9 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <p><a href="START-HERE.html#nfc">简体中文</a></p>
 <p>With compatible ACE firmware, this project synchronizes recognized brand, material, subtype, and color with the U1.</p>
 <p>It receives decoded tag data; it does not add tag decoders to ACE firmware.</p>
+<p><strong>This project has physically verified Bambu brand, filament type, and filament color recognition and synchronization.</strong></p>
+<p>The pinned ACE firmware also reports support for Anycubic and several open tag formats.</p>
+<p><strong>This project has not physically tested those tags.</strong></p>
 <aside class="alert important"><div class="alert-title">IMPORTANT</div>
 <p><strong>ACE and the U1 internal reader are separate systems.</strong></p>
 <p>The tested ACE setup needs no additional Bambu key entry in this project&#x27;s installer.</p>
@@ -687,7 +690,7 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <div class="table"><table><thead><tr><th>Tag brand or format</th><th>Status in the detailed upstream document</th><th>Physical validation in this project</th></tr></thead><tbody>
 <tr><td>Anycubic Gen 1 tags</td><td>Confirmed</td><td>Not tested here.</td></tr>
 <tr><td>Anycubic Gen 2 tags</td><td>Confirmed</td><td>Not tested here.</td></tr>
-<tr><td>Bambu Lab</td><td>Confirmed</td><td>Brand, PLA Matte, and color synchronization confirmed.</td></tr>
+<tr><td>Bambu Lab</td><td>Confirmed</td><td>Brand, filament type, and filament color recognition and synchronization physically verified.</td></tr>
 <tr><td>TigerTag</td><td>Confirmed on ACE Pro Gen 1</td><td>Not tested here.</td></tr>
 <tr><td>OpenSpool</td><td>Confirmed on ACE Pro Gen 1</td><td>Not tested here.</td></tr>
 <tr><td>Elegoo</td><td>Implemented, untested</td><td>Not tested here.</td></tr>
@@ -706,14 +709,22 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <pre><code>
 flowchart LR
     Tag[Spool tag inside ACE] --&gt; Reader[ACE reader and firmware]
-    Reader --&gt; Data[get_filament_info]
-    Data --&gt; Port[Ultimate U1-ACE link]
-    Port --&gt; U1[U1 material data]
+    Reader --&gt; Data[Decoded brand, type, and color]
+    Data --&gt;|USB query response| Port[Integration running on U1]
+    Port --&gt;|Name and format conversion| U1[U1 material data]
     Internal[U1 internal reader] --&gt; OpenRFID[U1 OpenRFID service]
     Keys[Private openrfid_user.cfg] --&gt; OpenRFID
 </code></pre>
-<p>ACE reads the spool inside ACE and sends decoded data through <code>get_filament_info</code>.</p>
-<p>This project writes that data into the U1 material configuration.</p>
+<ol>
+<li>The ACE reader reads the tag. ACE firmware decodes the tag and identifies the material.</li>
+<li>The integration on U1 queries ACE status. It uses <code>get_filament_info</code> to obtain the decoded data for that slot.</li>
+<li>ACE returns fields such as <code>brand</code>, <code>type</code>, RGB <code>color</code>, <code>sku</code>, and the <code>rfid</code> state.</li>
+<li>The integration converts brand names and color formats. It separates the material type and subtype, then writes them with <code>SET_PRINT_FILAMENT_CONFIG</code>.</li>
+</ol>
+<p><strong>U1 requests the information, and ACE returns the decoded result. ACE does not directly edit U1 settings. U1 does not decrypt raw NFC tags in this path.</strong></p>
+<p>For example, ACE can return <code>Bambu Lab</code>, <code>PLA Matte</code>, and an RGB color.</p>
+<p>The integration converts these to <code>Bambu</code>, <code>PLA</code> / <code>Matte</code>, and the U1 color value.</p>
+<p>The <code>rfid</code> field is a recognition state. It is not raw tag data for U1 to decode.</p>
 <p>The U1 internal reader cannot read a spool remotely through the ACE USB connection.</p>
 <p>The U1 OpenRFID service uses its own reader and private configuration.</p>
 <p>Preserving that configuration does not transfer its keys to ACE.</p>

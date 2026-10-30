@@ -8,7 +8,7 @@
 
 ## [安装向导入口：下载、双击、跟着提示操作](docs/quick-start.zh-CN.md)
 
-**[下载 v0.1.3 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
+**[下载 v0.1.4 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
 尚未安装 U1 扩展固件时，在同一向导选择“准备 U1 固件”，自动下载、校验并复制到 U 盘。
 
 ## [手动安装入口：查看源码，逐条执行命令](docs/installation.md)
@@ -36,7 +36,7 @@
 不熟悉下载、解压和双击操作，请看[逐步图文指南](docs/quick-start.zh-CN.md)。
 安装包里的 **START-HERE.html**（中文）和 **START-HERE.en.html**（英文）也可以双击打开，离线阅读。
 
-**v0.1.0、v0.1.1 和 v0.1.2 的原安装包均保留，文件未被新版覆盖。**
+**v0.1.0 至 v0.1.3 的原安装包均保留，文件未被新版覆盖。**
 
 > [!IMPORTANT]
 > **首次更新固件和开启访问权限，仍需在打印机屏幕操作。** 向导会准备文件并逐步引导，不能在尚未开放访问时替你完成屏幕授权。
@@ -104,9 +104,12 @@ U 盘准备不会格式化磁盘，不覆盖内容不同的同名文件。
 
 ## NFC 支持与密钥说明
 
-本项目实测成功的是 **拓竹品牌、PLA Matte 和颜色同步**。
-固定 ACE 固件还支持 Anycubic 和部分开放标签格式，但不能写成所有主流品牌均可读。
+本项目已实测成功：**拓竹品牌、耗材类型和耗材颜色的识别与同步**。
+固定 ACE 固件还支持 Anycubic 和部分开放标签格式，**但本项目尚未实际测试这些标签**；上游支持不等于本项目实测通过。
 **创想三维和 QIDI 在本项目固定 ACE 固件中尚无可用读取实现。**
+
+**读取和解码 NFC 标签由 ACE 完成。** U1 上的适配程序通过 USB 查询 ACE 已识别的材料信息，整理品牌名称、材料类型和颜色格式后写入 U1。
+本项目不会把原始 NFC 标签交给 U1 的 OpenRFID 服务解码。
 
 [NFC 支持表及密钥填写说明](docs/nfc.zh-CN.md)区分了 ACE 与 U1 内置 OpenRFID。
 U1 内置读卡器的私人文件是 `extended/openrfid_user.cfg`；**这里的密钥不会发送给 ACE**。

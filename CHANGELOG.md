@@ -1,5 +1,14 @@
 # Changes
 
+## 0.1.4 — 2026-10-30
+
+This is a documentation correction. Installer behavior and production modules are unchanged.
+
+- State that this project physically verified Bambu brand, filament type, and color recognition and synchronization.
+- Mark Anycubic and open tag formats as not physically tested by this project.
+- Explain that ACE decodes the tags. The U1 integration queries the decoded results and converts them into U1 material settings.
+- Update both languages and the offline guides. Preserve every earlier archive.
+
 ## 0.1.3 — 2026-10-30
 
 ACE firmware preparation is now part of the bilingual Windows workflow.

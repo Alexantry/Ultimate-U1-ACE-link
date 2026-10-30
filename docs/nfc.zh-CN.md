@@ -5,6 +5,9 @@
 本项目把 ACE 已识别的品牌、材料类型、细分类型和颜色同步到 U1。
 识别标签的是 ACE 自己的读卡器和固件；本项目负责接收、转换和保留这些信息。
 
+**本项目已实测成功：拓竹品牌、耗材类型和耗材颜色的识别与同步。**
+固定 ACE 固件还支持 Anycubic 和部分开放标签格式，**但本项目尚未实际测试这些标签**。
+
 > [!IMPORTANT]
 > **ACE 读卡器和 U1 内置读卡器是两套独立系统。**
 > 已验证的 ACE 固件不需要在本项目安装器里额外输入拓竹密钥。
@@ -37,7 +40,7 @@
 | --- | --- | --- |
 | Anycubic 第一代标签 | 已确认 | 本项目未实测。 |
 | Anycubic 第二代标签 | 已确认 | 本项目未实测。 |
-| Bambu Lab／拓竹 | 已确认 | 已确认品牌、PLA Matte 和颜色同步。 |
+| Bambu Lab／拓竹 | 已确认 | 已实测品牌、耗材类型和耗材颜色的识别与同步。 |
 | TigerTag | 已在第一代 ACE 上确认 | 本项目未实测。 |
 | OpenSpool | 已在第一代 ACE 上确认 | 本项目未实测。 |
 | Elegoo／智能派 | 已实现解析，尚未实测 | 本项目未实测。 |
@@ -57,14 +60,21 @@ U1 内置 OpenRFID 的品牌支持表与 ACE 的支持表也不能互相替代�
 ```mermaid
 flowchart LR
     Tag[ACE 中的料卷标签] --> Reader[ACE 读卡器和固件]
-    Reader --> Data[已解码的材料信息]
-    Data --> Port[Ultimate U1-ACE link]
-    Port --> U1[U1 耗材信息]
+    Reader --> Data[已解码的品牌、类型和颜色]
+    Data -->|USB 查询返回| Port[运行在 U1 的适配程序]
+    Port -->|名称和格式转换| U1[U1 耗材信息]
     Internal[U1 内置读卡器] --> OpenRFID[U1 OpenRFID 服务]
     Keys[私人 openrfid_user.cfg] --> OpenRFID
 ```
 
-ACE 通过 `get_filament_info` 把已经解码的数据交给本项目，再由本项目写入 U1 耗材信息。
+1. ACE 的读卡器读取标签，ACE 固件完成标签解码和材料识别。
+2. 运行在 U1 上的适配程序查询 ACE 状态，并通过 `get_filament_info` 获取该槽的已解码信息。
+3. ACE 返回品牌 `brand`、耗材类型 `type`、RGB 颜色 `color`、`sku` 和 `rfid` 状态等字段。
+4. 适配程序统一品牌名称，分开材料类型与细分类型，转换颜色格式，再通过 `SET_PRINT_FILAMENT_CONFIG` 写入 U1。
+
+**这是 U1 查询、ACE 返回识别结果的流程。ACE 不会直接修改 U1 配置；U1 也不在这条路径中解密原始 NFC 标签。**
+例如，ACE 返回 `Bambu Lab`、`PLA Matte` 和 RGB 颜色后，适配程序把它们整理成 `Bambu`、`PLA`／`Matte` 和 U1 使用的颜色值。
+这里的 `rfid` 是识别状态字段，不是供 U1 解码的原始标签内容。
 U1 内置读卡器不会通过 USB 去读取 ACE 里面的料卷。
 
 U1 的 OpenRFID 服务使用自己的读卡器和配置文件。

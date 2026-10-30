@@ -36,7 +36,7 @@ Follow [the bilingual ACE prompts](ace-wizard.md); no shell commands or device-p
 
 ## Install with the launcher
 
-1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip).
+1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip).
 2. Right-click the ZIP in your Downloads folder.
 3. Select Extract All.
 4. Open the extracted `Ultimate-U1-ACE-link` folder.

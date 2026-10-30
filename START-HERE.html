@@ -276,10 +276,10 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>你无需先寻找这个选项。</p>
 <h3 id="1-下载">1. 下载</h3>
 <ol>
-<li>点开<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip">下载安装包</a>。</li>
+<li>点开<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip">下载安装包</a>。</li>
 <li>等待浏览器下载完成。</li>
 <li>打开电脑的“下载”文件夹。</li>
-<li>找到名称含 <code>Ultimate-U1-ACE-link-v0.1.3</code> 的压缩文件。</li>
+<li>找到名称含 <code>Ultimate-U1-ACE-link-v0.1.4</code> 的压缩文件。</li>
 </ol>
 <h3 id="2-解压">2. 解压</h3>
 <ol>
@@ -870,6 +870,8 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <p><a href="START-HERE.en.html#nfc">English</a></p>
 <p>本项目把 ACE 已识别的品牌、材料类型、细分类型和颜色同步到 U1。</p>
 <p>识别标签的是 ACE 自己的读卡器和固件；本项目负责接收、转换和保留这些信息。</p>
+<p><strong>本项目已实测成功：拓竹品牌、耗材类型和耗材颜色的识别与同步。</strong></p>
+<p>固定 ACE 固件还支持 Anycubic 和部分开放标签格式，<strong>但本项目尚未实际测试这些标签</strong>。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
 <p><strong>ACE 读卡器和 U1 内置读卡器是两套独立系统。</strong></p>
 <p>已验证的 ACE 固件不需要在本项目安装器里额外输入拓竹密钥。</p>
@@ -895,7 +897,7 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <div class="table"><table><thead><tr><th>标签品牌或格式</th><th>上游详细文档的状态</th><th>本项目的实机验证</th></tr></thead><tbody>
 <tr><td>Anycubic 第一代标签</td><td>已确认</td><td>本项目未实测。</td></tr>
 <tr><td>Anycubic 第二代标签</td><td>已确认</td><td>本项目未实测。</td></tr>
-<tr><td>Bambu Lab／拓竹</td><td>已确认</td><td>已确认品牌、PLA Matte 和颜色同步。</td></tr>
+<tr><td>Bambu Lab／拓竹</td><td>已确认</td><td>已实测品牌、耗材类型和耗材颜色的识别与同步。</td></tr>
 <tr><td>TigerTag</td><td>已在第一代 ACE 上确认</td><td>本项目未实测。</td></tr>
 <tr><td>OpenSpool</td><td>已在第一代 ACE 上确认</td><td>本项目未实测。</td></tr>
 <tr><td>Elegoo／智能派</td><td>已实现解析，尚未实测</td><td>本项目未实测。</td></tr>
@@ -912,13 +914,21 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <pre><code>
 flowchart LR
     Tag[ACE 中的料卷标签] --&gt; Reader[ACE 读卡器和固件]
-    Reader --&gt; Data[已解码的材料信息]
-    Data --&gt; Port[Ultimate U1-ACE link]
-    Port --&gt; U1[U1 耗材信息]
+    Reader --&gt; Data[已解码的品牌、类型和颜色]
+    Data --&gt;|USB 查询返回| Port[运行在 U1 的适配程序]
+    Port --&gt;|名称和格式转换| U1[U1 耗材信息]
     Internal[U1 内置读卡器] --&gt; OpenRFID[U1 OpenRFID 服务]
     Keys[私人 openrfid_user.cfg] --&gt; OpenRFID
 </code></pre>
-<p>ACE 通过 <code>get_filament_info</code> 把已经解码的数据交给本项目，再由本项目写入 U1 耗材信息。</p>
+<ol>
+<li>ACE 的读卡器读取标签，ACE 固件完成标签解码和材料识别。</li>
+<li>运行在 U1 上的适配程序查询 ACE 状态，并通过 <code>get_filament_info</code> 获取该槽的已解码信息。</li>
+<li>ACE 返回品牌 <code>brand</code>、耗材类型 <code>type</code>、RGB 颜色 <code>color</code>、<code>sku</code> 和 <code>rfid</code> 状态等字段。</li>
+<li>适配程序统一品牌名称，分开材料类型与细分类型，转换颜色格式，再通过 <code>SET_PRINT_FILAMENT_CONFIG</code> 写入 U1。</li>
+</ol>
+<p><strong>这是 U1 查询、ACE 返回识别结果的流程。ACE 不会直接修改 U1 配置；U1 也不在这条路径中解密原始 NFC 标签。</strong></p>
+<p>例如，ACE 返回 <code>Bambu Lab</code>、<code>PLA Matte</code> 和 RGB 颜色后，适配程序把它们整理成 <code>Bambu</code>、<code>PLA</code>／<code>Matte</code> 和 U1 使用的颜色值。</p>
+<p>这里的 <code>rfid</code> 是识别状态字段，不是供 U1 解码的原始标签内容。</p>
 <p>U1 内置读卡器不会通过 USB 去读取 ACE 里面的料卷。</p>
 <p>U1 的 OpenRFID 服务使用自己的读卡器和配置文件。</p>
 <p>安装器保留该配置文件，不等于把里面的密钥传给了 ACE。</p>

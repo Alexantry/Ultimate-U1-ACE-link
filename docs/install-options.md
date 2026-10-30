@@ -57,6 +57,14 @@ Each version has its own archive name.
 The archive also includes `PACKAGE-SHA256SUMS` for its source files.
 A matching hash checks file integrity; it does not replace source review or hardware validation.
 
+## Retained v0.1.3
+
+- [Download the unchanged v0.1.3 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/4229c6fd384e1821268d2d61f7c2d2992bc91a9e/downloads/Ultimate-U1-ACE-link-v0.1.3.zip).
+- [Read its fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/4229c6fd384e1821268d2d61f7c2d2992bc91a9e).
+
+SHA-256: `03de055d1c38d430f83817d5687c73dc387a3f282a2c4329df0b8ce882349e39`.
+The current documentation revision uses the same installer behavior and production modules.
+
 ## Retained v0.1.2
 
 - [Download the unchanged v0.1.2 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/2407650dd4d5ae2fea810c4bcb8b4c81114938d6/downloads/Ultimate-U1-ACE-link-v0.1.2.zip).
@@ -100,5 +108,6 @@ SHA-256:
 原来的 **v0.1.0** 安装包、校验值和对应说明已经保留在上方固定链接中，文件未被新版覆盖。
 **v0.1.1** 也保留原样。最新版增加 U1 固件准备，不会覆盖这两个旧压缩包。
 **v0.1.2** 同样保留原样。最新版增加 ACE 引导更新，不会改变之前的安装包。
+**v0.1.3** 也保留原样。v0.1.4 仅更正说明，安装器行为及生产模块不变。
 旧版需自己设置 **External**；新版安装器会自动设置并检查。
 请使用同一版本的文件与说明，不要混装。

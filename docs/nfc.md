@@ -5,6 +5,10 @@
 With compatible ACE firmware, this project synchronizes recognized brand, material, subtype, and color with the U1.
 It receives decoded tag data; it does not add tag decoders to ACE firmware.
 
+**This project has physically verified Bambu brand, filament type, and filament color recognition and synchronization.**
+The pinned ACE firmware also reports support for Anycubic and several open tag formats.
+**This project has not physically tested those tags.**
+
 > [!IMPORTANT]
 > **ACE and the U1 internal reader are separate systems.**
 > The tested ACE setup needs no additional Bambu key entry in this project's installer.
@@ -39,7 +43,7 @@ The Anycubic generation labels describe tag variants, not the required ACE hardw
 | --- | --- | --- |
 | Anycubic Gen 1 tags | Confirmed | Not tested here. |
 | Anycubic Gen 2 tags | Confirmed | Not tested here. |
-| Bambu Lab | Confirmed | Brand, PLA Matte, and color synchronization confirmed. |
+| Bambu Lab | Confirmed | Brand, filament type, and filament color recognition and synchronization physically verified. |
 | TigerTag | Confirmed on ACE Pro Gen 1 | Not tested here. |
 | OpenSpool | Confirmed on ACE Pro Gen 1 | Not tested here. |
 | Elegoo | Implemented, untested | Not tested here. |
@@ -61,15 +65,22 @@ The supported OpenRFID formats on the U1 internal reader are a different compati
 ```mermaid
 flowchart LR
     Tag[Spool tag inside ACE] --> Reader[ACE reader and firmware]
-    Reader --> Data[get_filament_info]
-    Data --> Port[Ultimate U1-ACE link]
-    Port --> U1[U1 material data]
+    Reader --> Data[Decoded brand, type, and color]
+    Data -->|USB query response| Port[Integration running on U1]
+    Port -->|Name and format conversion| U1[U1 material data]
     Internal[U1 internal reader] --> OpenRFID[U1 OpenRFID service]
     Keys[Private openrfid_user.cfg] --> OpenRFID
 ```
 
-ACE reads the spool inside ACE and sends decoded data through `get_filament_info`.
-This project writes that data into the U1 material configuration.
+1. The ACE reader reads the tag. ACE firmware decodes the tag and identifies the material.
+2. The integration on U1 queries ACE status. It uses `get_filament_info` to obtain the decoded data for that slot.
+3. ACE returns fields such as `brand`, `type`, RGB `color`, `sku`, and the `rfid` state.
+4. The integration converts brand names and color formats. It separates the material type and subtype, then writes them with `SET_PRINT_FILAMENT_CONFIG`.
+
+**U1 requests the information, and ACE returns the decoded result. ACE does not directly edit U1 settings. U1 does not decrypt raw NFC tags in this path.**
+For example, ACE can return `Bambu Lab`, `PLA Matte`, and an RGB color.
+The integration converts these to `Bambu`, `PLA` / `Matte`, and the U1 color value.
+The `rfid` field is a recognition state. It is not raw tag data for U1 to decode.
 The U1 internal reader cannot read a spool remotely through the ACE USB connection.
 
 The U1 OpenRFID service uses its own reader and private configuration.

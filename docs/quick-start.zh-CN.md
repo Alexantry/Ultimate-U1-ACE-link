@@ -34,10 +34,10 @@ ACE 固件检查、下载校验及受支持的刷写，已纳入后续双语向�
 
 ## 1. 下载
 
-1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip)。
+1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip)。
 2. 等待浏览器下载完成。
 3. 打开电脑的“下载”文件夹。
-4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.3` 的压缩文件。
+4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.4` 的压缩文件。
 
 ## 2. 解压
 

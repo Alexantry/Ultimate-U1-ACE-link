@@ -79,7 +79,8 @@ def main():
     for previous, previous_hash in [
             ('0.1.0', '81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e'),
             ('0.1.1', 'f684badeac36d7a66d47ed65c04ae0ec278e5731a5289aabaa8a7c521e86b497'),
-            ('0.1.2', '2663853d3bab97efa09b579b110af099e852ffd7aee06d3afe105ea73e8a5c1c')]:
+            ('0.1.2', '2663853d3bab97efa09b579b110af099e852ffd7aee06d3afe105ea73e8a5c1c'),
+            ('0.1.3', '03de055d1c38d430f83817d5687c73dc387a3f282a2c4329df0b8ce882349e39')]:
         retained = out / ('Ultimate-U1-ACE-link-v' + previous + '.zip')
         if retained.exists():
             assert hashlib.sha256(retained.read_bytes()).hexdigest() == previous_hash, 'Retained v' + previous + ' changed'

@@ -6,7 +6,7 @@ Unload to ACE, keep material information, and reduce loose loops with calibrated
 
 **Built with OpenAI Codex. You do not need Codex, programming knowledge, or an API key to install this project.**
 
-[简体中文](README.zh-CN.md) · [Download v0.1.3 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip) · [SHA-256](downloads/SHA256SUMS)
+[简体中文](README.zh-CN.md) · [Download v0.1.4 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.4.zip) · [SHA-256](downloads/SHA256SUMS)
 
 ## [GUIDED INSTALLATION — start here](docs/quick-start.md)
 
@@ -108,10 +108,13 @@ See [tube measurement and parameter editing](docs/configuration.md), [daily oper
 
 ## NFC support and keys
 
-**Bambu brand, PLA Matte, and color were confirmed in this project.**
+**This project has physically verified Bambu brand, filament type, and filament color recognition and synchronization.**
 The pinned ACE firmware also reports support for Anycubic and several open tag formats.
-This is not a claim that every mainstream brand works.
+**This project has not physically tested those tags.** Upstream support is separate from this project's test results.
 **Creality and QIDI are not usable decoders in the pinned ACE release.**
+
+**ACE reads and decodes the NFC tag.** The integration on U1 queries the decoded material data through USB.
+It converts names and data formats, then writes the U1 material settings. This path does not use U1 OpenRFID to decode raw tags.
 
 Read the [brand support table and key-entry instructions](docs/nfc.md).
 The separate U1 internal-reader file is `extended/openrfid_user.cfg`.
