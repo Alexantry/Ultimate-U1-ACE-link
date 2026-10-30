@@ -25,7 +25,8 @@
 
 发布页标签 `v1.0.2` 和固件内部版本 `1.1.1` 不是同一种版本编号，因此同时出现是正常的。
 需要准备 ACE 固件时，按[双语 ACE 固件向导](ace-wizard.zh-CN.md)操作即可。
-[手动固件步骤](ace-firmware.md)仍保留，供选择源码维护的用户使用。不能把 ACE 2 的镜像刷入第一代 ACE。
+选择手动安装时，从[中文手动指南的 ACE 步骤](installation.zh-CN.md#ace-firmware)开始。
+[高级固件维护参考（英文）](ace-firmware.md)仍保留，供需要逐项检查维护工具的用户使用。不能把 ACE 2 的镜像刷入第一代 ACE。
 
 OpenCubic 在 ACE 内部处理受支持的标签格式。
 本安装流程没有需要用户提供 NFC 密钥的步骤。
@@ -157,4 +158,4 @@ U1 正确显示品牌，也不保证切片软件中存在同名材料预设。
 | 固定 ACE 固件读不出 QIDI 或 Creality | 使用手填材料；这些标签的解码尚未实现。 |
 | U1 显示拓竹，切片软件不显示 | 单独检查切片软件的材料预设和显示限制。 |
 
-更多信息见[故障排查](troubleshooting.md)和[实机验证范围](validation.md)。
+更多信息见[故障排查](troubleshooting.zh-CN.md)和[实机验证范围](validation.md)。

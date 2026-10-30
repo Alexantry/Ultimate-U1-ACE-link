@@ -26,7 +26,8 @@ The pinned ACE firmware also reports support for Anycubic and several open tag f
 
 The release name `v1.0.2` and embedded CFW version `1.1.1` identify different parts of the release.
 Use [the bilingual ACE firmware wizard](ace-wizard.md) to prepare the supported version.
-The [manual firmware procedure](ace-firmware.md) remains available for source-based maintenance.
+For manual installation, start with [the ACE stage in the manual guide](installation.md#ace-firmware).
+The [advanced firmware procedure](ace-firmware.md) remains an optional maintenance reference.
 Do not use an ACE 2 firmware image on ACE Pro Gen 1.
 
 OpenCubic handles the supported tag formats inside ACE.

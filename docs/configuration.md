@@ -40,6 +40,8 @@ Use [Apply changed settings](#apply-changed-settings) for an intentional change.
 Both templates have `calibrated_acknowledged: false`.
 Review your physical lengths and speeds before changing it to `true`.
 The acknowledgement does not measure or test your tubes.
+For a first installation, it confirms review of the initial settings.
+Complete the physical checks after installation, before normal printing.
 
 | Setting | Reference value | Meaning |
 | --- | --- | --- |
@@ -165,6 +167,14 @@ If the four paths have no safe common setting, correct the tube arrangement befo
 
 ### Choose and check the first values
 
+**You do not need to complete an ACE transport test before installing the integration.**
+There are two separate stages:
+
+| Stage | What you do | When you can continue |
+| --- | --- | --- |
+| Before installation | Record the four routes and the intended ACE-side parking point. Review initial A and B; keep C = 0. | You can explain where the tip will remain and where fast travel must end. Unknown dimensions are resolved. |
+| After installation | Use the U1 screen to test Load, Unload, then Load on one slot. Inspect the stopped tip and record the result. | The first slot passes; then repeat on the other three slots before normal printing. |
+
 Start from recorded, working values for your arrangement, when available.
 Measurements help assess clearance. They do not establish an exact A by themselves.
 If the path or parking point is unknown, resolve it before entering an unverified long return.
@@ -174,7 +184,7 @@ You can exit the first-installation wizard without installing.
 2. Keep fast speed `200`, approach speed `50`, and return speed `80`.
 3. Choose B short enough to leave a slow approach before the head.
 4. Choose A to return the tip to the recorded ACE-side parking point.
-5. Apply the values below, or enter A and B during first installation.
+5. Enter the reviewed A and B during first installation. For later changes, use the procedure below.
 6. Test one slot with the U1's normal Load, Unload, and Load actions.
 7. Wait for each action to finish before selecting the next action.
 8. Record the final tip position, head state, inlet state, and loose filament.
@@ -264,12 +274,24 @@ $PrinterAddress = Read-Host "Printer IP from the Wi-Fi page"
 $PrinterTarget = "root@$PrinterAddress"
 $RemoteDir = "/userdata/ultimate-u1-ace-tuning-" + (Get-Date -Format "yyyyMMdd-HHmmss")
 Get-Command ssh, scp
-scp -O -r "$ProjectDir" "${PrinterTarget}:$RemoteDir"
+$UploadDir = Join-Path ([IO.Path]::GetTempPath()) ("U1AceSettings-" + [guid]::NewGuid().ToString('N'))
+$PublicFiles = @('installer.py', 'manifest.json', 'LICENSE', 'THIRD_PARTY.md', 'SOURCES.json',
+    'payload/ace.py', 'payload/filament_feed.py', 'payload/filament_detect.py', 'payload/extruder.py',
+    'tools/ace_usb/wizard_backend.py', 'tools/ace_usb/ace_iap.py', 'tools/ace_usb/protocol.py',
+    'tools/ace_usb/prepare_profile.py', 'tools/ace_usb/fetch_firmware.py',
+    'tools/ace_usb/images.json', 'tools/ace_usb/device-profile.json', 'config/settings.example.json')
+foreach ($Name in $PublicFiles) {
+    $Destination = Join-Path $UploadDir $Name
+    New-Item -ItemType Directory -Force -Path (Split-Path $Destination -Parent) | Out-Null
+    Copy-Item -LiteralPath (Join-Path $ProjectDir $Name) -Destination $Destination -ErrorAction Stop
+}
+scp -O -r "$UploadDir" "${PrinterTarget}:$RemoteDir"
 if ($LASTEXITCODE -ne 0) { throw "Upload failed. Stop here." }
 ```
 
 Enter the root password when requested. SSH does not display password characters.
 Verify new host-key prompts with the [connection instructions](installation.md#confirm-the-connection).
+The temporary upload folder contains only the listed public files, not your backups or local configuration.
 
 ### 2. Export the current settings
 

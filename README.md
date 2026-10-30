@@ -6,7 +6,7 @@ Unload to ACE, keep material information, and reduce loose loops with calibrated
 
 **Built with OpenAI Codex. You do not need Codex, programming knowledge, or an API key to install this project.**
 
-[简体中文](README.zh-CN.md) · [Download v0.1.5 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip) · [SHA-256](downloads/SHA256SUMS)
+[简体中文](README.zh-CN.md) · [Download v0.1.6 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip) · [SHA-256](downloads/SHA256SUMS)
 
 ## [GUIDED INSTALLATION — start here](docs/quick-start.md)
 
@@ -17,6 +17,7 @@ The same wizard can prepare the required U1 firmware on a USB drive and guide th
 
 **This is a complete alternative to the Windows wizard.** No launcher or closed EXE is required.
 You still run the readable `installer.py` on the printer.
+[中文手动步骤](docs/installation.zh-CN.md) · Offline English manual: **MANUAL-INSTALL.html**.
 [Compare methods and retained releases](docs/install-options.md).
 
 > [!CAUTION]
@@ -27,15 +28,17 @@ You still run the readable `installer.py` on the printer.
 
 ## First installation in one guided workflow
 
-1. Prepare the Gen 1 cable and four PTFE paths with the [SnapAce hardware guide](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring).
+1. Finish printing. For a first installation, unload normally and remove filament from all four heads and ACE inlets. Turn off heating and drying, then allow cooling. Remove power before preparing the Gen 1 cable and four PTFE paths with the [SnapAce hardware guide](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring). Reconnect power only after assembly. See the [preparation steps](docs/quick-start.md#1-prepare-before-an-update-or-installation).
 2. Download and extract this project's ZIP. Double-click **START-HERE.cmd**.
 3. Select the U1 preparation path if the required firmware is not installed.
 4. Let the wizard download, verify, and copy the exact U1 firmware to a suitable USB drive.
 5. Follow its printer-screen steps for Local Update, Advanced Mode, and Root Access.
 6. Enter the printer address and password. Follow the ACE firmware stage if needed.
-7. Review tube distances and confirm host installation. Wait for success, then perform the guided physical checks.
+7. Review the initial tube settings and confirm host installation. Wait for success, then check one slot. Verify the other three slots before normal printing.
 
 Open **START-HERE.html** or **START-HERE.en.html** for illustrated offline instructions.
+Both languages also have an offline manual. The wizard requires no typed commands or configuration editing.
+Wiring, physical measurements, and printer-screen confirmations remain manual tasks.
 All earlier release archives remain unchanged.
 
 > [!IMPORTANT]
@@ -55,7 +58,7 @@ All earlier release archives remain unchanged.
 | Find the ACE interface or preserve the existing one | Enter the printer address and SSH password. |
 | Set **Filament Detection → External** | Review the physical distances for a new installation. |
 | Save backups and configure persistence | Keep the machine idle and cold. |
-| Install modules and verify the result | Check one slot after installation. |
+| Install modules and verify the result | Check one slot, then the other three, before normal printing. |
 
 The actual reader option is **External**, not a setting named extended.
 The installer also disables the internal reader path and verifies the configuration.

@@ -163,6 +163,14 @@ A 的起算点是 **U1 已完成热端释放之后**，不是软尺的一端。
 
 ### 初次校准顺序
 
+**不是要求你先装好并测试，再回来安装。** 这分成两步：
+
+| 时间 | 你需要做什么 | 什么时候进入下一步 |
+| --- | --- | --- |
+| 安装前 | 记录四路路线、ACE 后方的预定停留点；审查初始 A、B，C 保持 0。 | 已明确线材退到哪里、快速送料在哪之前结束，未知的路径尺寸已查清。 |
+| 安装后 | 在 U1 屏幕对一槽依次进料、退料、再进料；停止后检查尖端并记录结果。 | 第一槽通过后，再逐槽检查另外三槽；全部通过后才正常打印。 |
+
+向导中的参数确认只表示你审查了初始值，**不表示软件已经量管或完成实机校准**。
 已有同一管路的正常记录时，以记录中的参数为起点。
 软尺测量用于判断余量，不能单独证明某个 A 一定合适。
 如果还不清楚尖端应停在哪里、路线到底多长，先查清，不要猜长回抽值。
@@ -172,7 +180,7 @@ A 的起算点是 **U1 已完成热端释放之后**，不是软尺的一端。
 2. 保持快速送料 `200`、接近喷头 `50`、主回抽 `80`。
 3. B 先选较保守的长度，保证到喷头前还有慢速接近过程。
 4. A 以“退完仍留在 ACE 后管内的记录位置”为目标。
-5. 首装在向导填 A／B；已安装按下文流程应用新值。
+5. 首装在向导填已审查的 A／B；后续调整按下文流程应用新值。
 6. 先测试一个槽：在 U1 屏幕依次“进料 → 退料 → 再进料”。
 7. 每一步等它正常完成，再点下一步。
 8. 记录尖端位置、喷头有无料、ACE 入口有无料以及料盘松圈。
@@ -248,7 +256,7 @@ C 越大，尖端越往喷头方向前进，停留余量越少。
 ### 第一步：准备机器和解压目录
 
 1. 结束打印和所有进退料动作。
-2. 按[安装前准备](installation.md#5-check-before-installation)让机器处于可更新状态。
+2. 按[安装前准备](installation.zh-CN.md#5-check-before-installation)让机器处于可更新状态。
 3. 喷嘴、热床目标温度设为 0，实际温度降到 50 °C 以下。
 4. 关闭 ACE 烘干和辅助送料，原有耗材位置不要随意改动。
 5. 打开支持当前已安装版本的完整项目解压文件夹。
@@ -265,14 +273,26 @@ $PrinterAddress = Read-Host "Printer IP from the Wi-Fi page"
 $PrinterTarget = "root@$PrinterAddress"
 $RemoteDir = "/userdata/ultimate-u1-ace-tuning-" + (Get-Date -Format "yyyyMMdd-HHmmss")
 Get-Command ssh, scp
-scp -O -r "$ProjectDir" "${PrinterTarget}:$RemoteDir"
+$UploadDir = Join-Path ([IO.Path]::GetTempPath()) ("U1AceSettings-" + [guid]::NewGuid().ToString('N'))
+$PublicFiles = @('installer.py', 'manifest.json', 'LICENSE', 'THIRD_PARTY.md', 'SOURCES.json',
+    'payload/ace.py', 'payload/filament_feed.py', 'payload/filament_detect.py', 'payload/extruder.py',
+    'tools/ace_usb/wizard_backend.py', 'tools/ace_usb/ace_iap.py', 'tools/ace_usb/protocol.py',
+    'tools/ace_usb/prepare_profile.py', 'tools/ace_usb/fetch_firmware.py',
+    'tools/ace_usb/images.json', 'tools/ace_usb/device-profile.json', 'config/settings.example.json')
+foreach ($Name in $PublicFiles) {
+    $Destination = Join-Path $UploadDir $Name
+    New-Item -ItemType Directory -Force -Path (Split-Path $Destination -Parent) | Out-Null
+    Copy-Item -LiteralPath (Join-Path $ProjectDir $Name) -Destination $Destination -ErrorAction Stop
+}
+scp -O -r "$UploadDir" "${PrinterTarget}:$RemoteDir"
 if ($LASTEXITCODE -ne 0) { throw "Upload failed. Stop here." }
 ```
 
 看到 `Printer IP from the Wi-Fi page` 时，输入你自己的 U1 Wi-Fi 页面显示的 IP。
 不要输入 `http://`，也不要照抄别人的 IP。
 要求密码时输入打印机 root 密码；输入时不显示字符是正常现象。
-首次主机密钥提示请按[连接核对说明](installation.md#confirm-the-connection)确认打印机身份。
+首次主机密钥提示请按[连接核对说明](installation.zh-CN.md#confirm-the-connection)确认打印机身份。
+临时上传目录只包含列表中的公开文件，不复制你的备份或本地私人配置。
 找不到 `ssh` 或 `scp` 时，先按安装说明启用 Windows“OpenSSH 客户端”。
 
 ### 第二步：导出机器当前实际参数
@@ -358,4 +378,4 @@ if ($LASTEXITCODE -ne 0) { throw "Verification failed. Do not start a transport 
 确认实际参数正确后，再按上文四槽表进行实机检查。
 安装器重启 Klipper 并验证已加载配置，因此首次进料可能因起点未知而全程慢速。
 它会保留 NFC 私有配置，并检查已有材料信息。
-安装失败先看自动回滚结果，需要恢复时参考[更新与回滚](update-and-rollback.md)。
+安装失败先看自动回滚结果，需要恢复时参考[更新与回滚](update-and-rollback.zh-CN.md)。

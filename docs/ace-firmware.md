@@ -1,4 +1,4 @@
-# ACE Gen1 firmware: guided or manual preparation
+# ACE Gen1 firmware: advanced protocol maintenance
 
 **[Use the bilingual ACE firmware wizard](ace-wizard.md) · [中文向导说明](ace-wizard.zh-CN.md)**
 
@@ -6,10 +6,14 @@ The Windows wizard now handles downloads, checks, private profiles, and the supp
 First-time users can follow its prompts before host integration. No shell commands or profile editing are required.
 The standalone `installer.py` still installs host integration only; ACE maintenance uses a separate controlled backend.
 
-## Manual alternative
+## Choose the correct procedure
 
-The detailed command procedure below remains available for source review and manual maintenance.
-Do not run this manual procedure at the same time as a guided update.
+For normal command-by-command installation, use [manual installation, ACE firmware step](installation.md#ace-firmware) or [中文手动安装](installation.zh-CN.md#ace-firmware).
+That route uses the controlled backend. It requires no device-profile editing.
+
+The detailed procedure below is an **advanced alternative** for source review and protocol maintenance.
+It includes private profiles and low-level commands. New users do not need it.
+Do not run it during a wizard or controlled-backend transaction. Do not mix the two transaction methods.
 
 **Skip flashing when the intended OpenCubic Gen1 build already runs and NFC works.** A reported version alone does not identify every community build.
 

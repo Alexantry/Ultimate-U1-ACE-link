@@ -5,6 +5,8 @@
 The Windows wizard prepares ACE firmware before the host integration.
 You do not need to type commands, edit a device profile, or install Python on Windows.
 The U1 runs the maintenance tools through its existing SSH access.
+OpenCubic adds the [supported NFC formats](nfc.md) to ACE.
+For those formats, you do not need to find or enter NFC keys.
 
 > [!IMPORTANT]
 > **Use this workflow only with ACE Pro Gen 1. It does not support ACE 2 Pro.**
@@ -45,12 +47,16 @@ An old success record alone does not verify the currently connected ACE.
 
 ## Before you start
 
-1. Complete the U1 preparation path if required.
-2. Connect the verified ACE Gen 1 USB cable and the four PTFE paths.
-3. Finish printing and all filament operations.
-4. Turn off heating and drying. Let all printer heaters cool below 50 °C.
-5. Keep ACE power and its USB cable connected.
-6. Keep hands clear of the rollers during firmware maintenance and restart.
+1. Finish printing and all filament operations.
+2. For a first project installation, unload all four U1 heads. Remove filament from all four ACE inlets.
+3. Turn off heating and drying. Let all printer heaters cool below 50 °C after unloading.
+4. Turn off both devices before connecting hardware. Connect the verified ACE Gen 1 USB cable and the four PTFE paths. Then turn the devices on.
+5. Complete [U1 preparation](u1-preparation.md) if required. Confirm Advanced Mode is on and Root Access is Open.
+6. Keep ACE power and its USB cable connected during maintenance.
+7. Keep hands clear of the rollers during firmware maintenance and restart.
+
+An update of an existing project installation does not require empty inlets.
+It still requires idle, cold equipment, with heating and drying off.
 
 The program checks idle state, heater targets, temperatures, dryer state, and serial ownership.
 It does not issue load or unload commands to make a failed check pass.
@@ -60,18 +66,24 @@ Use the normal printer controls to finish an active operation before retrying pr
 ## Follow the prompts
 
 1. Extract the complete project ZIP.
-2. Double-click **START-HERE.cmd**.
-3. Select English or Chinese.
-4. For a new installation, follow the ACE firmware stage when it appears.
-5. To maintain ACE separately, select the ACE firmware option in the main menu.
-6. Enter the printer address and SSH password when requested.
-7. Read any previous-update result before starting new maintenance.
-8. Confirm the displayed preparation conditions.
-9. Wait while the tool downloads, verifies, and checks the device.
-10. Read the detected hardware, source version, boot version, and target.
-11. Confirm one firmware update only if the displayed combination is correct.
-12. Keep power connected and wait for the verified result.
-13. Continue with host integration when the wizard offers it.
+2. Double-click **START-HERE.cmd**. Select English or Chinese.
+3. Select the task from the table below.
+4. Enter the printer's current IP address and SSH root password when requested. See [connection instructions](quick-start.md#4-enter-the-connection-information).
+5. Read any saved result from an earlier ACE update before new maintenance.
+6. Confirm the displayed preparation conditions.
+7. Wait while the tool downloads, verifies, and checks the device.
+8. Read the displayed source version, boot version, and target. Confirm that your device is ACE Pro Gen 1.
+9. Confirm one firmware update only if the displayed combination is correct.
+10. Keep power connected and wait for the verified result.
+
+| Task | Main menu choice | After ACE completes |
+| --- | --- | --- |
+| Install this project on a prepared U1 | **1. U1 is ready** | Continue to the host integration steps in the same window. |
+| Prepare U1 first, then install this project | **2. Prepare U1 firmware USB** | Complete the U1 screen steps, then continue through ACE and host integration. |
+| Maintain ACE only, or inspect the last ACE result | **4. ACE firmware** | Complete ACE maintenance. To install host integration, reopen the wizard and select menu 1. |
+
+You do not need to complete a separate manual ACE installation before menu 1 or 2.
+Menu 3 opens the manual instructions in the selected language and exits.
 
 Preparation temporarily stops Klipper to obtain exclusive ACE access.
 It restores and checks printer readiness after a completed probe-only operation.
@@ -82,13 +94,14 @@ That worker can continue if the computer's SSH connection is lost.
 > **Do not start a second update because progress stopped appearing on the computer.**
 > **Do not disconnect ACE power during an active write.**
 > Reopen the wizard from **the same package version** and use menu **4** to read the last result.
-> It reads the existing transaction instead of repeating the write.
+> When a transaction exists, this path reads its saved result. It does not automatically repeat the write.
 
 ## What counts as success?
 
-The tool must observe the expected runtime transition and consecutive ready responses.
+After a firmware write, the tool must observe the expected runtime transition and consecutive ready responses.
 It must then restore Klipper and check the U1 configuration, sensors, and retained material data.
-Only a complete success result permits the guided workflow to continue.
+An update must reach complete success before host installation can continue.
+If the correct firmware was already installed, use the confirmed-build path instead of another write.
 
 New NFC decoding can change a nonempty brand, type, or color, such as Generic becoming Bambu.
 The wizard shows such changes and asks you to compare them with the installed spools before host installation.
@@ -97,9 +110,10 @@ Loss of previously available material data is not treated as a successful preser
 
 These checks are not a full firmware readback or a measurement of ACE internal calibration.
 They do not prove every NFC format works.
-After host installation, complete one supervised [load → unload → reload check](daily-use.md).
+After host installation, complete a supervised [load → unload → reload check](daily-use.md) for each slot, one slot at a time.
 Compare a supported tag's brand, material, and color with its spool label.
 Keep your calibrated tube settings; a firmware update does not measure a new tube path.
+For a first installation, review initial distances before installation and verify them with these four-slot tests.
 
 ## If preparation or updating stops
 
@@ -120,6 +134,10 @@ Confirm that recovery once. Wait for it to check ACE and restore the service.
 This option does not flash firmware. It is unavailable after a write was attempted.
 Cases outside the validated path can require the [manual maintenance and recovery procedure](ace-firmware.md#uncertain-results-and-recovery).
 Do not edit stored evidence to bypass a refusal.
+
+**ACE firmware success is not host integration success.**
+If the later host installation fails, follow [host update and rollback](update-and-rollback.md).
+`Automatic rollback VERIFIED` refers to host files and services. It does not mean ACE firmware was restored.
 
 Private transaction records stay on the printer.
 They are stored below `/userdata/ultimate-u1-ace-link/ace-firmware/`.

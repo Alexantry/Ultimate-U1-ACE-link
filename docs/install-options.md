@@ -7,7 +7,8 @@ Neither method requires Codex or an API key.
 ## [MANUAL INSTALLATION — open the complete procedure](installation.md)
 
 You can also open **MANUAL-INSTALL.html** in the extracted package.
-It contains the same English command procedure and does not execute it.
+For Chinese, use [the Chinese manual](installation.zh-CN.md) or **MANUAL-INSTALL.zh-CN.html**.
+Both files contain the matching step-by-step instructions and copyable commands. Opening a manual does not execute it.
 The wizard has a separate manual-guide menu entry.
 
 ## [GUIDED INSTALLATION — use bilingual prompts](quick-start.md)
@@ -57,14 +58,24 @@ Each version has its own archive name.
 The archive also includes `PACKAGE-SHA256SUMS` for its source files.
 A matching hash checks file integrity; it does not replace source review or hardware validation.
 
+## Retained v0.1.5
+
+- [Download the unchanged v0.1.5 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/55bb1ee475ddc0c0f3904b5a0d51b4af1b37ed32/downloads/Ultimate-U1-ACE-link-v0.1.5.zip).
+- [Read its fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/55bb1ee475ddc0c0f3904b5a0d51b4af1b37ed32).
+
+SHA-256: `9aefb03d418bed99735736d8ed13a96fa3706faaf13fc163b453683913be503c`.
+Version 0.1.5 removed unrelated NFC key-entry guidance and credited OpenCubic's format support.
+Version 0.1.6 adds a complete Chinese manual, recovery guidance, and clearer wizard task boundaries.
+The production transport and NFC modules are unchanged.
+
 ## Retained v0.1.4
 
 - [Download the unchanged v0.1.4 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/c3cab67b49157fea251d44ac720ee00043b8f850/downloads/Ultimate-U1-ACE-link-v0.1.4.zip).
 - [Read its fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/c3cab67b49157fea251d44ac720ee00043b8f850).
 
 SHA-256: `9ab8c4ff1b0ef2f6319f7478a684ffec381ab21c2a666f0e7f3ea27e22b8a6e1`.
-The current release removes key-entry guidance that is not needed for the OpenCubic ACE workflow.
-Installer behavior and production modules remain unchanged.
+Version 0.1.4 corrected the NFC test evidence and the explanation of ACE decoding.
+It used the same installer and production modules as v0.1.3.
 
 ## Retained v0.1.3
 
@@ -72,7 +83,7 @@ Installer behavior and production modules remain unchanged.
 - [Read its fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/4229c6fd384e1821268d2d61f7c2d2992bc91a9e).
 
 SHA-256: `03de055d1c38d430f83817d5687c73dc387a3f282a2c4329df0b8ce882349e39`.
-The current documentation revision uses the same installer behavior and production modules.
+Version 0.1.3 introduced the guided ACE firmware stage.
 
 ## Retained v0.1.2
 
@@ -110,14 +121,16 @@ SHA-256:
 
 ## 中文说明
 
-你可以选择双击向导，也可以[逐条执行公开的手动步骤](installation.md)。
+你可以选择双击向导，也可以[按中文手动步骤逐条复制命令](installation.zh-CN.md)。
+离线中文手册是 **MANUAL-INSTALL.zh-CN.html**；英文手册是 **MANUAL-INSTALL.html**。
 手动方式不用运行 Windows 向导，但仍会在打印机上执行开源的 `installer.py`。
 所有脚本和四个核心模块都可以先在 GitHub 查看；没有封闭的安装 EXE。
 
 原来的 **v0.1.0** 安装包、校验值和对应说明已经保留在上方固定链接中，文件未被新版覆盖。
-**v0.1.1** 也保留原样。最新版增加 U1 固件准备，不会覆盖这两个旧压缩包。
-**v0.1.2** 同样保留原样。最新版增加 ACE 引导更新，不会改变之前的安装包。
+**v0.1.1** 也保留原样。v0.1.2 增加 U1 固件准备。
+**v0.1.2** 同样保留原样。v0.1.3 增加 ACE 引导更新。
 **v0.1.3** 也保留原样。v0.1.4 仅更正说明，安装器行为及生产模块不变。
 **v0.1.4** 同样保留。v0.1.5 删除本方案不需要的密钥填写教程，并补充 OpenCubic 支持列表和署名。
-旧版需自己设置 **External**；新版安装器会自动设置并检查。
+**v0.1.5** 同样保留。v0.1.6 补全中文手动安装和恢复说明，明确向导菜单的操作范围。
+v0.1.0 需自己设置 **External**；v0.1.1 及之后的安装器会自动设置并检查。
 请使用同一版本的文件与说明，不要混装。

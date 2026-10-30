@@ -227,7 +227,7 @@ function Invoke-WizardNative {
 $testTemp = Join-Path ([IO.Path]::GetTempPath()) ('U1WizardTests-' + [guid]::NewGuid().ToString('N'))
 [void](New-Item -ItemType Directory -Path $testTemp)
 function Invoke-FakeWizard {
-    param([string]$Scenario, [string[]]$Answers, [ValidateSet('zh', 'en')][string]$Language = 'zh', [string]$Task = '1')
+    param([string]$Scenario, [string[]]$Answers, [ValidateSet('zh', 'en')][string]$Language = 'zh', [string]$Task = '1', [string]$BundleRoot = $repo)
     $script:scenario = $Scenario
     $script:calls.Clear()
     $script:answers.Clear()
@@ -243,7 +243,7 @@ function Invoke-FakeWizard {
     $script:answers.Enqueue($Task)
     foreach ($answer in $Answers) { $script:answers.Enqueue($answer) }
     $script:uploadedSettings = $null
-    return Start-U1Wizard -BundleRoot $repo -LocalLogRoot $testTemp
+    return Start-U1Wizard -BundleRoot $BundleRoot -LocalLogRoot $testTemp
 }
 function Count-InstallCalls {
     return @($script:calls | Where-Object { $_.Arguments[-1] -match 'installer.py install' }).Count
@@ -284,8 +284,10 @@ try {
         Assert-True ($code -eq 2 -and $script:calls.Count -eq 0) 'Cancelled yet contacted device'
     }
     Test-Case 'uncalibrated_exit_without_install' {
-        $code = Invoke-FakeWizard 'fresh' @('1', '1', '192.0.2.1', '1', '0')
-        Assert-True ($code -eq 1 -and (Count-InstallCalls) -eq 0) 'Missing length allowed install'
+        foreach ($language in @('zh', 'en')) {
+            $code = Invoke-FakeWizard 'fresh' @('1', '1', '192.0.2.1', '1', '0') $language
+            Assert-True ($code -eq 2 -and (Count-InstallCalls) -eq 0) 'Length cancellation was treated as failure or allowed install'
+        }
     }
     Test-Case 'calibration_not_acknowledged_stops' {
         $code = Invoke-FakeWizard 'fresh' @('1', '1', '192.0.2.1', '1', '1400', '1200', '2')
@@ -364,13 +366,36 @@ try {
         Select-WizardLanguage
         Assert-True ($script:WizardLanguage -eq 'en' -and $script:answers.Count -eq 0) 'Language selection failed'
     }
-    Test-Case 'manual_menu_opens_fixed_url_without_printer_access' {
+    Test-Case 'manual_menu_opens_local_language_guide_without_printer_access' {
+        $manualFixture = Join-Path $testTemp 'local-manuals'
+        [void](New-Item -ItemType Directory -Path $manualFixture)
+        foreach ($name in @('MANUAL-INSTALL.zh-CN.html', 'MANUAL-INSTALL.html')) {
+            [IO.File]::WriteAllText((Join-Path $manualFixture $name), '<html>Offline manual fixture</html>')
+        }
         foreach ($language in @('zh', 'en')) {
-            $code = Invoke-FakeWizard 'fresh' @() $language '3'
+            $code = Invoke-FakeWizard 'fresh' @() $language '3' $manualFixture
             Assert-True ($code -eq 2 -and $script:calls.Count -eq 0) 'Manual menu contacted printer'
-            Assert-True ($script:manualUrls.Count -eq 1 -and $script:manualUrls[0] -eq 'https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md') 'Wrong manual destination'
+            $name = 'MANUAL-INSTALL.zh-CN.html'
+            if ($language -eq 'en') { $name = 'MANUAL-INSTALL.html' }
+            $expectedPath = [IO.Path]::GetFullPath((Join-Path $manualFixture $name))
+            Assert-True ($script:manualUrls.Count -eq 1 -and $script:manualUrls[0] -eq $expectedPath) 'Wrong local manual destination'
             if ($language -eq 'en') { Assert-EnglishOutput }
         }
+    }
+    Test-Case 'missing_or_directory_manual_stops_without_browser_or_network' {
+        $manualFixture = Join-Path $testTemp 'manual-fixture'
+        [void](New-Item -ItemType Directory -Path $manualFixture)
+        $script:WizardLanguage = 'en'
+        $script:manualUrls.Clear()
+        $script:calls.Clear()
+        $failureId = $null
+        try { Open-WizardManual $manualFixture } catch { $failureId = $_.Exception.Data['WizardMessageId'] }
+        Assert-True ($failureId -eq 'manual_missing') 'Missing manual did not explain how to recover'
+        [void](New-Item -ItemType Directory -Path (Join-Path $manualFixture 'MANUAL-INSTALL.html'))
+        $failureId = $null
+        try { Open-WizardManual $manualFixture } catch { $failureId = $_.Exception.Data['WizardMessageId'] }
+        Assert-True ($failureId -eq 'bundle_regular') 'Directory was opened as a guide'
+        Assert-True ($script:manualUrls.Count -eq 0 -and $script:calls.Count -eq 0) 'Invalid manual started a browser or network operation'
     }
     Test-Case 'usb_menu_cancel_does_not_start_ssh' {
         $code = Invoke-FakeWizard 'bootstrap-cancelled' @() 'en' '2'
@@ -385,11 +410,37 @@ try {
         Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1) 'Completed USB setup did not continue'
         Assert-EnglishOutput
     }
-    Test-Case 'ace_menu_existing_install_explicitly_opens_firmware_setup' {
-        $code = Invoke-FakeWizard 'existing' @('1', '1', '192.0.2.1', '1', '1') 'en' '4'
-        Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1 -and $script:aceSetupCalls -eq 1) 'ACE menu missed firmware stage'
-        Assert-True ($script:aceRecoveryAllowed -and $script:events[0] -eq 'ace-gate') 'ACE menu did not inspect durable status first'
-        Assert-EnglishOutput
+    Test-Case 'ace_menu_is_maintenance_only_for_new_and_existing_host' {
+        foreach ($language in @('zh', 'en')) {
+            foreach ($scenario in @('fresh', 'existing')) {
+                $code = Invoke-FakeWizard $scenario @('1', '1', '192.0.2.1') $language '4'
+                Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 0 -and $script:aceSetupCalls -eq 1) 'ACE menu started host installation or missed firmware setup'
+                Assert-True ($script:aceRecoveryAllowed -and $script:events[0] -eq 'ace-gate') 'ACE menu did not inspect durable status first'
+                Assert-True (-not ($script:events -contains 'host-status') -and $null -eq $script:uploadedSettings) 'ACE maintenance entered the host configuration flow'
+                Assert-True ($script:answers.Count -eq 0 -and $script:messages.Contains((Get-WizardText 'ace_maintenance_done'))) 'Maintenance exit or next-step instruction missing'
+                if ($language -eq 'en') { Assert-EnglishOutput }
+            }
+        }
+    }
+    Test-Case 'ace_menu_newly_completed_update_exits_without_second_setup' {
+        $code = Invoke-FakeWizard 'ace-completed-now' @('1', '1', '192.0.2.1') 'en' '4'
+        Assert-True ($code -eq 0 -and $script:aceSetupCalls -eq 0 -and (Count-InstallCalls) -eq 0) 'Completed ACE update was repeated or installed host'
+        Assert-True ($script:events.Count -eq 1 -and $script:events[0] -eq 'ace-gate') 'Result inspection reached host status'
+    }
+    Test-Case 'ace_menu_forced_prepare_is_not_bypassed_and_never_installs_host' {
+        $code = Invoke-FakeWizard 'ace-forced-retry' @('1', '1', '192.0.2.1') 'en' '4'
+        Assert-True ($code -eq 0 -and $script:aceSetupCalls -eq 1 -and (Count-InstallCalls) -eq 0) 'Maintenance forced preparation was bypassed or repeated'
+        Assert-True ($script:events.Count -eq 2 -and $script:events[1] -eq 'ace-setup') 'Maintenance recovery entered the host flow'
+        $code = Invoke-FakeWizard 'ace-forced-cancel' @('1', '1', '192.0.2.1') 'en' '4'
+        Assert-True ($code -eq 2 -and $script:aceSetupCalls -eq 1 -and -not ($script:events -contains 'host-status')) 'Forced preparation cancellation was ignored'
+    }
+    Test-Case 'ace_menu_cancel_and_failure_do_not_report_completion' {
+        foreach ($scenario in @('ace-setup-cancel', 'ace-setup-failed')) {
+            $code = Invoke-FakeWizard $scenario @('1', '1', '192.0.2.1') 'en' '4'
+            Assert-True ($code -ne 0 -and $script:aceSetupCalls -eq 1 -and (Count-InstallCalls) -eq 0) 'ACE failure reached host installation'
+            Assert-True (-not $script:messages.Contains((Get-WizardText 'ace_maintenance_done'))) 'Failed or cancelled maintenance was reported as complete'
+            Assert-True (-not ($script:events -contains 'host-status')) 'ACE failure reached host status'
+        }
     }
     Test-Case 'ace_uncertain_or_cancelled_gate_blocks_host_status' {
         foreach ($scenario in @('ace-gate-attention', 'ace-gate-cancel')) {

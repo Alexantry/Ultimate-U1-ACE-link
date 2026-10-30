@@ -8,13 +8,14 @@
 
 ## [安装向导入口：下载、双击、跟着提示操作](docs/quick-start.zh-CN.md)
 
-**[下载 v0.1.5 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.5.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
+**[下载 v0.1.6 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
 尚未安装 U1 扩展固件时，在同一向导选择“准备 U1 固件”，自动下载、校验并复制到 U 盘。
 
-## [手动安装入口：查看源码，逐条执行命令](docs/installation.md)
+## [手动安装入口：中文步骤，逐条复制命令](docs/installation.zh-CN.md)
 
 **不想运行 Windows 安装向导，直接点这里。** 完整手动步骤与向导并行保留，不需要封闭 EXE。
 手动方式仍会运行可阅读的开源 `installer.py`。
+[English manual](docs/installation.md) · 离线中文手册：**MANUAL-INSTALL.zh-CN.html**。
 [安装方式比较、旧版固定下载及校验值](docs/install-options.md)。
 
 > [!CAUTION]
@@ -24,19 +25,19 @@
 
 ## 第一次使用：从准备固件到安装，在同一流程完成
 
-1. 先按 [SnapAce 硬件指南](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring)准备第一代 ACE 的连接线和四路料管。
+1. 结束打印。首次安装先正常退料，再清空四个打印头和四个 ACE 入口。关闭加热和烘干并等待冷却；断电后按 [SnapAce 硬件指南](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring)准备第一代 ACE 连接线和四路料管，接好后再开机。详见[准备步骤](docs/quick-start.zh-CN.md#1-更新或安装之前先准备设备)。
 2. 下载上面的安装包，右键选择“全部解压缩”。
 3. 打开解压后的文件夹，双击 **START-HERE.cmd**，选择 **中文** 或 **English**。
 4. 还没有指定 U1 固件时，选择准备流程；向导负责下载、校验及复制到 FAT32 U 盘。
 5. 按窗口指引在 U1 屏幕确认本地更新，开启 Advanced Mode，再将 Root Access 设为 Open。
 6. 回到同一向导，输入打印机地址和密码，按提示完成 ACE 固件准备。
-7. 填写适合自己料管的长度，核对摘要并安装，验证通过后再做受控进退料检查。
+7. 填写已审查的初始管路参数，核对摘要并安装。先检查一槽；通过后逐槽验证其余三槽，再用于正常打印。
 
-接下来跟着所选语言的窗口操作即可，**不需要自己输入命令或修改配置文件**。
+向导路径**不需要自己输入命令或修改配置文件**。接线、物理测量和打印机屏幕确认仍需亲手完成。
 不熟悉下载、解压和双击操作，请看[逐步图文指南](docs/quick-start.zh-CN.md)。
-安装包里的 **START-HERE.html**（中文）和 **START-HERE.en.html**（英文）也可以双击打开，离线阅读。
+安装包里的 **START-HERE.html**（中文）、**START-HERE.en.html**（英文）及两种语言的手动手册都可以双击打开，离线阅读。
 
-**v0.1.0 至 v0.1.4 的原安装包均保留，文件未被新版覆盖。**
+**v0.1.0 至 v0.1.5 的原安装包均保留，文件未被新版覆盖。**
 
 > [!IMPORTANT]
 > **首次更新固件和开启访问权限，仍需在打印机屏幕操作。** 向导会准备文件并逐步引导，不能在尚未开放访问时替你完成屏幕授权。
@@ -138,4 +139,4 @@ U 盘准备不会格式化磁盘，不覆盖内容不同的同名文件。
 单独下载的 U1／ACE 固件不因此获得本项目的 GPL 授权。
 重新打包固件或商业分发前，请看 **[许可核查与分享要求](docs/licensing.zh-CN.md)**。
 
-[参数说明](docs/configuration.zh-CN.md) · [NFC 说明](docs/nfc.zh-CN.md) · [回退与更新](docs/update-and-rollback.md) · [验证范围](docs/validation.md) · [English](README.md)
+[参数说明](docs/configuration.zh-CN.md) · [NFC 说明](docs/nfc.zh-CN.md) · [回退与更新](docs/update-and-rollback.zh-CN.md) · [故障排查](docs/troubleshooting.zh-CN.md) · [验证范围](docs/validation.md) · [English](README.md)

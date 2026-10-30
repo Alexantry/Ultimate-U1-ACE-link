@@ -1,5 +1,21 @@
 # Changes
 
+## 0.1.6 — 2026-10-30
+
+This revision checks the full beginner workflow in both languages.
+The four production transport and NFC modules remain unchanged.
+
+- Put idle, cooling, and hardware checks before firmware maintenance.
+- Separate tasks required before opening the wizard from tasks the wizard prepares.
+- Provide complete English and Chinese manual installation and recovery instructions.
+- Open the matching local manual from the wizard. End ACE-only maintenance without starting host installation.
+- Distinguish review of initial tube settings from physical calibration after installation.
+- Explain Windows file extraction, OpenSSH setup, password entry, expected results, and stop conditions.
+- Include both manual languages and recovery pages in the offline package. Render flow diagrams as readable steps.
+- Keep the supported OpenCubic workflow free of user-supplied NFC keys and preserve every earlier archive.
+
+The revised workflow has offline checks. It has not received a new end-to-end physical installation test.
+
 ## 0.1.5 — 2026-10-30
 
 This is a documentation revision. Installer behavior and production modules are unchanged.

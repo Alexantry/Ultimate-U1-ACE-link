@@ -12,13 +12,14 @@ The read-only `status` command also passed on the tested U1 firmware.
 The USB tool baseline has 96 offline tests with simulated transport and generated test images.
 The guided ACE backend adds 49 tests for exclusive maintenance, durable state, single-write handling, source and image gates, metadata preservation, and recovery.
 The Python suites contain 380 tests: 41 installer, 194 host integration, and 145 USB/backend tests.
-The bilingual Windows launcher has 42 checks using simulated SSH and SCP operations.
+The bilingual Windows launcher has 46 checks using simulated SSH and SCP operations.
+They include local manual selection, missing manuals, ACE-only maintenance boundaries, cancellation, and completed-update handling.
 The ACE prompts have 35 tests for cancellation, unsupported versions, material review, interrupted connections, and safe pre-write recovery.
 U1 firmware preparation adds 20 offline checks for download integrity, USB destinations, conflicts, and cancellation.
 Those preparation tests use small synthetic files and a temporary folder, not real USB firmware installation.
 These checks passed locally with Windows PowerShell 5.1.
 The ACE prompt tests also passed with PowerShell 7.
-There are 477 distinct offline checks in total. Four Python link/lock checks are skipped on this Windows host and run in Linux CI.
+There are 481 distinct offline checks in total. Four Python link/lock checks are skipped on this Windows host and run in Linux CI.
 The launcher has not received a complete physical installation test, including interactive SSH password entry.
 The USB preparation workflow has not received an end-to-end physical U1 update test.
 The ACE firmware transfer route has physical evidence for `V1.3.856` / boot `V1.0.1` to the pinned OpenCubic target.

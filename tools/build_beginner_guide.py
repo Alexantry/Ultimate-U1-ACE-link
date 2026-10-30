@@ -13,23 +13,41 @@ def target(url, source, image=False):
         return url
     if re.match(r'https?://', url):
         return url
-    if 'before-you-start.zh-CN.md' in url:
-        return '#prepare' if '.zh-CN.' in source.name else 'START-HERE.html#prepare'
-    if 'quick-start.zh-CN.md' in url or 'README.zh-CN.md' in url:
-        return '#start' if '.zh-CN.' in source.name else 'START-HERE.html#start'
-    if url == 'installation.md' or url == '../docs/installation.md':
-        return 'MANUAL-INSTALL.html'
-    sections = {'u1-preparation.md': 'firmware', 'u1-preparation.zh-CN.md': 'firmware',
-                'configuration.md': 'parameters', 'configuration.zh-CN.md': 'parameters',
-                'nfc.md': 'nfc', 'nfc.zh-CN.md': 'nfc',
-                'daily-use.md': 'daily', 'daily-use.zh-CN.md': 'daily',
-                'ace-wizard.md': 'ace-firmware', 'ace-wizard.zh-CN.md': 'ace-firmware'}
-    if url in sections:
-        if ('.zh-CN.' in url) == ('.zh-CN.' in source.name):
-            return '#' + sections[url]
-        return ('START-HERE.html' if '.zh-CN.' in url else 'START-HERE.en.html') + '#' + sections[url]
     path = posixpath.normpath(str(source.parent.relative_to(ROOT)).replace('\\', '/') + '/' + url)
+    if image:
+        return path
+    document, separator, fragment = path.partition('#')
+    name = posixpath.basename(document)
+    manual = {'installation.md': 'MANUAL-INSTALL.html',
+              'installation.zh-CN.md': 'MANUAL-INSTALL.zh-CN.html'}
+    if name in manual:
+        return manual[name] + ('#' + fragment if separator else '')
+    sections = {'u1-preparation': 'firmware', 'configuration': 'parameters',
+                'nfc': 'nfc', 'daily-use': 'daily', 'ace-wizard': 'ace-firmware',
+                'licensing': 'licensing', 'update-and-rollback': 'recovery', 'troubleshooting': 'troubleshooting',
+                'before-you-start': 'prepare', 'quick-start': 'start', 'README': 'start'}
+    base = name.removesuffix('.md').removesuffix('.zh-CN')
+    if base in sections:
+        page = 'START-HERE.html' if '.zh-CN.' in name else 'START-HERE.en.html'
+        return page + '#' + (fragment if separator else sections[base])
     return path if image else REPO + path
+
+
+def diagram(source):
+    chinese = '.zh-CN.' in source.name
+    if source.name.startswith('nfc.'):
+        steps = (['耗材 NFC 标签', 'ACE 读取并解码', 'U1 查询并转换结果', '显示并保存耗材信息'] if chinese else
+                 ['Spool NFC tag', 'ACE reads and decodes', 'U1 queries and converts', 'Material data is displayed and kept'])
+        note = ('多品牌解码来自 OpenCubic。U1 内置 OpenRFID 是另一条独立路径。' if chinese else
+                'OpenCubic provides multi-brand decoding. U1 internal OpenRFID is a separate reader path.')
+    elif source.name.startswith('installation.'):
+        steps = (['结束打印、冷却并接好硬件', '准备 U1 固件和访问设置', '检查或准备 ACE 固件', '安装适配并逐槽验证'] if chinese else
+                 ['Finish printing, cool, and connect hardware', 'Prepare U1 firmware and access', 'Check or prepare ACE firmware', 'Install the integration and verify each slot'])
+        note = ('按下方编号步骤操作；示意图不替代接线图和版本检查。' if chinese else
+                'Follow the numbered steps below. This diagram does not replace wiring and version checks.')
+    else:
+        raise ValueError('No offline diagram defined for ' + source.name)
+    return '<ol class="flow">' + ''.join('<li>' + escape(step) + '</li>' for step in steps) + '</ol><p>' + escape(note) + '</p>'
 
 
 def inline(text, source):
@@ -64,13 +82,13 @@ def render(source):
             close(); result.append(line); continue
         if line.startswith('```'):
             if fence is not None:
-                result.append('</code></pre>'); fence = None
+                result.append(diagram(source) if fence == 'mermaid' else '</code></pre>'); fence = None
             else:
                 close(); fence = line[3:].strip()
-                result.append('<pre><code>')
+                if fence != 'mermaid': result.append('<pre><code>')
             continue
         if fence is not None:
-            result.append(escape(line))
+            if fence != 'mermaid': result.append(escape(line))
             continue
         notice = re.fullmatch(r'> \[!(CAUTION|WARNING|IMPORTANT|NOTE|TIP)\]', line)
         if notice:
@@ -103,12 +121,13 @@ def render(source):
             else:
                 result.append('<tr>' + ''.join('<td>' + inline(c, source) + '</td>' for c in cells) + '</tr>')
             continue
-        item = re.match(r'^(?:\d+\. |(-) )(.+)', line)
+        item = re.match(r'^(?:(\d+)\. |(-) )(.+)', line)
         if item:
-            kind = 'ul' if item[1] else 'ol'
+            kind = 'ul' if item[2] else 'ol'
             if listing != kind:
-                close(); listing = kind; result.append('<' + kind + '>')
-            result.append('<li>' + inline(item[2], source) + '</li>'); continue
+                close(); listing = kind
+                result.append('<ol start="' + item[1] + '">' if kind == 'ol' else '<ul>')
+            result.append('<li>' + inline(item[3], source) + '</li>'); continue
         close(); result.append('<p>' + inline(line, source) + '</p>')
     close()
     if fence is not None:
@@ -137,6 +156,7 @@ pre{padding:16px;background:#edf2f8;overflow:auto;border-radius:8px;white-space:
 .routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.routes a{display:block;padding:24px;border:3px solid #125dc2;border-radius:14px;background:#fff;font-size:21px;font-weight:800;text-decoration:none}.routes a:last-child{border-color:#375143;color:#214e34;background:#effbf3}.routes small{display:block;font-size:15px;font-weight:400;margin-top:10px}
 table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding:12px;text-align:left;vertical-align:top}th{background:#edf3fa}.table{overflow:auto}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.steps div{background:#fff;padding:22px;border-radius:14px;border:1px solid #dbe4ef}.steps b{display:block;font-size:20px;margin-bottom:12px}
+.flow{display:flex;flex-wrap:wrap;gap:12px;padding:0;list-style-position:inside}.flow li{flex:1 1 180px;padding:18px;background:#edf3fa;border:1px solid #b6cce3;border-radius:10px;font-weight:700}
 .note{background:#e9f6ef;border-left:4px solid #25814b;padding:14px 18px;margin-top:22px}.note p{margin:0}
 .alert{padding:18px 22px;border:1px solid #c8d3e2;border-left-width:6px;border-radius:12px;margin:24px 0;background:#f4f7fc}
 .alert-title{font-size:19px;font-weight:800;margin-bottom:10px;letter-spacing:.3px}.alert p{margin:8px 0}
@@ -154,10 +174,10 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <div class="note"><p><strong>External 已自动处理。</strong>向导会设置耗材来源、处理内置读卡服务，并保存备份。受支持标签无需自行寻找或填写 NFC 密钥。</p></div>
 <details id="prepare"><summary>机器还没准备好？从这里展开<small>固件、访问开关、网络、线缆和 ACE 代际；已完成的人可以跳过。</small></summary>''' + prepare + '''</details>
 <section id="start">''' + quick + '''</section>
-<footer>说明中的链接需要网络；本页和步骤示意图可以离线阅读。图为概念示意，不是硬件接线尺寸图。</footer>
+<footer>外部来源和下载链接需要网络；包内手册、恢复步骤和示意图可以离线阅读。图为概念示意，不是硬件接线尺寸图。</footer>
 </main></body></html>
 '''
-    routes = '<nav class="routes"><a href="#start">安装向导<small>双击 START-HERE.cmd，按提示准备和安装。</small></a><a href="MANUAL-INSTALL.html">手动安装 · 查看源码<small>完整英文命令步骤；不运行 Windows 向导。</small></a></nav>'
+    routes = '<nav class="routes"><a href="#start">安装向导<small>双击 START-HERE.cmd，按提示准备和安装。</small></a><a href="MANUAL-INSTALL.zh-CN.html">手动安装 · 查看源码<small>完整中文步骤和可复制命令；不运行 Windows 向导。</small></a></nav>'
     page = page.replace('</header>', '</header>\n' + routes + critical, 1)
     extra = ''
     for section, name, title in [('firmware', 'u1-preparation.zh-CN.md', 'U1 固件与访问设置'),
@@ -165,6 +185,8 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
                                  ('parameters', 'configuration.zh-CN.md', '料管长度、退料及回送参数'),
                                  ('nfc', 'nfc.zh-CN.md', 'NFC 支持范围与识别流程'),
                                  ('daily', 'daily-use.zh-CN.md', '日常进退料与远程操作'),
+                                 ('recovery', 'update-and-rollback.zh-CN.md', '中断、失败与恢复'),
+                                 ('troubleshooting', 'troubleshooting.zh-CN.md', '常见问题与排查'),
                                  ('licensing', 'licensing.zh-CN.md', '使用、分享和再分发许可')]:
         extra += '<details id="%s"><summary>%s</summary>%s</details>' % (section, title, render(ROOT / 'docs' / name))
     page = page.replace('<footer>', extra + '<footer>', 1)
@@ -196,17 +218,23 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
                                  ('parameters', 'configuration.md', 'Tube lengths and take-up settings'),
                                  ('nfc', 'nfc.md', 'NFC support and recognition'),
                                  ('daily', 'daily-use.md', 'Daily use and remote controls'),
+                                 ('recovery', 'update-and-rollback.md', 'Interrupted operations and recovery'),
+                                 ('troubleshooting', 'troubleshooting.md', 'Troubleshooting'),
                                  ('licensing', 'licensing.md', 'Use, sharing, and redistribution')]:
         extra_en += '<details id="%s"><summary>%s</summary>%s</details>' % (section, title, render(ROOT / 'docs' / name))
     english = english.replace('<footer>', extra_en + '<footer>', 1)
     (ROOT / 'START-HERE.en.html').write_text(english, encoding='utf8')
-    manual = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Manual installation / 手动安装</title><style>' + style + '</style></head><body><main>'
-    manual += '<header><h1>MANUAL INSTALLATION / 手动安装</h1><p>Read the source and enter each command. This page does not execute anything.</p><p>本页提供完整英文命令步骤，不运行 Windows 向导；仍会使用可阅读的 printer installer.py。</p><a href="START-HERE.html">中文说明</a> · <a href="START-HERE.en.html">English guide</a></header>'
-    manual += '<section>' + render(ROOT / 'docs/installation.md') + '</section></main></body></html>'
-    # Manual links refer to the appropriate online document, not absent inline sections.
-    manual = re.sub(r'href="#(?:firmware|ace-firmware|parameters|nfc|daily)"', lambda m: 'href="' + REPO + 'docs/' + {'firmware':'u1-preparation.md','ace-firmware':'ace-wizard.md','parameters':'configuration.md','nfc':'nfc.md','daily':'daily-use.md'}[m[0].split('#')[1].rstrip('"')] + '"', manual)
-    (ROOT / 'MANUAL-INSTALL.html').write_text(manual, encoding='utf8')
-    print('Built bilingual offline guides and the manual installation entry.')
+    for language, name, output in [('en', 'installation.md', 'MANUAL-INSTALL.html'),
+                                    ('zh-CN', 'installation.zh-CN.md', 'MANUAL-INSTALL.zh-CN.html')]:
+        chinese = language == 'zh-CN'
+        title = '手动安装' if chinese else 'Manual installation'
+        introduction = ('按步骤复制命令；本页不会自动执行任何命令。安装者不需要编写程序或使用 AI。' if chinese else
+                        'Copy each command as instructed. This page does not execute commands. You do not need to write code or use AI.')
+        manual = '<!doctype html><html lang="' + language + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + title + '</title><style>' + style + '</style></head><body><main>'
+        manual += '<header><h1>' + title + '</h1><p>' + introduction + '</p><a href="MANUAL-INSTALL.zh-CN.html">中文手动步骤</a> · <a href="MANUAL-INSTALL.html">English manual</a> · <a href="' + ('START-HERE.html' if chinese else 'START-HERE.en.html') + '">' + ('返回安装向导说明' if chinese else 'Guided installation') + '</a></header>'
+        manual += '<section>' + render(ROOT / 'docs' / name) + '</section></main></body></html>'
+        (ROOT / output).write_text(manual, encoding='utf8')
+    print('Built bilingual offline guides and bilingual manual installation pages.')
 
 
 if __name__ == '__main__':
