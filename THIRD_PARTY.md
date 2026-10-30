@@ -51,3 +51,8 @@ Only source payloads and synthetic offline tests are distributed. This repositor
 The existing USB IAP and protocol modules retain the tested adapter's runtime logic. Packaging changes update attribution/comments, replace the old preparation profile with a generic locked template, and replace binary-dependent test inputs with synthetic images. The additional fetch helper only downloads explicitly selected, pinned upstream images; it does not open serial devices.
 
 The optional draft-profile helper copies a fresh, supported probe into a private draft. It leaves writing and all maintenance checks disabled. Only the physically tested V1.3.856 / boot V1.0.1 upgrade route is accepted. It does not open hardware or authorize a transfer.
+
+The guided ACE backend is new project source under GPLv3.
+It uses the existing protocol tools to perform measured preflight checks and the explicitly confirmed, supported update transaction.
+It obtains pinned binaries from their upstream locations when requested; those binaries and private transaction records remain outside the distributed source archive.
+No additional firmware redistribution rights are asserted by this automation.

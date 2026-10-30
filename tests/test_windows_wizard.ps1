@@ -55,7 +55,7 @@ Test-Case 'native_process_exit_and_stdout' {
 }
 Test-Case 'bundle_exact_allowlist_and_hashes' {
     $files = @(Get-WizardBundleFiles $repo)
-    Assert-True ($files.Count -eq 9) 'Wrong upload scope'
+    Assert-True ($files.Count -eq 16) 'Wrong upload scope'
     Assert-True (-not ($files -match 'private|settings.local|key|firmware/')) 'Private or firmware upload'
 }
 Test-Case 'template_cannot_enable_takeup_or_overwrite_existing' {
@@ -138,6 +138,9 @@ $script:messages = New-Object 'Collections.Generic.List[string]'
 $script:coloredMessages = New-Object 'Collections.Generic.List[object]'
 $script:languageChosen = $false
 $script:manualUrls = New-Object 'Collections.Generic.List[string]'
+$script:events = New-Object 'Collections.Generic.List[string]'
+$script:aceSetupCalls = 0
+$script:aceRecoveryAllowed = $false
 function Start-Process {
     param([string]$FilePath)
     $script:manualUrls.Add($FilePath)
@@ -146,6 +149,26 @@ function Invoke-WizardBootstrap {
     param([string]$BundleRoot)
     if ($script:scenario -eq 'bootstrap-failed') { throw (New-WizardException 'bundle_hash') }
     return ($script:scenario -ne 'bootstrap-cancelled')
+}
+function Invoke-WizardAceGate {
+    param([string]$BundleRoot, [string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile, [bool]$AllowRecovery = $false)
+    $script:events.Add('ace-gate')
+    $script:aceRecoveryAllowed = $AllowRecovery
+    if ($script:scenario -eq 'ace-gate-attention') { throw (New-WizardException 'invalid_result') }
+    return [pscustomobject]@{
+        Continue = ($script:scenario -ne 'ace-gate-cancel')
+        CompletedNow = ($script:scenario -eq 'ace-completed-now')
+        RequiresSetup = ($script:scenario -eq 'existing-requires-ace')
+        ForcePrepare = ($script:scenario -like 'ace-forced-*')
+    }
+}
+function Invoke-WizardAceSetup {
+    param([string]$BundleRoot, [string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile, [bool]$ForcePrepare = $false)
+    $script:events.Add('ace-setup')
+    $script:aceSetupCalls++
+    if ($script:scenario -like 'ace-forced-*') { Assert-True $ForcePrepare 'Unsafe preparation retry offered keep shortcut' }
+    if ($script:scenario -eq 'ace-setup-failed') { throw (New-WizardException 'invalid_result') }
+    return ($script:scenario -notin @('ace-setup-cancel', 'ace-forced-cancel'))
 }
 function Read-Host {
     param([string]$Prompt)
@@ -173,7 +196,7 @@ function Invoke-WizardNative {
         if ($Arguments -contains '-r') {
             $source = $Arguments[$Arguments.Count - 2]
             $paths = @(Get-ChildItem -LiteralPath $source -Recurse -File)
-            Assert-True ($paths.Count -eq 10) 'Unexpected copied files'
+            Assert-True ($paths.Count -eq 17) 'Unexpected copied files'
             Assert-True (-not ($paths.Name -match 'openrfid|user.cfg|credentials|\.bin$')) 'Private file copied'
         } else {
             $script:uploadedSettings = Get-Content -LiteralPath $Arguments[$Arguments.Count - 2] -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -182,16 +205,17 @@ function Invoke-WizardNative {
     }
     $command = $Arguments[-1]
     if ($command -match 'installer.py status') {
-        $existing = $script:scenario -eq 'existing'
+        $script:events.Add('host-status')
+        $existing = $script:scenario -in @('existing', 'existing-requires-ace')
         $ports = @('/dev/serial/by-id/usb-ANYCUBIC_ACE_TEST-if00')
         if ($script:scenario -eq 'multiple-ace') { $ports += '/dev/serial/by-id/usb-ANYCUBIC_ACE_OTHER-if00' }
         $data = @{ existing_ace = $existing; serial_candidates = $ports; ace_settings = @{} }
     } elseif ($command -match 'installer.py check') {
         if ($script:scenario -eq 'check-failed') { return [pscustomobject]@{ ExitCode = 1; Output = 'ERROR: Printer must be idle' } }
-        $fresh = $script:scenario -ne 'existing'
+        $fresh = $script:scenario -notin @('existing', 'existing-requires-ace')
         if ($script:scenario -eq 'state-changed') { $fresh = -not $fresh }
         $settings = $script:uploadedSettings
-        if ($script:scenario -eq 'existing') { $settings.retract_length = 1500; $settings.forward_takeup_length = 250 }
+        if ($script:scenario -in @('existing', 'existing-requires-ace')) { $settings.retract_length = 1500; $settings.forward_takeup_length = 250 }
         $data = @{ compatible = $true; read_only = $true; fresh_install = $fresh; effective_settings = $settings }
     } elseif ($command -match 'installer.py install') {
         if ($script:scenario -eq 'install-lost') { return [pscustomobject]@{ ExitCode = 255; Output = '' } }
@@ -210,6 +234,9 @@ function Invoke-FakeWizard {
     $script:messages.Clear()
     $script:coloredMessages.Clear()
     $script:manualUrls.Clear()
+    $script:events.Clear()
+    $script:aceSetupCalls = 0
+    $script:aceRecoveryAllowed = $false
     $script:languageChosen = $false
     if ($Language -eq 'en') { $script:answers.Enqueue('2') }
     else { $script:answers.Enqueue('1') }
@@ -241,6 +268,8 @@ try {
         Assert-True ((Count-InstallCalls) -eq 1) 'Install count'
         Assert-True ($script:uploadedSettings.retract_length -eq 1400 -and $script:uploadedSettings.fast_load_length -eq 1200) 'Measured lengths not sent'
         Assert-True ($script:uploadedSettings.forward_takeup_length -eq 0) 'Unsafe initial takeup'
+        Assert-True ($script:aceSetupCalls -eq 1 -and $script:events[0] -eq 'ace-gate') 'Fresh flow missed ACE stage or checked host status first'
+        Assert-True (-not $script:aceRecoveryAllowed) 'Normal setup offered recovery'
         Assert-ImportantWarning
     }
     Test-Case 'existing_settings_preserved_without_length_prompt' {
@@ -248,6 +277,7 @@ try {
         Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1) 'Existing update failed'
         Assert-True ($script:uploadedSettings.apply_existing_settings -eq $false) 'Existing settings replaced'
         Assert-True ($script:answers.Count -eq 0) 'Wrong existing prompts'
+        Assert-True ($script:aceSetupCalls -eq 0) 'Existing firmware was prepared without a request'
     }
     Test-Case 'cancel_before_network' {
         $code = Invoke-FakeWizard 'fresh' @('2')
@@ -354,6 +384,39 @@ try {
         $code = Invoke-FakeWizard 'fresh' @('1', '1', '192.0.2.1', '1', '1400', '1200', '1', '1') 'en' '2'
         Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1) 'Completed USB setup did not continue'
         Assert-EnglishOutput
+    }
+    Test-Case 'ace_menu_existing_install_explicitly_opens_firmware_setup' {
+        $code = Invoke-FakeWizard 'existing' @('1', '1', '192.0.2.1', '1', '1') 'en' '4'
+        Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1 -and $script:aceSetupCalls -eq 1) 'ACE menu missed firmware stage'
+        Assert-True ($script:aceRecoveryAllowed -and $script:events[0] -eq 'ace-gate') 'ACE menu did not inspect durable status first'
+        Assert-EnglishOutput
+    }
+    Test-Case 'ace_uncertain_or_cancelled_gate_blocks_host_status' {
+        foreach ($scenario in @('ace-gate-attention', 'ace-gate-cancel')) {
+            $code = Invoke-FakeWizard $scenario @('1', '1', '192.0.2.1') 'en' '4'
+            Assert-True ($code -ne 0 -and (Count-InstallCalls) -eq 0 -and $script:aceSetupCalls -eq 0) 'Blocked gate reached installation'
+            Assert-True (-not ($script:events -contains 'host-status')) 'Stopped service was queried before durable recovery'
+        }
+    }
+    Test-Case 'ace_setup_cancel_or_failure_blocks_host_install' {
+        foreach ($scenario in @('ace-setup-cancel', 'ace-setup-failed')) {
+            $code = Invoke-FakeWizard $scenario @('1', '1', '192.0.2.1') 'en'
+            Assert-True ($code -ne 0 -and (Count-InstallCalls) -eq 0 -and $script:aceSetupCalls -eq 1) 'ACE stage failure continued host install'
+        }
+    }
+    Test-Case 'active_update_finished_now_does_not_start_second_setup' {
+        $code = Invoke-FakeWizard 'ace-completed-now' @('1', '1', '192.0.2.1', '1', '1400', '1200', '1', '1') 'en'
+        Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1 -and $script:aceSetupCalls -eq 0) 'Finished ACE transaction was repeated'
+    }
+    Test-Case 'safe_failed_ace_gate_requires_setup_even_for_existing_host' {
+        $code = Invoke-FakeWizard 'existing-requires-ace' @('1', '1', '192.0.2.1', '1', '1') 'en'
+        Assert-True ($code -eq 0 -and $script:aceSetupCalls -eq 1) 'Existing host bypassed required ACE retry'
+    }
+    Test-Case 'failed_before_ready_forces_preparation_before_host_status' {
+        $code = Invoke-FakeWizard 'ace-forced-retry' @('1', '1', '192.0.2.1', '1', '1400', '1200', '1', '1') 'en'
+        Assert-True ($code -eq 0 -and $script:aceSetupCalls -eq 1 -and $script:events[1] -eq 'ace-setup' -and $script:events[2] -eq 'host-status') 'Required preparation was blocked by or skipped for host status'
+        $code = Invoke-FakeWizard 'ace-forced-cancel' @('1', '1', '192.0.2.1') 'en'
+        Assert-True ($code -eq 2 -and -not ($script:events -contains 'host-status')) 'Forced preparation cancellation reached host status'
     }
 } finally {
     $resolved = [IO.Path]::GetFullPath($testTemp)

@@ -586,7 +586,50 @@ class Installer:
             time.sleep(1)
         raise RuntimeError('Ready verification failed: ' + error)
 
+    def ace_maintenance_clear(self):
+        """A dead firmware worker must not grant permission to change services.
+
+        The CLI holds installer.lock before this check. Check the durable record
+        too: a crashed worker releases its lock while its ACE state is uncertain.
+        This only inspects records; it never repairs or clears a transaction.
+        """
+        message = 'ACE firmware operation is not safely complete; inspect its saved result before host installation or rollback'
+        base = STATE_ROOT + '/ace-firmware'
+
+        def record(name, limit):
+            path = self.host.path(name)  # Reject unexpected links in every component.
+            require(path.is_file() and stat.S_ISREG(path.stat().st_mode)
+                    and path.stat().st_size <= limit, message)
+            with path.open('rb') as stream:
+                content = stream.read(limit + 1)
+            require(len(content) <= limit, message)
+            try:
+                value = json.loads(content)
+            except (ValueError, UnicodeError) as exc:
+                raise RuntimeError(message) from exc
+            require(isinstance(value, dict), message)
+            return value
+
+        directory = self.host.path(base)
+        require(not directory.exists() or directory.is_dir(), message)
+        pointer = self.host.path(base + '/last.json')
+        if not pointer.exists():
+            return  # Older installations have no ACE wizard transaction.
+        last = record(base + '/last.json', 1024)
+        token = last.get('operation')
+        require(isinstance(token, str) and re.fullmatch(r'[a-f0-9]{32}', token), message)
+        state = record(base + '/' + token + '/state.json', 65536)
+        require(type(state.get('schema')) is int and state['schema'] == 1
+                and state.get('operation') == token, message)
+        safe = {'PREPARED', 'ALREADY_TARGET', 'UNSUPPORTED', 'FAILED_SAFE',
+                'CANCELLED_SAFE', 'SUCCEEDED'}
+        require(isinstance(state.get('state'), str) and state['state'] in safe, message)
+        require(state.get('ready') is True and state.get('service_restored') is True
+                and state.get('stopped') is False, message)
+        require(state.get('flash_attempted') is (state['state'] == 'SUCCEEDED'), message)
+
     def install(self, settings):
+        self.ace_maintenance_clear()
         plan = self.prepare(settings)
         require(plan['settings']['calibrated_acknowledged'], 'Set calibrated_acknowledged=true only after reviewing your physical lengths and speeds')
         ident = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
@@ -709,6 +752,7 @@ class Installer:
             self.host.write(RECEIPT, json_bytes(previous), {'mode': 0o600, 'uid': 0, 'gid': 0})
 
     def rollback(self, ident=None, offline_recovery=False, confirm_idle_and_cold=False):
+        self.ace_maintenance_clear()
         self.firmware()
         receipt = self.receipt()
         require(receipt is not None or (offline_recovery and ident),
@@ -756,7 +800,7 @@ def main():
         lock_dir = installer.host.path(STATE_ROOT)
         lock_dir.mkdir(parents=True, mode=0o700, exist_ok=True)
         # Held until process exit, including rollback and ready verification.
-        lock = open(lock_dir / 'installer.lock', 'a')
+        lock = open(installer.host.path(STATE_ROOT + '/installer.lock'), 'a')
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
     if args.command == 'status':
         installer.firmware()

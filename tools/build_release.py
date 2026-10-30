@@ -9,7 +9,7 @@ from build_beginner_guide import main as build_beginner_guide
 ROOT = Path(__file__).resolve().parents[1]
 TOP = {'.gitignore', '.gitattributes', 'README.md', 'README.zh-CN.md', 'LICENSE',
        'THIRD_PARTY.md', 'SOURCES.json', 'manifest.json', 'installer.py', 'CHANGELOG.md',
-       'Install.ps1', 'Bootstrap.ps1', 'START-HERE.cmd', 'START-HERE.html', 'START-HERE.en.html',
+       'Install.ps1', 'Bootstrap.ps1', 'AceFirmware.ps1', 'START-HERE.cmd', 'START-HERE.html', 'START-HERE.en.html',
        'MANUAL-INSTALL.html'}
 TEMPLATES = {'config/settings.example.json', 'config/settings.tested-reference.json'}
 TOOL_JSON = {'tools/ace_usb/images.json', 'tools/ace_usb/device-profile.json'}
@@ -78,7 +78,8 @@ def main():
     retained_sums = ''
     for previous, previous_hash in [
             ('0.1.0', '81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e'),
-            ('0.1.1', 'f684badeac36d7a66d47ed65c04ae0ec278e5731a5289aabaa8a7c521e86b497')]:
+            ('0.1.1', 'f684badeac36d7a66d47ed65c04ae0ec278e5731a5289aabaa8a7c521e86b497'),
+            ('0.1.2', '2663853d3bab97efa09b579b110af099e852ffd7aee06d3afe105ea73e8a5c1c')]:
         retained = out / ('Ultimate-U1-ACE-link-v' + previous + '.zip')
         if retained.exists():
             assert hashlib.sha256(retained.read_bytes()).hexdigest() == previous_hash, 'Retained v' + previous + ' changed'

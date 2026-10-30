@@ -37,7 +37,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>The current package includes <strong>MANUAL-INSTALL.html</strong> for offline reading.</p>
 <aside class="alert important"><div class="alert-title">IMPORTANT</div>
 <p><strong>Do not combine an installer, manifest, and payload from different versions.</strong></p>
-<p><strong>v0.1.0 needs manual External selection. v0.1.1 and v0.1.2 set External automatically.</strong></p>
+<p><strong>v0.1.0 needs manual External selection. v0.1.1 and later set External automatically.</strong></p>
 </aside>
 <p>The computer needs Windows PowerShell and OpenSSH.</p>
 <p>It does not need Python or additional Python packages.</p>
@@ -92,7 +92,7 @@ flowchart TD
 <p><code>extended</code> is part of firmware and configuration names; it is not this reader option.</p>
 <div class="table"><table><thead><tr><th>Project version</th><th>Required action</th></tr></thead><tbody>
 <tr><td>v0.1.0</td><td>Select External manually before <code>check</code> and <code>install</code>.</td></tr>
-<tr><td>v0.1.1 / v0.1.2</td><td>Leave the current selection unchanged; <code>install</code> sets and verifies External automatically.</td></tr>
+<tr><td>v0.1.1 and later</td><td>Leave the current selection unchanged; <code>install</code> sets and verifies External automatically.</td></tr>
 </tbody></table></div>
 <p>For v0.1.0, use these steps while the printer is idle:</p>
 <ol>
@@ -106,7 +106,7 @@ flowchart TD
 <p><strong>Expected:</strong> External is selected, and Klipper returns to ready.</p>
 <p>The firmware applies the reader-service change through this control.</p>
 <p>Changing a configuration word alone does not establish the correct service state.</p>
-<p>In v0.1.1 and v0.1.2, <code>check</code> reports the planned External setting without applying it.</p>
+<p>In v0.1.1 and later, <code>check</code> reports the planned External setting without applying it.</p>
 <p><code>install</code> backs up the previous setting and reader-service state before changing them.</p>
 <p>It then verifies that the internal reader is disabled and OpenRFID is stopped.</p>
 <p>External prevents competing U1 reader paths; it does not limit the ACE&#x27;s supported tag brands.</p>
@@ -114,7 +114,7 @@ flowchart TD
 <h3 id="2-prepare-windows-powershell">2. Prepare Windows PowerShell</h3>
 <h4 id="obtain-and-inspect-the-source">Obtain and inspect the source</h4>
 <p>Choose one complete version from <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">the version and download page</a>.</p>
-<p>For this procedure, download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip">v0.1.2</a> and inspect <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link">the current source</a>.</p>
+<p>For this procedure, download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip">v0.1.3</a> and inspect <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link">the current source</a>.</p>
 <p>Use its matching entry in <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/downloads/SHA256SUMS">SHA256SUMS</a>.</p>
 <p>The checksum applies to the named project archive, not GitHub&#x27;s generated source ZIP.</p>
 <p>Earlier archives, fixed checksums, and their original instructions remain on the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">version page</a>.</p>
@@ -232,7 +232,7 @@ notepad .\config\settings.local.json
 <li>Set transport values with <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/configuration.md">the configuration guide</a>.</li>
 <li>Keep <code>forward_takeup_length</code> at <code>0</code> for initial calibration.</li>
 </ol>
-<p>For v0.1.1 or v0.1.2, add <code>&quot;auto_detect_serial&quot;: false</code> if you require the explicit <code>serial</code> value.</p>
+<p>For v0.1.1 or later, add <code>&quot;auto_detect_serial&quot;: false</code> if you require the explicit <code>serial</code> value.</p>
 <p>Do not add that option to v0.1.0, which requires the explicit serial path.</p>
 <p>The current default can find one matching ACE automatically when no existing or custom serial choice applies.</p>
 <p>JSON entries need separating commas; the final entry has no trailing comma.</p>
@@ -332,7 +332,7 @@ ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.
 <p><strong>Expected:</strong> <code>compatible</code> and <code>read_only</code> are <code>true</code>.</p>
 <p>The <code>effective_settings</code> values must match your intended configuration.</p>
 <p>Before installation, <code>calibration_acknowledged</code> must also be <code>true</code>.</p>
-<p>In v0.1.1 and v0.1.2, <code>filament_detection: &quot;external&quot;</code> describes the plan; <code>previous_filament_detection</code> describes the current setting.</p>
+<p>In v0.1.1 and later, <code>filament_detection: &quot;external&quot;</code> describes the plan; <code>previous_filament_detection</code> describes the current setting.</p>
 <ol>
 <li>Review <code>destinations</code> and <code>effective_settings</code>.</li>
 <li>Resolve every check failure before installation.</li>
@@ -356,7 +356,7 @@ ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.
 <p><strong>Expected:</strong> the command prints a backup identifier, then JSON containing <code>installed: true</code> and <code>ready_samples: 3</code>.</p>
 <p>The backup is under <code>/userdata/ultimate-u1-ace-link/backups/</code>.</p>
 <p>The printer can briefly show Klipper disconnected while its service restarts.</p>
-<p>In v0.1.1 and v0.1.2, the result also reports <code>filament_detection: &quot;external&quot;</code>.</p>
+<p>In v0.1.1 and later, the result also reports <code>filament_detection: &quot;external&quot;</code>.</p>
 <p>The <code>empty_slot_metadata_initialized</code> field identifies any first-install empty-slot material reset.</p>
 <ol>
 <li>Save the reported backup identifier privately.</li>
@@ -366,7 +366,7 @@ ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.
 ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py status&quot;
 </code></pre>
 <p><strong>Expected:</strong> <code>klipper_state</code> is <code>ready</code>, <code>managed</code> is <code>true</code>, and <code>ace_version</code> matches the project&#x27;s manifest.</p>
-<p>For v0.1.1 and v0.1.2, <code>internal_rfid_enabled</code> and <code>openrfid_running</code> must be <code>false</code>.</p>
+<p>For v0.1.1 and later, <code>internal_rfid_enabled</code> and <code>openrfid_running</code> must be <code>false</code>.</p>
 <p>The install command also verifies ACE readiness before reporting success.</p>
 <p>It does not issue feed, retract, home, or heater commands for an installation test.</p>
 <ol>

@@ -214,14 +214,18 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p><strong>完成标准：</strong> 能确认使用的是上述版本。已有正确固件且 NFC 正常时，不必重复刷写。</p>
 <h4 id="全新原厂-ace或者你不知道里面是什么固件">全新原厂 ACE，或者你不知道里面是什么固件</h4>
 <p>机身铭牌通常只能帮助确认硬件，不能代替运行固件版本检查。不要因为看到了 <code>V1.3.863</code> 就当成 <code>CV1.3.863</code>。</p>
-<p>本项目提供独立的 <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">ACE 固件准备工具与详细说明</a>。它通过 USB 检查设备，不要求你拥有 Anycubic 打印机，但它不属于普通安装向导的一键步骤。</p>
+<p>本项目已把 <a href="#ace-firmware">ACE 固件准备整合进双语向导</a>。它通过 U1 的 USB 检查 ACE，不要求 Anycubic 打印机。</p>
+<p>首次安装跟着窗口提示即可，也可在主菜单选择 ACE 固件入口；不用输入命令或编辑设备配置。</p>
 <p>已实测的升级起点只有 <strong><code>V1.3.856</code>、引导版本 <code>V1.0.1</code></strong>。其他起点不能直接套用，也不能修改检测结果来绕过检查。</p>
-<p>不熟悉固件操作时，请让熟悉设备的人按该指南完成只读检查和必要准备。交给对方的完成要求是：确认第一代硬件、准确起点、目标镜像，以及升级后的正常就绪状态。</p>
-<p><strong>未确认 ACE 固件时，先停在这里。</strong> 主安装向导不会自动刷写 ACE，也不能保证未知固件具有同样的 NFC 能力。</p>
+<p>向导负责下载校验、只读检测、生成私人设备配置，并显示准确的源版本和目标。</p>
+<p>你确认后才会执行一次更新，随后检查运行版本和后台就绪。断线后可从同一入口查看上次结果。</p>
+<p><strong>不受支持的源版本会被拒绝，不会强刷，也不能假设未知固件具有同样的 NFC 能力。</strong></p>
+<p>希望自己检查每条指令时，仍可使用<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">手动维护说明</a>。</p>
 <p>仓库不提供 NFC 密钥或密钥取得链接。若某种标签需要专有密钥，用户需自行取得；不要把密钥写进安装向导或公开提交。</p>
 <h3 id="八留给主安装向导处理的项目">八、留给主安装向导处理的项目</h3>
 <p>下面这些不用再手动操作：</p>
 <div class="table"><table><thead><tr><th>项目</th><th>向导或安装器会做什么</th></tr></thead><tbody>
+<tr><td>ACE 固件</td><td>从上游下载校验，检测已支持起点，经确认执行一次更新，并记录结果。</td></tr>
 <tr><td>传输和安装软件</td><td>复制匹配版本的软件模块。</td></tr>
 <tr><td>备份</td><td>保存它即将修改的内容，供回退使用。</td></tr>
 <tr><td>系统持久化</td><td>配置所需的持久化标记。</td></tr>
@@ -265,16 +269,17 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>向导会下载、校验原版 v24，并复制到你选定的 FAT32 U 盘。</p>
 <p>窗口随后引导你在 U1 屏幕确认本地更新、开启 Advanced Mode、将 Root Access 设为 Open。</p>
 <p>完成后在同一窗口继续安装；详细过程见<a href="#firmware">固件准备说明</a>。</p>
-<p>固件更新和访问开关仍需屏幕操作，ACE 固件和线缆仍需单独准备。</p>
+<p>U1 固件更新和访问开关仍需屏幕操作，线缆仍需亲手准备。</p>
+<p>ACE 固件检查、下载校验及受支持的刷写，已纳入后续双语向导；见<a href="#ace-firmware">ACE 向导说明</a>。</p>
 <p><a href="#prepare">机器准备图文说明</a>保留全部手动步骤。</p>
 <p><strong>后台耗材读取选项的准确名称是 External（外部）。安装向导会自动设置它。</strong></p>
 <p>你无需先寻找这个选项。</p>
 <h3 id="1-下载">1. 下载</h3>
 <ol>
-<li>点开<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip">下载安装包</a>。</li>
+<li>点开<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip">下载安装包</a>。</li>
 <li>等待浏览器下载完成。</li>
 <li>打开电脑的“下载”文件夹。</li>
-<li>找到名称含 <code>Ultimate-U1-ACE-link-v0.1.2</code> 的压缩文件。</li>
+<li>找到名称含 <code>Ultimate-U1-ACE-link-v0.1.3</code> 的压缩文件。</li>
 </ol>
 <h3 id="2-解压">2. 解压</h3>
 <ol>
@@ -290,8 +295,10 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <li>找到 <code>START-HERE.cmd</code>。</li>
 <li>快速点鼠标左键两次。</li>
 <li>在第一个菜单选择 <strong>1. 中文</strong>，再按提示操作。</li>
-<li>选择“已经准备好”或“准备 U1 固件”；还可以选择“手动安装”查看完整命令。</li>
+<li>选择“已经准备好”或“准备 U1 固件”。首次安装会提示 ACE 固件阶段。</li>
+<li>只想检查 ACE 或查看上次更新结果时，选择主菜单中的 ACE 固件入口。</li>
 </ol>
+<p>主菜单仍保留“手动安装”，可以直接打开完整命令说明。</p>
 <p>需要英文时选择 <strong>2. English</strong>。后续向导提示会使用所选语言。</p>
 <p>如果电脑隐藏文件后缀，文件可能显示为 <code>START-HERE</code>，类型为“Windows 命令脚本”。</p>
 <p><code>START-HERE.html</code> 是中文离线图文说明；<code>START-HERE.en.html</code> 是英文离线说明。</p>
@@ -395,6 +402,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>向导会自动准备准确的 U1 扩展固件文件，并逐步提示屏幕操作。</p>
 <p>使用的是<strong>上游原版固件</strong>，不是把本项目塞进固件后生成的新镜像。</p>
 <p>此步骤不刷写 ACE。</p>
+<p>完成 U1 准备后，同一安装器会提供独立的<a href="#ace-firmware">双语 ACE 固件步骤</a>。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
 <p><strong>首次固件更新仍要在 U1 屏幕确认，Advanced Mode 和 Root Access 也要在屏幕打开。</strong></p>
 <p>这些动作已纳入向导提示；不能在尚未开放访问时，声称电脑已替你完成了它们。</p>
@@ -458,7 +466,111 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>把本项目和访问默认值写进镜像，会形成不同于原版 v24 的新固件。</p>
 <p>它需要独立版本标识、源码及许可核查、恢复验证和实机测试，而且首次仍需屏幕确认升级。</p>
 <p>本次采用准确的已测上游基线，把准备工作自动化，不把未经验证的新镜像冒充原版固件。</p>
-<p>依据：<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 安装说明</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode 要求</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH 访问说明</a>。</p></details><details id="parameters"><summary>料管长度、退料及回送参数</summary><h2 id="按料管长度设置进料退料和消松回送">按料管长度设置进料、退料和消松回送</h2>
+<p>依据：<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 安装说明</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode 要求</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH 访问说明</a>。</p></details><details id="ace-firmware"><summary>ACE 固件：跟着窗口更新和查询结果</summary><h2 id="ace-固件跟着双语向导完成">ACE 固件：跟着双语向导完成</h2>
+<p><a href="START-HERE.en.html#ace-firmware">English</a> · <a href="#start">新手入口</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">保留的手动刷机步骤</a></p>
+<p>Windows 安装向导现在包含 ACE 固件准备阶段。</p>
+<p>你不需要输入命令、编辑设备配置或在电脑安装 Python。</p>
+<p>维护工具通过 SSH，在已完成前置准备的 U1 上运行。</p>
+<aside class="alert important"><div class="alert-title">必须确认</div>
+<p><strong>只适用于 ACE Pro 第一代，不适用于 ACE 2 Pro。</strong></p>
+<p><strong>U1 必须先安装指定扩展固件，开启 Advanced Mode，并将 Root Access 设为 Open。</strong></p>
+<p><strong>遇到未验证的 ACE 源版本，向导会停止，不会强行刷写。</strong></p>
+</aside>
+<h3 id="安装包里有什么">安装包里有什么？</h3>
+<p>包内只有可阅读的维护程序和双语提示，<strong>没有固件二进制、NFC 密钥或私人设备配置</strong>。</p>
+<p>你选择准备固件后，程序才从指定上游下载准确的文件。</p>
+<p>下载由 U1 执行，因此 U1 必须能够联网访问 GitHub；电脑保持与 U1 在同一局域网。</p>
+<p>下载后检查大小、SHA-256 和固件格式；检查通过前不能开始写入。</p>
+<div class="table"><table><thead><tr><th>用途</th><th>固定文件</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td>目标：OpenCubic 第一代 CFW 1.1.1</td><td><code>ACE_V1.3.863_20260716.bin</code>，113720 字节，<a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">发布页 v1.0.2</a></td><td><code>95e0b6ddb1e77d624d127ac91d9b3e21caf58adc5e1598faf2be3feacf9b4048</code></td></tr>
+<tr><td>原厂参考文件</td><td><code>ACE_V1.3.863_20250518.bin</code>，105652 字节，<a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin">固定的社区托管文件</a></td><td><code>3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63</code></td></tr>
+</tbody></table></div>
+<p>原厂文件只是参考，<strong>不是从你自己的 ACE 备份出来的固件</strong>。</p>
+<p><strong>原厂回退还没有经过实机验证，向导不会自动执行回退。</strong></p>
+<p>下载文件不因此变成本项目的 GPL 授权内容，见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/licensing.zh-CN.md">许可说明</a>。</p>
+<h3 id="哪些版本可以直接跟向导更新">哪些版本可以直接跟向导更新？</h3>
+<div class="table"><table><thead><tr><th>实际检测结果</th><th>向导的处理</th></tr></thead><tbody>
+<tr><td>第一代，应用版本 <code>V1.3.856</code>，引导程序 <code>V1.0.1</code></td><td>通过全部检查后，可以更新到指定目标。</td></tr>
+<tr><td>已显示 <code>CV1.3.863</code></td><td>不重复刷写；询问你是否已安装指定 OpenCubic 版本，且 NFC 正常。</td></tr>
+<tr><td>其他源版本、引导版本、代际或无法确认身份</td><td>停止；不猜测、不修改检测结果、不强行启用写入。</td></tr>
+</tbody></table></div>
+<p>目标固件的运行版本显示为 <code>CV1.3.863</code>。</p>
+<p>这个字符串不能区分所有社区修改版。</p>
+<p>不知道之前刷了什么时，不要把“已有正确版本”的问题回答为已确认。</p>
+<p>向导也可以用本次重新探测结果，匹配过去 24 小时内由本向导完成的成功记录。</p>
+<p>ACE 身份、设备信息和目标镜像哈希都必须匹配；旧成功记录本身不能证明当前连接的 ACE 已通过检查。</p>
+<h3 id="开始前">开始前</h3>
+<ol>
+<li>必要时先完成同一向导中的 U1 固件准备。</li>
+<li>接好已核对的第一代 ACE USB 连接线及四路料管。</li>
+<li>等打印、进料、退料及其他耗材动作结束。</li>
+<li>关闭加热和烘干，等待打印机所有加热器降到 50 °C 以下。</li>
+<li>保持 ACE 电源和 USB 连接稳定。</li>
+<li>维护及重启期间，手离开滚筒。</li>
+</ol>
+<p>程序会核对空闲状态、加热目标、温度、烘干和串口占用。</p>
+<p>它不会发送进退料命令来让失败检查通过。</p>
+<p>设备或服务初始化仍可能触发 ACE 自身动作；请保持手离开滚筒。</p>
+<p>如果仍有动作，先用设备正常控制结束，再重新准备。</p>
+<h3 id="跟窗口操作">跟窗口操作</h3>
+<ol>
+<li>完整解压项目压缩包。</li>
+<li>双击 <strong>START-HERE.cmd</strong>。</li>
+<li>选择中文或 English。</li>
+<li>首次安装时，跟随出现的 ACE 固件准备步骤。</li>
+<li>只想维护 ACE 时，在主菜单选择 ACE 固件选项。</li>
+<li>按提示输入打印机 IP 和 SSH 密码。</li>
+<li>如果存在上次事务，先查看它的结果，再考虑新的维护。</li>
+<li>阅读并确认准备条件。</li>
+<li>等待下载、校验及实际设备检查完成。</li>
+<li>核对检测到的硬件、当前版本、引导版本和目标版本。</li>
+<li>只有显示的组合正确时，才确认一次固件更新。</li>
+<li>保持供电，等待完整验证结果。</li>
+<li>窗口提示可继续时，再完成主机适配安装。</li>
+</ol>
+<p>准备阶段会暂时停止 Klipper，以便独占 ACE 接口。</p>
+<p>完成仅检查、不刷写的过程后，会恢复并核对打印机后台就绪。</p>
+<p>真正开始更新后，事务在 U1 上独立运行并记录状态，即使电脑 SSH 断开也可以继续。</p>
+<aside class="alert caution"><div class="alert-title">重要警示</div>
+<p><strong>电脑不再显示进度，不代表要重新刷一次。</strong></p>
+<p><strong>写入期间不要切断 ACE 电源。</strong></p>
+<p>使用<strong>同一版本的安装包</strong>重新打开向导，选择菜单 <strong>4</strong> 查看上次更新结果。</p>
+<p>这个入口只查询已有事务，不重复写入。</p>
+</aside>
+<h3 id="怎样才算成功">怎样才算成功？</h3>
+<p>程序必须观察到运行版本变为目标值，并连续收到就绪状态。</p>
+<p>然后恢复 Klipper，核对 U1 配置、传感器及材料信息的保留情况。</p>
+<p>只有得到完整成功结果，才允许引导流程继续。</p>
+<p>新 NFC 解码可能让非空品牌、材质或颜色发生变化，例如 Generic 变成 Bambu。</p>
+<p>向导会显示变化，要求你对照当前料盘核对，再进入主机适配安装。</p>
+<p>它不会把新品牌自动改回 Generic；原有材料信息丢失也不会被当作保留检查通过。</p>
+<p>这不是固件全量回读，也不是对 ACE 内部全部校准值的验证。</p>
+<p>它也不能证明每一种 NFC 标签都可读取。</p>
+<p>适配安装完成后，请做一次受控的<a href="#daily">进料 → 退料 → 再进料</a>，并对照料盘核对品牌、材质和颜色。</p>
+<p>原有管长参数应保留；更新固件不能替你测量新管路。</p>
+<h3 id="停止或断线后怎么办">停止或断线后怎么办？</h3>
+<div class="table"><table><thead><tr><th>提示或情况</th><th>你该做什么</th></tr></thead><tbody>
+<tr><td>下载或校验失败</td><td>检查网络；失败文件不会进入刷写步骤。</td></tr>
+<tr><td>机器正在加热、烘干、打印或使用 ACE</td><td>正常结束对应动作，等待满足条件后再准备。</td></tr>
+<tr><td>ACE 版本或设备不受支持</td><td>保留原固件，保存显示的版本供兼容性核对。</td></tr>
+<tr><td>已显示 <code>CV1.3.863</code>，但不知道固件来源</td><td>不把它确认成指定版本，保持固件不变。</td></tr>
+<tr><td>上次更新仍在运行</td><td>保持供电，继续查询同一事务。</td></tr>
+<tr><td>电脑断线</td><td>使用同一版本安装包重开向导查看上次结果，不重复刷写。</td></tr>
+<tr><td>已开始更新，但结果无法确认</td><td>保持打印控制停止，保留私人记录，按显示的恢复信息处理。</td></tr>
+</tbody></table></div>
+<p>发送过部分数据不等于升级成功。</p>
+<p>程序不会自动刷原厂包、清空事务或恢复打印。</p>
+<p>如果后台任务在<strong>尚未尝试写入固件之前</strong>停止，菜单 <strong>4</strong> 可以提供“仅检查并恢复”的操作。</p>
+<p>确认一次后等待检查 ACE 并恢复服务；该操作不刷固件。只要曾经尝试写入，就不会提供此恢复操作。</p>
+<p>超出已验证路径的故障仍可能需要<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md#uncertain-results-and-recovery">手动维护和恢复</a>。</p>
+<p>不要修改记录文件来绕过拒绝条件。</p>
+<p>私人事务记录留在打印机的 <code>/userdata/ultimate-u1-ace-link/ace-firmware/</code> 目录下。</p>
+<p>尚有未处理的固件事务时，新版主机安装和回滚都会停止；不要同时运行旧安装器或独立的手动维护工具。</p>
+<p>不要公开设备身份、密码、NFC 密钥或未脱敏的维护日志。</p>
+<h3 id="验证范围">验证范围</h3>
+<p>原始传输路线已在上表中的源版本和引导版本上实测。</p>
+<p>新增向导和事务调度使用模拟设备、服务、下载及故障进行测试，尚未独立完成从头到尾的实机安装验收。</p>
+<p>原有四个送料、退料及 NFC 核心模块保持不变。</p></details><details id="parameters"><summary>料管长度、退料及回送参数</summary><h2 id="按料管长度设置进料退料和消松回送">按料管长度设置进料、退料和消松回送</h2>
 <p><a href="START-HERE.en.html#parameters">English</a> · <a href="#start">新手安装向导</a></p>
 <p>先记住三项：<strong>A 是主退料长度，B 是快速送料长度，C 是退料后的消松回送长度。</strong></p>
 <p>料管长度会影响它们，但量到的 PTFE 管长并不等于三个参数的值。</p>
@@ -772,7 +884,8 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <tr><td>料卷</td><td>带受支持的 NFC 标签，且标签位置适合 ACE 读取。</td></tr>
 </tbody></table></div>
 <p>发布页标签 <code>v1.0.2</code> 和固件内部版本 <code>1.1.1</code> 不是同一种版本编号，因此同时出现是正常的。</p>
-<p>需要准备 ACE 固件时，请先读<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">ACE 固件指南</a>。不能把 ACE 2 的镜像刷入第一代 ACE。</p>
+<p>需要准备 ACE 固件时，按<a href="#ace-firmware">双语 ACE 固件向导</a>操作即可。</p>
+<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">手动固件步骤</a>仍保留，供选择源码维护的用户使用。不能把 ACE 2 的镜像刷入第一代 ACE。</p>
 <p>对于已经验证的这套 ACE 固件，读取受支持的拓竹标签不需要本项目再向 ACE 提交一份密钥。</p>
 <p>本项目没有“ACE 拓竹密钥”输入框；固定版本的 OpenCubic 公开文档也没有提供受支持的运行时专有密钥录入方法。</p>
 <p><strong>不要把密钥填进安装参数 JSON，也不要把 U1 的密钥文件复制给 ACE。</strong></p>

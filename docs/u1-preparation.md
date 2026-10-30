@@ -4,7 +4,8 @@
 
 The preparation stage handles the U1 firmware file and shows the required screen actions.
 It uses the **original upstream file**, not a new combined firmware image.
-It does not flash ACE.
+This U1 preparation stage does not flash ACE.
+The same installer provides a separate [bilingual ACE firmware stage](ace-wizard.md) after U1 preparation.
 
 > [!IMPORTANT]
 > **The first firmware update still requires confirmation on the U1 screen.**

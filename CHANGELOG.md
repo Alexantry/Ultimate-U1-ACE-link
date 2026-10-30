@@ -1,5 +1,22 @@
 # Changes
 
+## 0.1.3 — 2026-10-30
+
+ACE firmware preparation is now part of the bilingual Windows workflow.
+Users can prepare the required ACE firmware without editing a device profile or entering shell commands.
+
+- Download the exact OpenCubic Gen 1 target and stock reference from their pinned upstream locations.
+- Verify image identities and formats before the known source-version upgrade path can be selected.
+- Check current device identity, U1 idle and heater state, ACE readiness, drying, and serial ownership.
+- Run one update in a persistent U1 transaction, with read-only result inspection after a lost connection.
+- Keep uncertain writes stopped for review, without automatic retry or stock rollback.
+- Check preserved U1 configuration and material data; request review when new NFC decoding changes nonempty metadata.
+- Keep the manual firmware procedure and all previous release archives available.
+
+Firmware binaries and private evidence remain outside the public package.
+The four production transport/NFC modules are unchanged.
+The new guided orchestration has offline tests but no separate end-to-end physical acceptance test.
+
 ## 0.1.2 — 2026-10-30
 
 This release puts U1 preparation and installation in one bilingual workflow.

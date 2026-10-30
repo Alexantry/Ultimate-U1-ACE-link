@@ -2,21 +2,28 @@
 
 ## Public installer checks
 
-The public installer includes 35 transaction and service-state tests.
+The public installer includes 41 transaction and service-state tests.
 A 22-test baseline passed with Python 3.11 on Linux.
-The additional tests check failure recovery, temporary-file ownership, automatic External settings, serial selection, and actual OpenRFID process exit.
+The additional tests check failure recovery, temporary-file ownership, automatic External settings, serial selection, actual OpenRFID process exit, and unfinished ACE firmware transactions.
 These tests use temporary directories, simulated services, and simulated printer status.
 They do not install files into the printer's operating paths.
 The read-only `status` command also passed on the tested U1 firmware.
 
-The optional USB tools passed 96 offline tests with simulated transport and generated test images.
-The Python suites contain 325 tests across the host integration, installer, and USB tools.
-The bilingual Windows launcher adds 36 offline checks using simulated SSH and SCP operations.
+The USB tool baseline has 96 offline tests with simulated transport and generated test images.
+The guided ACE backend adds 49 tests for exclusive maintenance, durable state, single-write handling, source and image gates, metadata preservation, and recovery.
+The Python suites contain 380 tests: 41 installer, 194 host integration, and 145 USB/backend tests.
+The bilingual Windows launcher has 42 checks using simulated SSH and SCP operations.
+The ACE prompts have 35 tests for cancellation, unsupported versions, material review, interrupted connections, and safe pre-write recovery.
 U1 firmware preparation adds 20 offline checks for download integrity, USB destinations, conflicts, and cancellation.
 Those preparation tests use small synthetic files and a temporary folder, not real USB firmware installation.
 These checks passed locally with Windows PowerShell 5.1.
+The ACE prompt tests also passed with PowerShell 7.
+There are 477 distinct offline checks in total. Four Python link/lock checks are skipped on this Windows host and run in Linux CI.
 The launcher has not received a complete physical installation test, including interactive SSH password entry.
-The new USB preparation workflow has not received an end-to-end physical U1 update test.
+The USB preparation workflow has not received an end-to-end physical U1 update test.
+The ACE firmware transfer route has physical evidence for `V1.3.856` / boot `V1.0.1` to the pinned OpenCubic target.
+The new v0.1.3 guided orchestration has only offline acceptance checks so far.
+These tests do not establish physical stock rollback, internal calibration readback, or NFC coverage for untested tags.
 
 The tested production modules remain byte-for-byte unchanged in this package.
 A fresh installation with the generic installer has not received a separate physical acceptance test.

@@ -25,7 +25,8 @@
 向导会下载、校验原版 v24，并复制到你选定的 FAT32 U 盘。
 窗口随后引导你在 U1 屏幕确认本地更新、开启 Advanced Mode、将 Root Access 设为 Open。
 完成后在同一窗口继续安装；详细过程见[固件准备说明](u1-preparation.zh-CN.md)。
-固件更新和访问开关仍需屏幕操作，ACE 固件和线缆仍需单独准备。
+U1 固件更新和访问开关仍需屏幕操作，线缆仍需亲手准备。
+ACE 固件检查、下载校验及受支持的刷写，已纳入后续双语向导；见[ACE 向导说明](ace-wizard.zh-CN.md)。
 [机器准备图文说明](before-you-start.zh-CN.md)保留全部手动步骤。
 
 **后台耗材读取选项的准确名称是 External（外部）。安装向导会自动设置它。**
@@ -33,10 +34,10 @@
 
 ## 1. 下载
 
-1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip)。
+1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip)。
 2. 等待浏览器下载完成。
 3. 打开电脑的“下载”文件夹。
-4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.2` 的压缩文件。
+4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.3` 的压缩文件。
 
 ## 2. 解压
 
@@ -54,7 +55,10 @@
 1. 找到 `START-HERE.cmd`。
 2. 快速点鼠标左键两次。
 3. 在第一个菜单选择 **1. 中文**，再按提示操作。
-4. 选择“已经准备好”或“准备 U1 固件”；还可以选择“手动安装”查看完整命令。
+4. 选择“已经准备好”或“准备 U1 固件”。首次安装会提示 ACE 固件阶段。
+5. 只想检查 ACE 或查看上次更新结果时，选择主菜单中的 ACE 固件入口。
+
+主菜单仍保留“手动安装”，可以直接打开完整命令说明。
 
 需要英文时选择 **2. English**。后续向导提示会使用所选语言。
 

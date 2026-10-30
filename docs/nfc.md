@@ -21,7 +21,8 @@ It receives decoded tag data; it does not add tag decoders to ACE firmware.
 | Filament | A supported tag correctly positioned on the spool. |
 
 The release name `v1.0.2` and embedded CFW version `1.1.1` identify different parts of the release.
-See [the ACE firmware guide](ace-firmware.md) before changing firmware.
+Use [the bilingual ACE firmware wizard](ace-wizard.md) to prepare the supported version.
+The [manual firmware procedure](ace-firmware.md) remains available for source-based maintenance.
 Do not use an ACE 2 firmware image on ACE Pro Gen 1.
 
 The tested ACE firmware reads supported Bambu tags without a separate key supplied by this host project.

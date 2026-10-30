@@ -31,4 +31,7 @@ jobs:
       - name: Windows PowerShell 5.1 firmware preparation checks
         shell: powershell
         run: .\tests\test_bootstrap.ps1
+      - name: Windows PowerShell 5.1 ACE firmware wizard checks
+        shell: powershell
+        run: .\tests\test_ace_firmware_wizard.ps1
 

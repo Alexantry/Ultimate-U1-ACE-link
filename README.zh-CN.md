@@ -8,7 +8,7 @@
 
 ## [安装向导入口：下载、双击、跟着提示操作](docs/quick-start.zh-CN.md)
 
-**[下载 v0.1.2 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
+**[下载 v0.1.3 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
 尚未安装 U1 扩展固件时，在同一向导选择“准备 U1 固件”，自动下载、校验并复制到 U 盘。
 
 ## [手动安装入口：查看源码，逐条执行命令](docs/installation.md)
@@ -29,18 +29,19 @@
 3. 打开解压后的文件夹，双击 **START-HERE.cmd**，选择 **中文** 或 **English**。
 4. 还没有指定 U1 固件时，选择准备流程；向导负责下载、校验及复制到 FAT32 U 盘。
 5. 按窗口指引在 U1 屏幕确认本地更新，开启 Advanced Mode，再将 Root Access 设为 Open。
-6. 回到同一向导，输入打印机地址、密码和适合自己料管的长度。
-7. 核对摘要并安装，等验证通过后再做受控进退料检查。
+6. 回到同一向导，输入打印机地址和密码，按提示完成 ACE 固件准备。
+7. 填写适合自己料管的长度，核对摘要并安装，验证通过后再做受控进退料检查。
 
 接下来跟着所选语言的窗口操作即可，**不需要自己输入命令或修改配置文件**。
 不熟悉下载、解压和双击操作，请看[逐步图文指南](docs/quick-start.zh-CN.md)。
 安装包里的 **START-HERE.html**（中文）和 **START-HERE.en.html**（英文）也可以双击打开，离线阅读。
 
-**v0.1.0 和 v0.1.1 的原安装包均保留，文件未被新版覆盖。**
+**v0.1.0、v0.1.1 和 v0.1.2 的原安装包均保留，文件未被新版覆盖。**
 
 > [!IMPORTANT]
 > **首次更新固件和开启访问权限，仍需在打印机屏幕操作。** 向导会准备文件并逐步引导，不能在尚未开放访问时替你完成屏幕授权。
-> **尚未安装兼容 OpenCubic 的 ACE，仍需单独完成 [ACE 固件准备](docs/ace-firmware.md)。** 不能承诺任何原厂组合都只改线就能全自动完成。
+> **ACE 固件准备也已纳入双语向导。** 正常支持的路径不需另看命令说明，见[ACE 向导及支持范围](docs/ace-wizard.zh-CN.md)。
+> **仅开放已验证的源版本组合，不对未知固件强刷。**
 
 ![下载、解压、启动示意图](docs/images/first-steps.svg)
 
@@ -48,6 +49,7 @@
 
 - 自动下载指定 U1 扩展固件、核对 SHA-256、复制到选定的 FAT32 U 盘。
 - 在同一双语向导中提示屏幕升级、Advanced Mode 和 Root Access 步骤。
+- 从上游下载并校验 ACE 固件，检测设备及源版本，通过确认后执行一次更新，并保存可查询的结果。
 - 自动传本项目文件、检查版本、保存备份。
 - 自动寻找 ACE 接口；已有接口和参数会保留。
 - 自动把后台 **Filament Detection** 设置为 **External（外部）**，并处理内置读卡服务。
@@ -72,6 +74,9 @@
 | U1 | 扩展固件 `2.0.0-paxx12-24`；Advanced Mode 开启，Root Access 为 Open。 |
 | ACE | ACE Pro 第一代，正确的 USB 连接和四路料管。 |
 | ACE NFC 固件 | `CV1.3.863` / OpenCubic `1.1.1`。 |
+
+向导可更新已测的 `V1.3.856` / 引导 `V1.0.1` 组合。
+其他源版本会停下，已有目标固件不会被悄悄重刷；断线后可从向导只读查看上次结果。
 
 U1 使用上游原版固定固件，不重新打包成未经验证的新固件，也不悄悄刷写已有系统。
 U 盘准备不会格式化磁盘，不覆盖内容不同的同名文件。

@@ -6,7 +6,7 @@ Unload to ACE, keep material information, and reduce loose loops with calibrated
 
 **Built with OpenAI Codex. You do not need Codex, programming knowledge, or an API key to install this project.**
 
-[简体中文](README.zh-CN.md) · [Download v0.1.2 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip) · [SHA-256](downloads/SHA256SUMS)
+[简体中文](README.zh-CN.md) · [Download v0.1.3 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip) · [SHA-256](downloads/SHA256SUMS)
 
 ## [GUIDED INSTALLATION — start here](docs/quick-start.md)
 
@@ -32,16 +32,16 @@ You still run the readable `installer.py` on the printer.
 3. Select the U1 preparation path if the required firmware is not installed.
 4. Let the wizard download, verify, and copy the exact U1 firmware to a suitable USB drive.
 5. Follow its printer-screen steps for Local Update, Advanced Mode, and Root Access.
-6. Continue in the same wizard with the printer address, password, and reviewed tube distances.
-7. Confirm installation. Wait for the verified result, then perform the guided physical checks.
+6. Enter the printer address and password. Follow the ACE firmware stage if needed.
+7. Review tube distances and confirm host installation. Wait for success, then perform the guided physical checks.
 
 Open **START-HERE.html** or **START-HERE.en.html** for illustrated offline instructions.
-The original **v0.1.0 and v0.1.1 archives remain unchanged**.
+All earlier release archives remain unchanged.
 
 > [!IMPORTANT]
 > **Initial firmware installation and access approval still need the printer screen.**
 > The wizard prepares the official v24 file; it does not create a different firmware image or bypass these controls.
-> **ACE firmware preparation is separate when the compatible OpenCubic build is not installed.** See [ACE preparation](docs/ace-firmware.md).
+> **ACE firmware is now included in the guided workflow.** See [the supported source versions and prompts](docs/ace-wizard.md).
 
 ![Download, extract, and start](docs/images/first-steps.en.svg)
 
@@ -51,7 +51,7 @@ The original **v0.1.0 and v0.1.1 archives remain unchanged**.
 | --- | --- |
 | Download the pinned U1 file, check its SHA-256, and copy it to FAT32 USB | Select the USB drive and confirm Local Update on the U1 screen. |
 | Show the access setup steps in the selected language | Enable Advanced Mode and set Root Access to Open on the screen. |
-| Check firmware and device state | Connect the hardware and prepare compatible ACE firmware. |
+| Download and check the ACE images; run the supported update after confirmation | Connect the hardware, keep power stable, and review the detected source and target. |
 | Find the ACE interface or preserve the existing one | Enter the printer address and SSH password. |
 | Set **Filament Detection → External** | Review the physical distances for a new installation. |
 | Save backups and configure persistence | Keep the machine idle and cold. |
@@ -74,6 +74,10 @@ New installations start with forward take-up disabled.
 | U1 access | Advanced Mode enabled; Root Access Open |
 | ACE hardware | ACE Pro Gen 1, correct USB connection, four PTFE paths |
 | ACE NFC firmware | `CV1.3.863` / OpenCubic `1.1.1` |
+
+The wizard can update the tested ACE source `V1.3.856` / boot `V1.0.1`.
+Other starting combinations stop for compatibility review. Existing target builds are not silently reflashed.
+The ACE stage also provides a read-only last-result path after a connection loss.
 
 The wizard uses the original upstream U1 file. It does not silently reflash an existing system.
 Its USB preparation does not format a drive or overwrite a different file with the same name.
@@ -123,7 +127,7 @@ No keys or links to proprietary key sources are included.
 | [Snapmaker U1 Klipper](https://github.com/Snapmaker/u1-klipper) | The native printer and filament workflow. |
 | [OpenCubic](https://github.com/Jupsi/OpenCubic) | The tested ACE NFC firmware. |
 | [OpenRFID](https://github.com/suchmememanyskill/OpenRFID) | Tag-format and material naming references. |
-| [ACE Gen 1 protocol research](https://github.com/Godless50/ACE-PRO-v1.-NFC-UID) | The foundation for the separate optional USB updater. |
+| [ACE Gen 1 protocol research](https://github.com/Godless50/ACE-PRO-v1.-NFC-UID) | The protocol foundation for the USB updater used by the guided and manual workflows. |
 
 The user supplied requirements and performed physical tests.
 **OpenAI Codex wrote and integrated this project's code, installation tools, and documentation.**

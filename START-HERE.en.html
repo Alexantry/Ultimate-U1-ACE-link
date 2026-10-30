@@ -51,28 +51,29 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <li>Enable Advanced Mode on the U1 screen and complete the requested restart.</li>
 <li>Set Root Access to Open on the screen.</li>
 <li>Connect the ACE Pro Gen 1 and its four PTFE paths.</li>
-<li>Confirm the required ACE firmware before NFC use.</li>
+<li>Use the ACE stage in this wizard to check or prepare its required firmware.</li>
 <li>Finish the current print.</li>
 <li>Let the nozzle and bed cool.</li>
 </ol>
 <p>The tested ACE firmware is <code>CV1.3.863</code> with OpenCubic <code>1.1.1</code>.</p>
 <p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md#1-prepare-the-prerequisite-projects">prerequisite instructions</a>.</p>
 <p>The launcher prepares the U1 file and guides the physical steps. The printer performs the update after your screen confirmation.</p>
-<p>It does not flash ACE or change hardware.</p>
+<p>It also offers a controlled ACE update for the tested source version. It does not change hardware.</p>
+<p>Follow <a href="#ace-firmware">the bilingual ACE prompts</a>; no shell commands or device-profile edits are needed.</p>
 <p><strong>First installation:</strong> empty all four ACE inlets and all four U1 heads before installation.</p>
 <p><strong>Existing installation:</strong> an update does not require all four channels to be emptied.</p>
 <h3 id="install-with-the-launcher">Install with the launcher</h3>
 <ol>
-<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip">the project ZIP</a>.</li>
+<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip">the project ZIP</a>.</li>
 <li>Right-click the ZIP in your Downloads folder.</li>
 <li>Select Extract All.</li>
 <li>Open the extracted <code>Ultimate-U1-ACE-link</code> folder.</li>
 <li>Double-click <code>START-HERE.cmd</code>.</li>
 <li>Select <strong>2. English</strong>.</li>
 <li>Complete U1 preparation, or select the already-prepared path. Enter the current printer address.</li>
-<li>Review the installation summary.</li>
-<li>Confirm installation when the machine is idle and cold.</li>
-<li>Wait for the success result.</li>
+<li>Complete the ACE firmware stage, or confirm an existing supported build as instructed.</li>
+<li>Review the host installation summary and confirm when the machine is idle and cold.</li>
+<li>Wait for the complete success result.</li>
 </ol>
 <p>Do not run the launcher from inside the ZIP viewer.</p>
 <p><img alt="Download, extract, and start" src="docs/images/first-steps.en.svg"></p>
@@ -83,6 +84,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <h3 id="what-the-installer-sets">What the installer sets</h3>
 <div class="table"><table><thead><tr><th>Item</th><th>Automatic action</th></tr></thead><tbody>
 <tr><td>U1 firmware preparation</td><td>Download and verify v24, then copy it to selected FAT32 USB. Screen approval remains manual.</td></tr>
+<tr><td>ACE firmware preparation</td><td>Download and verify upstream images. Check the source version. Run one supported update after confirmation.</td></tr>
 <tr><td>File transfer</td><td>Copy the required public files to a new staging directory.</td></tr>
 <tr><td>Existing parameters</td><td>Keep the current ACE settings.</td></tr>
 <tr><td>ACE interface</td><td>Use the existing interface or identify one matching device.</td></tr>
@@ -165,7 +167,8 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p><a href="START-HERE.html#firmware">简体中文</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">Guided installation</a> · <strong><a href="MANUAL-INSTALL.html">Manual source installation</a></strong></p>
 <p>The preparation stage handles the U1 firmware file and shows the required screen actions.</p>
 <p>It uses the <strong>original upstream file</strong>, not a new combined firmware image.</p>
-<p>It does not flash ACE.</p>
+<p>This U1 preparation stage does not flash ACE.</p>
+<p>The same installer provides a separate <a href="#ace-firmware">bilingual ACE firmware stage</a> after U1 preparation.</p>
 <aside class="alert important"><div class="alert-title">IMPORTANT</div>
 <p><strong>The first firmware update still requires confirmation on the U1 screen.</strong></p>
 <p><strong>Advanced Mode and Root Access must also be enabled before remote installation.</strong></p>
@@ -234,7 +237,120 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <p>It would need its own identity, source obligations, recovery checks, and hardware validation.</p>
 <p>It would still need the first screen-confirmed update.</p>
 <p>This release instead retains the exact tested upstream baseline and automates its preparation.</p>
-<p>Sources: <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 installation</a>, <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode requirement</a>, and <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH access</a>.</p></details><details id="parameters"><summary>Tube lengths and take-up settings</summary><h2 id="configuration-and-calibration">Configuration and calibration</h2>
+<p>Sources: <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 installation</a>, <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode requirement</a>, and <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH access</a>.</p></details><details id="ace-firmware"><summary>ACE firmware: guided preparation and result checks</summary><h2 id="ace-firmware-follow-the-bilingual-wizard">ACE firmware: follow the bilingual wizard</h2>
+<p><a href="START-HERE.html#ace-firmware">简体中文</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">Start here</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">Manual firmware procedure</a></p>
+<p>The Windows wizard prepares ACE firmware before the host integration.</p>
+<p>You do not need to type commands, edit a device profile, or install Python on Windows.</p>
+<p>The U1 runs the maintenance tools through its existing SSH access.</p>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>Use this workflow only with ACE Pro Gen 1. It does not support ACE 2 Pro.</strong></p>
+<p><strong>U1 must first run the supported extended firmware, with Advanced Mode and Root Access enabled.</strong></p>
+<p><strong>The wizard does not bypass an unsupported ACE source version.</strong></p>
+</aside>
+<h3 id="what-is-included">What is included</h3>
+<p>The package contains the readable maintenance tools and bilingual prompts.</p>
+<p>It contains <strong>no firmware binary, NFC key, or private device profile</strong>.</p>
+<p>When you select firmware preparation, the tool downloads the exact images from their recorded upstream locations.</p>
+<p>It checks their size, SHA-256, and firmware format before a write can start.</p>
+<p>The U1 needs internet access to GitHub for this download. The computer stays connected to the same local network.</p>
+<div class="table"><table><thead><tr><th>Purpose</th><th>Pinned upstream file</th><th>SHA-256</th></tr></thead><tbody>
+<tr><td>Target: OpenCubic Gen 1 CFW 1.1.1</td><td><code>ACE_V1.3.863_20260716.bin</code>, 113720 bytes, <a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">release v1.0.2</a></td><td><code>95e0b6ddb1e77d624d127ac91d9b3e21caf58adc5e1598faf2be3feacf9b4048</code></td></tr>
+<tr><td>Stock reference</td><td><code>ACE_V1.3.863_20250518.bin</code>, 105652 bytes, <a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin">pinned community-hosted file</a></td><td><code>3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63</code></td></tr>
+</tbody></table></div>
+<p>The stock file is a reference, not a backup of your ACE.</p>
+<p><strong>Physical stock rollback has not been tested. The wizard does not automatically attempt it.</strong></p>
+<p>The source license does not license downloaded images. See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/licensing.md">licensing</a>.</p>
+<h3 id="which-starting-versions-can-the-wizard-update">Which starting versions can the wizard update?</h3>
+<div class="table"><table><thead><tr><th>Detected ACE state</th><th>Wizard action</th></tr></thead><tbody>
+<tr><td>Gen 1, application <code>V1.3.856</code>, bootloader <code>V1.0.1</code></td><td>Permit preparation for the exact target after all checks pass.</td></tr>
+<tr><td>Already reports <code>CV1.3.863</code></td><td>Do not reflash. Ask you to confirm that the intended OpenCubic build is already installed and NFC works.</td></tr>
+<tr><td>Another source version, bootloader, generation, or an unclear identity</td><td>Stop. Do not guess, alter the probe, or force the profile.</td></tr>
+</tbody></table></div>
+<p>The target reports runtime version <code>CV1.3.863</code>.</p>
+<p>That string alone cannot distinguish every community build.</p>
+<p>Do not confirm the existing-build question unless you know what was installed.</p>
+<p>A fresh probe can also match a successful installation receipt from this wizard within the last 24 hours.</p>
+<p>The ACE identity, reported device information, and target image hash must match.</p>
+<p>An old success record alone does not verify the currently connected ACE.</p>
+<h3 id="before-you-start">Before you start</h3>
+<ol>
+<li>Complete the U1 preparation path if required.</li>
+<li>Connect the verified ACE Gen 1 USB cable and the four PTFE paths.</li>
+<li>Finish printing and all filament operations.</li>
+<li>Turn off heating and drying. Let all printer heaters cool below 50 °C.</li>
+<li>Keep ACE power and its USB cable connected.</li>
+<li>Keep hands clear of the rollers during firmware maintenance and restart.</li>
+</ol>
+<p>The program checks idle state, heater targets, temperatures, dryer state, and serial ownership.</p>
+<p>It does not issue load or unload commands to make a failed check pass.</p>
+<p>Device or service initialization can still trigger ACE behavior. Keep hands clear of the rollers.</p>
+<p>Use the normal printer controls to finish an active operation before retrying preparation.</p>
+<h3 id="follow-the-prompts">Follow the prompts</h3>
+<ol>
+<li>Extract the complete project ZIP.</li>
+<li>Double-click <strong>START-HERE.cmd</strong>.</li>
+<li>Select English or Chinese.</li>
+<li>For a new installation, follow the ACE firmware stage when it appears.</li>
+<li>To maintain ACE separately, select the ACE firmware option in the main menu.</li>
+<li>Enter the printer address and SSH password when requested.</li>
+<li>Read any previous-update result before starting new maintenance.</li>
+<li>Confirm the displayed preparation conditions.</li>
+<li>Wait while the tool downloads, verifies, and checks the device.</li>
+<li>Read the detected hardware, source version, boot version, and target.</li>
+<li>Confirm one firmware update only if the displayed combination is correct.</li>
+<li>Keep power connected and wait for the verified result.</li>
+<li>Continue with host integration when the wizard offers it.</li>
+</ol>
+<p>Preparation temporarily stops Klipper to obtain exclusive ACE access.</p>
+<p>It restores and checks printer readiness after a completed probe-only operation.</p>
+<p>Starting a firmware update launches a separate worker for the stored transaction on U1.</p>
+<p>That worker can continue if the computer&#x27;s SSH connection is lost.</p>
+<aside class="alert caution"><div class="alert-title">CAUTION</div>
+<p><strong>Do not start a second update because progress stopped appearing on the computer.</strong></p>
+<p><strong>Do not disconnect ACE power during an active write.</strong></p>
+<p>Reopen the wizard from <strong>the same package version</strong> and use menu <strong>4</strong> to read the last result.</p>
+<p>It reads the existing transaction instead of repeating the write.</p>
+</aside>
+<h3 id="what-counts-as-success">What counts as success?</h3>
+<p>The tool must observe the expected runtime transition and consecutive ready responses.</p>
+<p>It must then restore Klipper and check the U1 configuration, sensors, and retained material data.</p>
+<p>Only a complete success result permits the guided workflow to continue.</p>
+<p>New NFC decoding can change a nonempty brand, type, or color, such as Generic becoming Bambu.</p>
+<p>The wizard shows such changes and asks you to compare them with the installed spools before host installation.</p>
+<p>It does not overwrite the new data with the old Generic label.</p>
+<p>Loss of previously available material data is not treated as a successful preservation check.</p>
+<p>These checks are not a full firmware readback or a measurement of ACE internal calibration.</p>
+<p>They do not prove every NFC format works.</p>
+<p>After host installation, complete one supervised <a href="#daily">load → unload → reload check</a>.</p>
+<p>Compare a supported tag&#x27;s brand, material, and color with its spool label.</p>
+<p>Keep your calibrated tube settings; a firmware update does not measure a new tube path.</p>
+<h3 id="if-preparation-or-updating-stops">If preparation or updating stops</h3>
+<div class="table"><table><thead><tr><th>Result</th><th>What to do</th></tr></thead><tbody>
+<tr><td>Download or checksum failure</td><td>Check the network. No failed image is used for a firmware write.</td></tr>
+<tr><td>Printer hot, busy, drying, or using ACE</td><td>Finish that operation normally. Wait for the required state, then prepare again.</td></tr>
+<tr><td>Unknown ACE version or device</td><td>Keep the existing firmware. Save the reported versions for compatibility review.</td></tr>
+<tr><td>Existing <code>CV1.3.863</code>, but build origin is unknown</td><td>Do not confirm it as the tested build. Keep the firmware unchanged.</td></tr>
+<tr><td>Update still running</td><td>Leave power connected. View the same transaction&#x27;s result again.</td></tr>
+<tr><td>Connection lost</td><td>Reopen the same package version and inspect the previous result. Do not repeat the write.</td></tr>
+<tr><td>Uncertain result after updating started</td><td>Leave printer control stopped and preserve the private evidence. Follow the displayed recovery information.</td></tr>
+</tbody></table></div>
+<p>An uncertain write is not a successful update, even if some data was sent.</p>
+<p>The tool will not automatically flash the stock image, clear the transaction, or restart printing.</p>
+<p>If a worker stopped <strong>before any firmware write</strong>, menu <strong>4</strong> can offer a probe-only recovery.</p>
+<p>Confirm that recovery once. Wait for it to check ACE and restore the service.</p>
+<p>This option does not flash firmware. It is unavailable after a write was attempted.</p>
+<p>Cases outside the validated path can require the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md#uncertain-results-and-recovery">manual maintenance and recovery procedure</a>.</p>
+<p>Do not edit stored evidence to bypass a refusal.</p>
+<p>Private transaction records stay on the printer.</p>
+<p>They are stored below <code>/userdata/ultimate-u1-ace-link/ace-firmware/</code>.</p>
+<p>New host installation and rollback refuse to run while an unresolved firmware transaction remains.</p>
+<p>Do not run an older installer or a separate manual maintenance tool at the same time.</p>
+<p>Do not publish device identities, credentials, NFC keys, or unredacted maintenance logs.</p>
+<h3 id="validation-scope">Validation scope</h3>
+<p>The original firmware transfer route was physically tested on the stated source and boot versions.</p>
+<p>The new guided orchestration is checked with simulated devices, services, downloads, and failures.</p>
+<p>It has not received a separate end-to-end physical acceptance test.</p>
+<p>The four production feed, unload, and NFC integration modules remain unchanged.</p></details><details id="parameters"><summary>Tube lengths and take-up settings</summary><h2 id="configuration-and-calibration">Configuration and calibration</h2>
 <p><a href="START-HERE.html#parameters">中文说明</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">Guided installation</a></p>
 <p>Tube length affects the settings. It is not the same as a transport command length.</p>
 <p>Use three separate values:</p>
@@ -558,7 +674,8 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <tr><td>Filament</td><td>A supported tag correctly positioned on the spool.</td></tr>
 </tbody></table></div>
 <p>The release name <code>v1.0.2</code> and embedded CFW version <code>1.1.1</code> identify different parts of the release.</p>
-<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">the ACE firmware guide</a> before changing firmware.</p>
+<p>Use <a href="#ace-firmware">the bilingual ACE firmware wizard</a> to prepare the supported version.</p>
+<p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">manual firmware procedure</a> remains available for source-based maintenance.</p>
 <p>Do not use an ACE 2 firmware image on ACE Pro Gen 1.</p>
 <p>The tested ACE firmware reads supported Bambu tags without a separate key supplied by this host project.</p>
 <p>The project provides no ACE key-entry field.</p>

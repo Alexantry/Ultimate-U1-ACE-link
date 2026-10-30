@@ -22,7 +22,8 @@ def target(url, source, image=False):
     sections = {'u1-preparation.md': 'firmware', 'u1-preparation.zh-CN.md': 'firmware',
                 'configuration.md': 'parameters', 'configuration.zh-CN.md': 'parameters',
                 'nfc.md': 'nfc', 'nfc.zh-CN.md': 'nfc',
-                'daily-use.md': 'daily', 'daily-use.zh-CN.md': 'daily'}
+                'daily-use.md': 'daily', 'daily-use.zh-CN.md': 'daily',
+                'ace-wizard.md': 'ace-firmware', 'ace-wizard.zh-CN.md': 'ace-firmware'}
     if url in sections:
         if ('.zh-CN.' in url) == ('.zh-CN.' in source.name):
             return '#' + sections[url]
@@ -160,6 +161,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
     page = page.replace('</header>', '</header>\n' + routes + critical, 1)
     extra = ''
     for section, name, title in [('firmware', 'u1-preparation.zh-CN.md', 'U1 固件与访问设置'),
+                                 ('ace-firmware', 'ace-wizard.zh-CN.md', 'ACE 固件：跟着窗口更新和查询结果'),
                                  ('parameters', 'configuration.zh-CN.md', '料管长度、退料及回送参数'),
                                  ('nfc', 'nfc.zh-CN.md', 'NFC 支持范围与密钥位置'),
                                  ('daily', 'daily-use.zh-CN.md', '日常进退料与远程操作'),
@@ -190,6 +192,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
     english = english.replace('</header>', '</header>\n' + routes_en + english_critical, 1)
     extra_en = ''
     for section, name, title in [('firmware', 'u1-preparation.md', 'U1 firmware and access setup'),
+                                 ('ace-firmware', 'ace-wizard.md', 'ACE firmware: guided preparation and result checks'),
                                  ('parameters', 'configuration.md', 'Tube lengths and take-up settings'),
                                  ('nfc', 'nfc.md', 'NFC support and key configuration'),
                                  ('daily', 'daily-use.md', 'Daily use and remote controls'),
@@ -201,7 +204,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
     manual += '<header><h1>MANUAL INSTALLATION / 手动安装</h1><p>Read the source and enter each command. This page does not execute anything.</p><p>本页提供完整英文命令步骤，不运行 Windows 向导；仍会使用可阅读的 printer installer.py。</p><a href="START-HERE.html">中文说明</a> · <a href="START-HERE.en.html">English guide</a></header>'
     manual += '<section>' + render(ROOT / 'docs/installation.md') + '</section></main></body></html>'
     # Manual links refer to the appropriate online document, not absent inline sections.
-    manual = re.sub(r'href="#(?:firmware|parameters|nfc|daily)"', lambda m: 'href="' + REPO + 'docs/' + {'firmware':'u1-preparation.md','parameters':'configuration.md','nfc':'nfc.md','daily':'daily-use.md'}[m[0].split('#')[1].rstrip('"')] + '"', manual)
+    manual = re.sub(r'href="#(?:firmware|ace-firmware|parameters|nfc|daily)"', lambda m: 'href="' + REPO + 'docs/' + {'firmware':'u1-preparation.md','ace-firmware':'ace-wizard.md','parameters':'configuration.md','nfc':'nfc.md','daily':'daily-use.md'}[m[0].split('#')[1].rstrip('"')] + '"', manual)
     (ROOT / 'MANUAL-INSTALL.html').write_text(manual, encoding='utf8')
     print('Built bilingual offline guides and the manual installation entry.')
 

@@ -1,6 +1,15 @@
-# Optional ACE Gen1 firmware preparation
+# ACE Gen1 firmware: guided or manual preparation
 
-This workflow is separate from the host installation. The host installer does not flash ACE firmware.
+**[Use the bilingual ACE firmware wizard](ace-wizard.md) · [中文向导说明](ace-wizard.zh-CN.md)**
+
+The Windows wizard now handles downloads, checks, private profiles, and the supported update transaction.
+First-time users can follow its prompts before host integration. No shell commands or profile editing are required.
+The standalone `installer.py` still installs host integration only; ACE maintenance uses a separate controlled backend.
+
+## Manual alternative
+
+The detailed command procedure below remains available for source review and manual maintenance.
+Do not run this manual procedure at the same time as a guided update.
 
 **Skip flashing when the intended OpenCubic Gen1 build already runs and NFC works.** A reported version alone does not identify every community build.
 
@@ -212,8 +221,6 @@ Stop if the source or boot combination is unreviewed. ACE responses cannot estab
 Use this branch only if you ran `probe` and **never ran `flash` or another IAP command**. It restores normal operation without a firmware change.
 
 Use it when your source version is unsupported or you choose not to flash. An uncertain update must follow the failure section instead.
-
-For the supported upgrade, skip this section and continue to profile generation.
 
 For the supported upgrade, skip this section and continue to profile generation.
 

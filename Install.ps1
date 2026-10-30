@@ -40,13 +40,13 @@ $script:WizardMessages = @{
     settings_external = @('  材料信息来源：ACE（自动设置 External）', '  Material source: ACE (External is set automatically)')
     stage_prepare = @('准备', 'Preparation')
     title = @('Ultimate U1-ACE link 安装向导', 'Ultimate U1-ACE link Setup Wizard')
-    credit = @('由 OpenAI Codex 协助开发。此向导不会刷写 U1 或 ACE 固件。', 'Developed with OpenAI Codex. This wizard does not flash U1 or ACE firmware.')
+    credit = @('由 OpenAI Codex 协助开发。U1 更新由屏幕确认；ACE 更新需检查通过并单独确认。', 'Developed with OpenAI Codex. U1 updates need screen confirmation. ACE updates need passed checks and separate confirmation.')
     warning_title = @('重要：不要复制旧版 SnapAce 软件文件！', 'IMPORTANT: Do not copy old SnapAce software files.')
     warning_replaces = @('本项目替代旧版 SnapAce 的软件安装步骤。', 'This project replaces the old SnapAce software installation steps.')
     warning_core = @('不要把旧版 filament_feed.py 或 extruder.py 覆盖到 U1 2.0。', 'Do not copy old filament_feed.py or extruder.py files onto U1 2.0.')
     warning_hardware = @('上游 SnapAce 指南仅用于参考硬件连接。', 'Use the upstream SnapAce guide only for hardware connections.')
-    guide_first = @('首次使用请先双击 START-HERE.html，按图完成固件、接线和长度准备。', 'Before first use, open START-HERE.en.html. Complete its firmware, wiring, and length preparation steps.')
-    prerequisites_question = @('是否已完成图文手册中的前置准备？', 'Have you completed the prerequisites in the guide?')
+    guide_first = @('先完成 U1 v24、Advanced Mode、Root Access 和接线准备。ACE 固件可在接下来的向导中完成。', 'Prepare U1 v24, Advanced Mode, Root Access, and wiring first. The following wizard can prepare ACE firmware.')
+    prerequisites_question = @('U1 指定固件、访问开关及 ACE 第一代接线是否已准备好？', 'Are the required U1 firmware, access settings, and ACE Gen 1 wiring ready?')
     prerequisites_yes = @('已完成，开始检查', 'Yes, start the checks')
     prerequisites_no = @('尚未完成，退出看图文手册', 'No, exit and read the guide')
     cold_notice = @('安装期间不要打印、上下料或操作滚筒；请关闭烘干和加热并等温度低于 50°C。', 'Do not print or move filament during installation. Stop drying and heating. Wait until temperatures are below 50 C.')
@@ -108,10 +108,13 @@ $script:WizardMessages = @{
     task_ready = @('  1. U1 已准备好，安装或更新 ACE 适配', '  1. U1 is ready: install or update ACE integration')
     task_usb = @('  2. 准备 U1 固件 U 盘，并查看屏幕操作指引', '  2. Prepare U1 firmware USB and follow the screen instructions')
     task_manual = @('  3. 手动安装（英文命令说明），打开文档并退出', '  3. Manual installation: open the instructions and exit')
-    task_prompt = @('请输入 1、2 或 3', 'Enter 1, 2, or 3')
-    task_invalid = @('请输入列表中的数字 1、2 或 3。', 'Enter 1, 2, or 3 from the list.')
+    task_ace = @('  4. ACE 固件检查、更新或查看上次更新结果', '  4. Check or update ACE firmware; inspect the last update')
+    task_prompt = @('请输入 1、2、3 或 4', 'Enter 1, 2, 3, or 4')
+    task_invalid = @('请输入列表中的数字 1、2、3 或 4。', 'Enter 1, 2, 3, or 4 from the list.')
     manual_opened = @('已在浏览器打开手动安装说明；向导不会连接打印机。', 'The manual installation guide is open in your browser. The wizard will not contact the printer.')
     stage_bootstrap = @('准备固件 U 盘', 'Preparing firmware USB')
+    stage_ace = @('ACE 固件准备与结果检查', 'ACE firmware preparation and result checks')
+    existing_firmware_kept = @('已有安装默认保留 ACE 固件；需要主动检查或查看上次更新时使用菜单 4。', 'Existing installations keep ACE firmware by default. Use menu 4 to check it or inspect the last update.')
 }
 
 function Get-WizardText {
@@ -153,10 +156,10 @@ function Select-WizardLanguage {
 function Select-WizardTask {
     Write-Host ''
     Write-Host (Get-WizardText 'task_title') -ForegroundColor Cyan
-    foreach ($id in @('task_ready', 'task_usb', 'task_manual')) { Write-Host (Get-WizardText $id) }
+    foreach ($id in @('task_ready', 'task_usb', 'task_manual', 'task_ace')) { Write-Host (Get-WizardText $id) }
     while ($true) {
         $choice = Read-Host (Get-WizardText 'task_prompt')
-        if ($choice -in @('1', '2', '3')) { return $choice }
+        if ($choice -in @('1', '2', '3', '4')) { return $choice }
         Write-Host (Get-WizardText 'task_invalid') -ForegroundColor Yellow
     }
 }
@@ -175,6 +178,22 @@ function Invoke-WizardBootstrap {
     }
     . $bootstrapPath
     return (Start-U1Bootstrap -BundleRoot $BundleRoot)
+}
+
+function Invoke-WizardAceGate {
+    param([string]$BundleRoot, [string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile, [bool]$AllowRecovery = $false)
+    $source = Get-Item -LiteralPath (Join-Path $BundleRoot 'AceFirmware.ps1') -Force
+    if ($source.PSIsContainer -or ($source.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw (New-WizardException 'bundle_regular') }
+    . $source.FullName
+    return (Get-AceFirmwareGate $Ssh $Target $RemoteDir $LogFile $AllowRecovery)
+}
+
+function Invoke-WizardAceSetup {
+    param([string]$BundleRoot, [string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile, [bool]$ForcePrepare = $false)
+    $source = Get-Item -LiteralPath (Join-Path $BundleRoot 'AceFirmware.ps1') -Force
+    if ($source.PSIsContainer -or ($source.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw (New-WizardException 'bundle_regular') }
+    . $source.FullName
+    return (Start-AceFirmwareSetup $Ssh $Target $RemoteDir $LogFile $ForcePrepare)
 }
 
 function Test-PrinterAddress {
@@ -228,7 +247,10 @@ function Invoke-WizardNative {
 function Get-WizardBundleFiles {
     param([string]$Root)
     $names = @('installer.py', 'manifest.json', 'LICENSE', 'THIRD_PARTY.md', 'SOURCES.json',
-        'payload/ace.py', 'payload/filament_feed.py', 'payload/filament_detect.py', 'payload/extruder.py')
+        'payload/ace.py', 'payload/filament_feed.py', 'payload/filament_detect.py', 'payload/extruder.py',
+        'tools/ace_usb/wizard_backend.py', 'tools/ace_usb/ace_iap.py', 'tools/ace_usb/protocol.py',
+        'tools/ace_usb/prepare_profile.py', 'tools/ace_usb/fetch_firmware.py',
+        'tools/ace_usb/images.json', 'tools/ace_usb/device-profile.json')
     foreach ($name in $names + @('config/settings.example.json')) {
         $file = Get-Item -LiteralPath (Join-Path $Root $name)
         if ($file.PSIsContainer -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
@@ -416,10 +438,30 @@ function Start-U1Wizard {
         Write-Host (Get-WizardText 'step_upload') -ForegroundColor Cyan
         $copy = Invoke-WizardNative $scp @('-O', '-o', 'ConnectTimeout=15', '-r', $bundle, ($target + ':' + $remoteDir))
         if ($copy.ExitCode -ne 0) { throw (New-WizardException 'upload_failed') }
+        # A previous firmware worker can still own the port while Klipper is stopped.
+        # Inspect that durable result before the normal printer status check.
+        $stage = Get-WizardText 'stage_ace'
+        $aceGate = Invoke-WizardAceGate $BundleRoot $ssh $target $remoteDir $logFile ($task -eq '4')
+        if (-not $aceGate.Continue) { return 2 }
+        $aceSetupDone = $false
+        if ($aceGate.ForcePrepare) {
+            if (-not (Invoke-WizardAceSetup $BundleRoot $ssh $target $remoteDir $logFile $true)) { return 2 }
+            $aceSetupDone = $true
+        }
         $stage = (Get-WizardText 'stage_read')
         $status = Invoke-WizardRemoteJson $ssh $target $remoteDir 'status' $logFile
         if ($status.existing_ace -isnot [bool]) { throw (New-WizardException 'installer_mismatch') }
         $existing = $status.existing_ace
+        if (-not $existing -and @($status.serial_candidates).Count -ne 1) { throw (New-WizardException 'serial_ambiguous') }
+        if (-not $aceSetupDone -and -not $aceGate.CompletedNow -and (-not $existing -or $task -eq '4' -or $aceGate.RequiresSetup)) {
+            $stage = Get-WizardText 'stage_ace'
+            if (-not (Invoke-WizardAceSetup $BundleRoot $ssh $target $remoteDir $logFile)) { return 2 }
+            $stage = Get-WizardText 'stage_read'
+            $status = Invoke-WizardRemoteJson $ssh $target $remoteDir 'status' $logFile
+            if ($status.existing_ace -isnot [bool] -or $status.existing_ace -ne $existing) { throw (New-WizardException 'state_changed') }
+        } elseif ($existing -and $task -ne '4' -and -not $aceGate.CompletedNow -and -not $aceSetupDone) {
+            Write-Host (Get-WizardText 'existing_firmware_kept')
+        }
         if ($existing) {
             Write-Host (Get-WizardText 'existing_found') -ForegroundColor Green
         } else {

@@ -12,8 +12,8 @@ The wizard has a separate manual-guide menu entry.
 
 ## [GUIDED INSTALLATION — use bilingual prompts](quick-start.md)
 
-The current wizard can prepare the original U1 firmware file and guide the screen steps before host installation.
-See [U1 preparation](u1-preparation.md).
+The current wizard covers U1 file preparation, screen guidance, and the supported ACE firmware update before host installation.
+See [U1 preparation](u1-preparation.md) and [ACE firmware prompts](ace-wizard.md).
 
 | Method | What you run | Best fit |
 | --- | --- | --- |
@@ -33,6 +33,8 @@ See [the manual source procedure](installation.md).
 | [START-HERE.cmd](../START-HERE.cmd) | Start Windows PowerShell with the local launcher. |
 | [Install.ps1](../Install.ps1) | Display prompts and transfer the selected public files. |
 | [Bootstrap.ps1](../Bootstrap.ps1) | Download the pinned upstream U1 image, verify it, and prepare selected removable FAT32 USB. |
+| [AceFirmware.ps1](../AceFirmware.ps1) | Guide ACE preparation, one confirmed update, and read-only result inspection. |
+| [wizard_backend.py](../tools/ace_usb/wizard_backend.py) | Run persistent ACE maintenance transactions on the U1 with the existing protocol tools. |
 | [installer.py](../installer.py) | Check compatibility, save backups, configure the printer, and verify the result. |
 | [manifest.json](../manifest.json) | List supported firmware identities and payload hashes. |
 | [payload](../payload) | Provide the four printer integration modules. |
@@ -41,7 +43,9 @@ The launcher is readable source, not a closed binary executable.
 `START-HERE.cmd` applies `ExecutionPolicy Bypass` only to its PowerShell process.
 It does not save a system execution-policy change.
 It does not download or run another installer from the network.
-The optional firmware-preparation path downloads a pinned upstream BIN, checks its hash, and copies it. It does not execute that file on Windows.
+The U1 preparation path downloads a pinned upstream BIN, checks its hash, and copies it to the selected USB drive.
+The ACE stage downloads its pinned images on U1, checks them, and writes the selected target only after device checks and confirmation.
+Neither path executes a firmware BIN on Windows. Firmware binaries are not included in this source archive.
 Passwords use the system SSH client and are not saved by the launcher.
 Private diagnostic files stay on the computer or printer.
 No diagnostic upload occurs automatically.
@@ -52,6 +56,15 @@ Each version has its own archive name.
 [SHA256SUMS](../downloads/SHA256SUMS) lists the retained and current package hashes.
 The archive also includes `PACKAGE-SHA256SUMS` for its source files.
 A matching hash checks file integrity; it does not replace source review or hardware validation.
+
+## Retained v0.1.2
+
+- [Download the unchanged v0.1.2 archive](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/2407650dd4d5ae2fea810c4bcb8b4c81114938d6/downloads/Ultimate-U1-ACE-link-v0.1.2.zip).
+- [Read its original instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/2407650dd4d5ae2fea810c4bcb8b4c81114938d6/docs/installation.md).
+- [Inspect its fixed source](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/2407650dd4d5ae2fea810c4bcb8b4c81114938d6).
+
+SHA-256: `2663853d3bab97efa09b579b110af099e852ffd7aee06d3afe105ea73e8a5c1c`.
+This release prepares U1 USB firmware but keeps ACE flashing in the separate manual procedure.
 
 ## Retained v0.1.1
 
@@ -86,5 +99,6 @@ SHA-256:
 
 原来的 **v0.1.0** 安装包、校验值和对应说明已经保留在上方固定链接中，文件未被新版覆盖。
 **v0.1.1** 也保留原样。最新版增加 U1 固件准备，不会覆盖这两个旧压缩包。
+**v0.1.2** 同样保留原样。最新版增加 ACE 引导更新，不会改变之前的安装包。
 旧版需自己设置 **External**；新版安装器会自动设置并检查。
 请使用同一版本的文件与说明，不要混装。

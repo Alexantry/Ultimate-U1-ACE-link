@@ -182,6 +182,94 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual(before, self.f.bytes())
         self.assertIsNone(self.f.host.read(I.RECEIPT))
 
+    def ace_transaction(self, state='PREPARED', **changes):
+        token = 'a' * 32
+        record = dict(schema=1, operation=token, state=state, ready=True,
+                      service_restored=True, stopped=False,
+                      flash_attempted=state == 'SUCCEEDED')
+        record.update(changes)
+        base = I.STATE_ROOT + '/ace-firmware'
+        self.f.put(base + '/last.json', I.json_bytes({'operation': token}))
+        self.f.put(base + '/' + token + '/state.json', I.json_bytes(record))
+        return base, token
+
+    def test_ace_safe_terminal_records_allow_host_install_and_rollback(self):
+        for state in ('PREPARED', 'ALREADY_TARGET', 'UNSUPPORTED', 'FAILED_SAFE',
+                      'CANCELLED_SAFE', 'SUCCEEDED'):
+            with self.subTest(state=state):
+                self.ace_transaction(state)
+                self.f.installer.ace_maintenance_clear()
+        base, token = self.ace_transaction('SUCCEEDED')
+        path = base + '/' + token + '/state.json'
+        evidence = self.f.host.read(path)
+        self.f.install()
+        with patch.object(I.time, 'sleep', return_value=None):
+            self.f.installer.rollback()
+        self.assertEqual(self.f.host.read(path), evidence)
+
+    def test_ace_active_or_uncertain_record_blocks_both_mutating_entries(self):
+        for state in ('PREPARING', 'STARTING', 'RUNNING', 'RECOVERING',
+                      'NEEDS_ATTENTION', 'UNKNOWN', '', None, []):
+            with self.subTest(state=state):
+                self.ace_transaction(state)
+                with patch.object(self.f.installer, 'prepare') as prepare, \
+                        patch.object(self.f.installer, 'firmware') as firmware:
+                    with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'):
+                        self.f.installer.install(self.f.settings)
+                    with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'):
+                        self.f.installer.rollback(offline_recovery=True, confirm_idle_and_cold=True)
+                    prepare.assert_not_called(); firmware.assert_not_called()
+                self.assertEqual(self.f.host.actions, [])
+
+    def test_ace_terminal_requires_complete_consistent_restoration_evidence(self):
+        mutations = [dict(ready=False), dict(ready=1), dict(service_restored=False),
+                     dict(service_restored=None), dict(stopped=True), dict(stopped=None),
+                     dict(flash_attempted=True), dict(flash_attempted=0),
+                     dict(schema=True), dict(schema=2), dict(operation='b' * 32)]
+        for change in mutations:
+            with self.subTest(change=change):
+                self.ace_transaction(**change)
+                with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'):
+                    self.f.installer.ace_maintenance_clear()
+        self.ace_transaction('SUCCEEDED', flash_attempted=False)
+        with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'):
+            self.f.installer.ace_maintenance_clear()
+
+    def test_ace_corrupt_missing_and_oversized_records_fail_closed(self):
+        base, token = self.ace_transaction()
+        pointer, state = base + '/last.json', base + '/' + token + '/state.json'
+        cases = [(pointer, b'not JSON'), (pointer, b'[]'),
+                 (pointer, I.json_bytes({'operation': '../escape'})),
+                 (pointer, b' ' * 1025), (state, b'{'), (state, b'null'),
+                 (state, b' ' * 65537)]
+        for path, value in cases:
+            with self.subTest(path=path, size=len(value)):
+                self.ace_transaction(); self.f.put(path, value)
+                with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'):
+                    self.f.installer.ace_maintenance_clear()
+        self.ace_transaction(); self.f.host.path(state).unlink()
+        with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'):
+            self.f.installer.ace_maintenance_clear()
+
+    def test_ace_state_paths_cannot_follow_symlinks(self):
+        base, token = self.ace_transaction()
+        state = self.f.host.path(base + '/' + token + '/state.json')
+        target = self.f.base / 'external-state.json'
+        target.write_bytes(state.read_bytes()); state.unlink()
+        try:
+            state.symlink_to(target)
+        except OSError as exc:
+            self.skipTest('Platform does not permit test symlinks: ' + str(exc))
+        with self.assertRaisesRegex(RuntimeError, 'Unexpected symlink'):
+            self.f.installer.ace_maintenance_clear()
+        self.assertEqual(self.f.host.actions, [])
+
+    def test_read_only_prepare_remains_available_during_ace_attention(self):
+        self.ace_transaction('NEEDS_ATTENTION')
+        plan = self.f.installer.prepare(self.f.settings)
+        self.assertEqual(plan['settings']['forward_takeup_length'], 0)
+        self.assertEqual(self.f.host.actions, [])
+
     def test_acknowledgement_is_required_before_mutation(self):
         self.f.settings['calibrated_acknowledged'] = False
         before = self.f.bytes()

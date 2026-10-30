@@ -21,30 +21,31 @@ It downloads and verifies the original `2.0.0-paxx12-24` file, then copies it to
 2. Enable Advanced Mode on the U1 screen and complete the requested restart.
 3. Set Root Access to Open on the screen.
 4. Connect the ACE Pro Gen 1 and its four PTFE paths.
-5. Confirm the required ACE firmware before NFC use.
+5. Use the ACE stage in this wizard to check or prepare its required firmware.
 6. Finish the current print.
 7. Let the nozzle and bed cool.
 
 The tested ACE firmware is `CV1.3.863` with OpenCubic `1.1.1`.
 See [prerequisite instructions](installation.md#1-prepare-the-prerequisite-projects).
 The launcher prepares the U1 file and guides the physical steps. The printer performs the update after your screen confirmation.
-It does not flash ACE or change hardware.
+It also offers a controlled ACE update for the tested source version. It does not change hardware.
+Follow [the bilingual ACE prompts](ace-wizard.md); no shell commands or device-profile edits are needed.
 
 **First installation:** empty all four ACE inlets and all four U1 heads before installation.
 **Existing installation:** an update does not require all four channels to be emptied.
 
 ## Install with the launcher
 
-1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip).
+1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.3.zip).
 2. Right-click the ZIP in your Downloads folder.
 3. Select Extract All.
 4. Open the extracted `Ultimate-U1-ACE-link` folder.
 5. Double-click `START-HERE.cmd`.
 6. Select **2. English**.
 7. Complete U1 preparation, or select the already-prepared path. Enter the current printer address.
-8. Review the installation summary.
-9. Confirm installation when the machine is idle and cold.
-10. Wait for the success result.
+8. Complete the ACE firmware stage, or confirm an existing supported build as instructed.
+9. Review the host installation summary and confirm when the machine is idle and cold.
+10. Wait for the complete success result.
 
 Do not run the launcher from inside the ZIP viewer.
 
@@ -60,6 +61,7 @@ Use `START-HERE.html` for the Chinese guide.
 | Item | Automatic action |
 | --- | --- |
 | U1 firmware preparation | Download and verify v24, then copy it to selected FAT32 USB. Screen approval remains manual. |
+| ACE firmware preparation | Download and verify upstream images. Check the source version. Run one supported update after confirmation. |
 | File transfer | Copy the required public files to a new staging directory. |
 | Existing parameters | Keep the current ACE settings. |
 | ACE interface | Use the existing interface or identify one matching device. |
