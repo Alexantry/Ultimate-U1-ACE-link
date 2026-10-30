@@ -1,0 +1,219 @@
+{
+  "workflow_run_id": 41062760723,
+  "workflow_job_id": 124086345640,
+  "lab_commit": "7c04778cb8ed65552877f8e2a0519629442e4c88",
+  "workflow_url": "https://github.com/Alexantry/Ultimate-U1-ACE-link/actions/runs/41062760723",
+  "result": {
+    "schema": 1,
+    "classification": "virtual-machine software workflow validation",
+    "release": "0.1.6",
+    "archive_sha256": "2c018540275022a9e821a19bbe78df622e34df6f9b2de07f675ab88150250bd3",
+    "passed": true,
+    "cases": [
+      {
+        "name": "release_integrity_and_real_strict_ssh",
+        "passed": true
+      },
+      {
+        "name": "english_fresh_wizard_real_transfer_and_install",
+        "passed": true,
+        "service": {
+          "actions": [
+            "stop",
+            "start"
+          ],
+          "load_generation_before": 0,
+          "load_generation_after": 1,
+          "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+          "configuration_and_module_hashes_match_disk": true
+        }
+      },
+      {
+        "name": "explicit_parameter_update_through_real_cli",
+        "passed": true,
+        "service": {
+          "actions": [
+            "stop",
+            "start"
+          ],
+          "load_generation_before": 1,
+          "load_generation_after": 2,
+          "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+          "configuration_and_module_hashes_match_disk": true
+        }
+      },
+      {
+        "name": "chinese_update_preserves_parameters",
+        "passed": true,
+        "service": {
+          "actions": [
+            "stop",
+            "start"
+          ],
+          "load_generation_before": 2,
+          "load_generation_after": 3,
+          "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+          "configuration_and_module_hashes_match_disk": true
+        }
+      },
+      {
+        "name": "busy_guard_real_cli_no_changes",
+        "passed": true
+      },
+      {
+        "name": "hot_guard_real_cli_no_changes",
+        "passed": true
+      },
+      {
+        "name": "independent_process_lock_blocks_second_install",
+        "passed": true
+      },
+      {
+        "name": "service_start_failure_restores_files_and_receipt",
+        "passed": true,
+        "service": {
+          "actions": [
+            "stop",
+            "start",
+            "stop",
+            "start"
+          ],
+          "load_generation_before": 3,
+          "load_generation_after": 4,
+          "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+          "configuration_and_module_hashes_match_disk": true
+        }
+      },
+      {
+        "name": "rollback_chain_restores_original_files_permissions_and_mode",
+        "passed": true,
+        "service_cycles": [
+          {
+            "actions": [
+              "stop",
+              "start"
+            ],
+            "load_generation_before": 4,
+            "load_generation_after": 5,
+            "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+            "configuration_and_module_hashes_match_disk": true
+          },
+          {
+            "actions": [
+              "stop",
+              "start"
+            ],
+            "load_generation_before": 5,
+            "load_generation_after": 6,
+            "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+            "configuration_and_module_hashes_match_disk": true
+          },
+          {
+            "actions": [
+              "stop",
+              "start"
+            ],
+            "load_generation_before": 6,
+            "load_generation_after": 7,
+            "loaded_port_version": null,
+            "configuration_and_module_hashes_match_disk": true
+          }
+        ]
+      },
+      {
+        "name": "chinese_fresh_reinstall_after_rollback",
+        "passed": true,
+        "service": {
+          "actions": [
+            "stop",
+            "start"
+          ],
+          "load_generation_before": 7,
+          "load_generation_after": 8,
+          "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+          "configuration_and_module_hashes_match_disk": true
+        }
+      },
+      {
+        "name": "published_production_package_remains_unmodified",
+        "passed": true
+      }
+    ],
+    "real_components": [
+      "Linux filesystem, bind mounts and permissions",
+      "OpenSSH SSH/SCP through a lab-only configuration selector",
+      "unmodified published Install.ps1, installer.py, manifest and payload",
+      "HTTP status requests, service subprocesses, backups and rollback",
+      "Linux PowerShell process invocation and both prompt languages"
+    ],
+    "simulated_components": [
+      "Moonraker printer status",
+      "Klipper lifecycle",
+      "ACE USB identity and PTY",
+      "preinstalled exact ACE firmware confirmation"
+    ],
+    "not_validated": [
+      "Windows PowerShell 5.1 against a remote Linux host",
+      "interactive SSH passwords",
+      "U1 ARM firmware boot or touchscreen update",
+      "real Klipper/MCU startup",
+      "ACE firmware flashing and real USB timing",
+      "NFC RF and physical filament transport"
+    ],
+    "ace_serial_bytes": 0,
+    "printer_http_write_attempts": 0,
+    "bind_mount_verified": true,
+    "service_lifecycle": {
+      "service_actions": [
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start",
+        "stop",
+        "start"
+      ],
+      "load_generation": 8,
+      "service_running": true,
+      "loaded_settings": {
+        "ace": {
+          "baud": 115200,
+          "feed_length": 1370,
+          "feed_speed": 200,
+          "forward_takeup_length": 0,
+          "forward_takeup_speed": 50,
+          "max_dryer_temperature": 55,
+          "retract_length": 1370,
+          "retract_speed": 80,
+          "serial": "/dev/serial/by-id/usb-ANYCUBIC_ACE_LAB-if00"
+        },
+        "fm175xx_reader": {
+          "enabled": false
+        },
+        "save_variables": {
+          "filename": "/home/lava/printer_data/config/ace_vars.cfg"
+        }
+      },
+      "loaded_port_version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
+      "loaded_module_hashes": {
+        "/home/lava/klipper/klippy/extras/ace.py": "1c678c2ee1b666661664d4bd8554523fc4fcad6b8fe8c320f5ba1ded4efe8574",
+        "/home/lava/klipper/klippy/extras/filament_detect.py": "cc1496440f175f1217bc0ae9faf57f797e51367eb3eb48a848474b920b9c5eff",
+        "/home/lava/klipper/klippy/extras/filament_feed.py": "9b4e5ed620ab2e3aa1122d188340c441735525a224c72eda9ebdf24922770520",
+        "/home/lava/klipper/klippy/kinematics/extruder.py": "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19"
+      },
+      "last_start_error": null
+    },
+    "case_count": 11
+  }
+}

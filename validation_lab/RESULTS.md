@@ -9,9 +9,10 @@
 ## Recorded run / 运行记录
 
 - Date / 日期: 2026-10-30.
-- [VM workflow and results / 虚拟机运行及结果](https://github.com/Alexantry/Ultimate-U1-ACE-link/actions/runs/41062167006).
-- Tested lab commit / 测试代码提交: `04c10ae9731c7980775be4160d5b9e141b0a53eb`.
-- [Separate offline checks / 独立离线检查](https://github.com/Alexantry/Ultimate-U1-ACE-link/actions/runs/41062166780): Python 3.11, Python 3.12, and Windows PowerShell 5.1 jobs passed.
+- [VM workflow and results / 虚拟机运行及结果](https://github.com/Alexantry/Ultimate-U1-ACE-link/actions/runs/41062760723).
+- Tested lab commit / 测试代码提交: `7c04778cb8ed65552877f8e2a0519629442e4c88`.
+- [Recorded result JSON / 保存的 JSON 结果](results/v0.1.6-linux-vm.json).
+- [Separate offline checks / 独立离线检查](https://github.com/Alexantry/Ultimate-U1-ACE-link/actions/runs/41062760776): Python 3.11, Python 3.12, and Windows PowerShell 5.1 jobs passed.
 - Package / 安装包: `Ultimate-U1-ACE-link-v0.1.6.zip`.
 - SHA-256: `2c018540275022a9e821a19bbe78df622e34df6f9b2de07f675ab88150250bd3`.
 
@@ -46,8 +47,19 @@ It executes the released PowerShell wizard and Python installer.
 Only the input answers and hardware responses are supplied by the lab.
 The original RFID service scripts run in the guest.
 
+The simulated service captures its configuration and module hashes only when it starts successfully.
+The run recorded 8 successful loads and 18 start/stop actions, including one failed start.
+Each install and rollback checks this service boundary. Disk writes alone cannot satisfy it.
+
 测试使用真实 SSH、SCP、Linux 文件、权限、安装锁、备份和回退，执行已发布的 PowerShell 向导及 Python 安装器。
 实验程序提供向导输入和模拟硬件状态；原版 RFID 服务脚本在虚拟机内实际执行。
+模拟服务只在成功启动时读取配置和模块哈希。本轮记录了 8 次成功加载、18 次停启操作，其中包含一次故意注入的启动失败。
+每次安装和回退均核对服务停启及加载结果，不能仅凭文件写入成功通过检查。
+
+The RFID service check covers inactive readers, switching to External mode, and restoration.
+It does not test a running physical reader. The zero-byte serial result applies to the KEEP path only.
+RFID 服务检查覆盖读卡进程未运行时切换到 External 模式及回退，不代表真实读卡器运行验证。
+串口零写入结果仅适用于本次保留既有 ACE 固件的路径。
 
 ## What still needs hardware / 仍需实机验证的项目
 
