@@ -1,5 +1,24 @@
 # Changes
 
+## 0.1.1 — 2026-10-30
+
+This release adds a guided Windows installation for new users.
+The four production transport and NFC modules remain unchanged.
+
+- Select Chinese or English after double-clicking `START-HERE.cmd`.
+- Read offline instructions in `START-HERE.html` or `START-HERE.en.html`.
+- Transfer files and prepare settings without manual commands or JSON edits.
+- Set External detection and verify the internal-reader service state.
+- Back up the previous reader mode, configuration link, and service state.
+- Identify one matching ACE USB interface while preserving existing settings.
+- Add step-by-step prerequisite instructions and explicit OpenAI Codex attribution.
+- Check the guided launcher with simulated SSH and SCP operations.
+- Retain the original v0.1.0 archive, fixed checksum, and manual source procedure.
+- Put critical restrictions in prominent alerts before the relevant steps.
+
+The launcher does not flash firmware or determine physical tube lengths.
+Its offline tests do not replace a complete physical installation check.
+
 ## 0.1.0 — 2026-10-30
 
 This release packages the tested `port7-forward-takeup` integration.

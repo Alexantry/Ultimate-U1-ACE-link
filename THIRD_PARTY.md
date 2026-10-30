@@ -1,5 +1,13 @@
 # Third-party sources and licensing
 
+## Development with OpenAI Codex
+
+This integration was developed with **OpenAI Codex**.
+The user supplied requirements, made physical observations, and performed machine tests.
+Codex wrote and integrated the project code, installation tools, and documentation.
+Installation and use do not require Codex, a ChatGPT subscription, or an API key.
+This statement does not change upstream authorship or license obligations.
+
 Ultimate U1-ACE link is a modified integration, not an official Snapmaker or Anycubic release. The source package is distributed under **GNU GPL version 3**; see [LICENSE](LICENSE). New project contributions are also GPL-3.0-only. Existing copyright notices remain in the source files.
 
 **Modification notice — 2026-10-30:** the payload ports SnapAce to the exact U1 `2.0.0-paxx12-24` core. This project adds transport guards, explicit-load policy, staged loading, NFC metadata synchronization, material retention, and optional forward take-up. These changes were made for Ultimate U1-ACE link and must not be attributed to the upstream authors. [SOURCES.json](SOURCES.json) records the source identities and byte hashes; [manifest.json](manifest.json) records the installation allowlist.

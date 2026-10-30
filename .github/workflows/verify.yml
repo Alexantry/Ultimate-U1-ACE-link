@@ -21,4 +21,11 @@ jobs:
         run: python -B -m unittest discover -s tools/ace_usb -p 'test_*.py' -q
       - name: Build the public archive
         run: python -B tools/build_release.py
+  windows-wizard:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Windows PowerShell 5.1 guided installer checks
+        shell: powershell
+        run: .\tests\test_windows_wizard.ps1
 

@@ -35,6 +35,10 @@ Keep any private NFC configuration outside the public project directory.
 
 ## Update this project
 
+For a guided update, extract the new archive and double-click `START-HERE.cmd`.
+The launcher detects an existing ACE installation and keeps its current settings.
+Use the manual procedure below if you maintain settings yourself.
+
 1. Finish the current print.
 2. Download the intended project version.
 3. Extract it into a new local directory.

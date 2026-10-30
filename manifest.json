@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "target_firmware": "2.0.0-paxx12-24",
-  "release": "0.1.0",
+  "release": "0.1.1",
   "version": "u1-2.0.0-snapace-34a06e87-port7-forward-takeup",
   "firmware_markers": [
     {

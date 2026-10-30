@@ -3,12 +3,13 @@ import copy
 import contextlib
 import importlib.util
 import io
+import itertools
 import json
 import os
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SPEC = importlib.util.spec_from_file_location('u1_installer', Path(__file__).resolve().parents[1] / 'installer.py')
 I = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(I)
@@ -22,6 +23,8 @@ class FakeHost(I.Host):
         super().__init__(root, self.snapshot, self.service_action)
         self.actions = []; self.active = False; self.ready_failure = False
         self.snapshot_override = None; self.fail_write = None
+        self.rfid_actions = []; self.openrfid_running = False
+        self.candidates = [I.DEFAULTS['serial']]
         self.initial = {
             'webhooks': {'state': 'ready'}, 'print_stats': {'state': 'standby'},
             'idle_timeout': {'state': 'Idle'},
@@ -37,6 +40,31 @@ class FakeHost(I.Host):
         # Real bind mounts cannot be created in a cross-platform unit test.
         I.require(self.path('/oem/.printer_data').is_file(), 'Missing test persistence marker')
 
+    def serial_candidates(self):
+        return self.candidates[:]
+
+    def rfid_files(self):
+        I.require(self.read(I.RFID_TWEAK) == b'[fm175xx_reader]\nenabled: False\n',
+                  'Invalid test RFID tweak')
+
+    def rfid_running(self):
+        return self.openrfid_running
+
+    def rfid_service(self, action):
+        self.rfid_actions.append(action)
+        self.openrfid_running = action == 'start'
+
+    def apply_rfid_support(self):
+        # The firmware service produces a symlink on the printer. Most virtual
+        # transactions use its identical content because Windows denies links.
+        self.rfid_actions.append('apply')
+        self.external_ready()
+
+    def external_ready(self):
+        I.require(I.filament_detection(self.read(I.EXTENDED_CONFIG)) == 'external'
+                  and self.read(I.RFID_LINK) == self.read(I.RFID_TWEAK)
+                  and not self.openrfid_running, 'External detection is not active')
+
     def snapshot(self):
         s = copy.deepcopy(self.initial)
         cfg = self.read(I.ACE_CONFIG)
@@ -47,6 +75,8 @@ class FakeHost(I.Host):
             for key in values:
                 if key != 'serial': values[key] = int(values[key])
             s['configfile']['settings']['ace'] = values
+            if self.read(I.RFID_LINK) == self.read(I.RFID_TWEAK):
+                s['configfile']['settings']['fm175xx_reader'] = {'enabled': False}
             s['ace'] = {'connected': True, 'status_fresh': True, 'status': 'ready',
                 'last_error': None, 'feed_assist_index': -1, 'preload_queue': [],
                 'dryer_status': {'status': 'stop'}, 'rfid_sync': [None]*4,
@@ -84,6 +114,8 @@ class Fixture:
         self.put('/identity', b'exact firmware')
         self.put(I.CONFIG_ROOT + '/printer.cfg', b'[printer]\n[include extended/klipper/*.cfg]\n')
         self.put(I.CONFIG_ROOT + '/extended/openrfid_user.cfg', b'private NFC settings\n')
+        self.put(I.EXTENDED_CONFIG, b'[web]\nfrontend: fluidd\n\n[components]\nrfid: snapmaker\n')
+        self.put(I.RFID_TWEAK, b'[fm175xx_reader]\nenabled: False\n')
         self.manifest = {'schema': 1, 'target_firmware': I.TARGET, 'version': 'port7',
             'firmware_checks': [{'path': '/identity', 'sha256': I.digest(b'exact firmware')}],
             'firmware_markers': [], 'files': []}
@@ -356,6 +388,172 @@ class InstallerTests(unittest.TestCase):
         self.assertIsInstance(caught.exception.__cause__, OSError)
         self.assertIn('automatic rollback FAILED', output.getvalue())
         self.assertRegex(output.getvalue(), r'Backup ID: \d{8}T\d{12}Z')
+
+    def test_external_automatic_setup_preserves_other_settings_and_private_keys(self):
+        original = (b'[web]\r\nfrontend: fluidd\r\n\r\n[components]\r\n'
+                    b'rfid: openrfid\r\nother_option: keep\r\n\r\n[remote_access]\r\nssh: true\r\n')
+        self.f.put(I.EXTENDED_CONFIG, original)
+        self.f.host.openrfid_running = True
+        secret = self.f.host.read(I.CONFIG_ROOT + '/extended/openrfid_user.cfg')
+        before = self.f.bytes()
+        plan = self.f.installer.prepare(self.f.settings)
+        self.assertEqual(self.f.bytes(), before)
+        self.assertEqual(self.f.host.rfid_actions, [])
+        self.assertEqual(plan['rfid_before'], {'mode': 'openrfid', 'running': True})
+        self.f.install()
+        self.assertEqual(self.f.host.read(I.EXTENDED_CONFIG), original.replace(b'rfid: openrfid', b'rfid: external'))
+        self.assertEqual(self.f.host.read(I.CONFIG_ROOT + '/extended/openrfid_user.cfg'), secret)
+        self.assertEqual(self.f.host.rfid_actions, ['stop', 'apply'])
+        self.assertFalse(self.f.host.openrfid_running)
+        with patch.object(I.time, 'sleep', return_value=None):
+            self.f.installer.rollback()
+        self.assertEqual(self.f.bytes(), before)
+        self.assertTrue(self.f.host.openrfid_running)
+        self.assertEqual(self.f.host.rfid_actions, ['stop', 'apply', 'stop', 'start'])
+
+    def test_rollback_does_not_start_previously_stopped_openrfid(self):
+        self.f.put(I.EXTENDED_CONFIG, b'[components]\nrfid: openrfid-generic\n')
+        self.f.host.openrfid_running = False
+        before = self.f.bytes(); self.f.install()
+        with patch.object(I.time, 'sleep', return_value=None):
+            self.f.installer.rollback()
+        self.assertEqual(self.f.bytes(), before)
+        self.assertFalse(self.f.host.openrfid_running)
+        self.assertNotIn('start', self.f.host.rfid_actions)
+
+    def test_failed_external_activation_restores_mode_service_and_configs(self):
+        self.f.put(I.EXTENDED_CONFIG, b'[components]\nrfid: openrfid\n')
+        self.f.host.openrfid_running = True
+        before = self.f.bytes()
+        self.f.host.apply_rfid_support = lambda: (_ for _ in ()).throw(RuntimeError('RFID activation failed'))
+        with patch.object(I.time, 'sleep', return_value=None):
+            with self.assertRaisesRegex(RuntimeError, 'RFID activation failed'):
+                self.f.installer.install(self.f.settings)
+        self.assertEqual(self.f.bytes(), before)
+        self.assertTrue(self.f.host.openrfid_running)
+
+    def test_automatic_serial_requires_one_candidate_even_if_default_exists(self):
+        for candidates in ([], [I.DEFAULTS['serial'], '/dev/serial/by-id/usb-ANYCUBIC_ACE_2-if00']):
+            with self.subTest(candidates=candidates):
+                self.f.host.candidates = candidates
+                with self.assertRaisesRegex(RuntimeError, 'exactly one verified device'):
+                    self.f.installer.prepare(self.f.settings)
+                self.assertEqual(self.f.host.actions, [])
+        self.f.host.candidates = ['/dev/serial/by-id/usb-ANYCUBIC_ACE_2-if00']
+        plan = self.f.installer.prepare(self.f.settings)
+        self.assertEqual(plan['settings']['serial'], self.f.host.candidates[0])
+        self.assertEqual(plan['serial_selection'], 'auto_discovered')
+        self.f.host.candidates = [I.DEFAULTS['serial'], '/dev/serial/by-id/usb-ANYCUBIC_ACE_2-if00']
+        self.f.settings['auto_detect_serial'] = False
+        plan = self.f.installer.prepare(self.f.settings)
+        self.assertEqual(plan['settings']['serial'], I.DEFAULTS['serial'])
+        self.assertEqual(plan['serial_selection'], 'explicit_setting')
+
+    def test_existing_or_explicit_serial_is_preserved_without_auto_selection(self):
+        self.f.host.candidates = []
+        self.f.settings['serial'] = '/dev/custom-ace'
+        plan = self.f.installer.prepare(self.f.settings)
+        self.assertEqual(plan['settings']['serial'], '/dev/custom-ace')
+        self.assertEqual(plan['serial_selection'], 'explicit_setting')
+        self.f.put(I.ACE_CONFIG, I.patch_ace_config(None, {k: self.f.settings[k] for k in I.CONFIG_KEYS}, True))
+        self.f.settings.update(serial=I.DEFAULTS['serial'], apply_existing_settings=True)
+        plan = self.f.installer.prepare(self.f.settings)
+        self.assertEqual(plan['settings']['serial'], '/dev/custom-ace')
+        self.assertEqual(plan['serial_selection'], 'existing_config')
+
+    def test_reader_symlink_is_preserved_by_backup_and_rollback(self):
+        reader = self.f.host.path(I.RFID_LINK)
+        reader.parent.mkdir(parents=True, exist_ok=True)
+        target = self.f.host.path(I.RFID_TWEAK)
+        try:
+            reader.symlink_to(target)
+        except OSError as exc:
+            self.skipTest('Platform does not permit test symlinks: ' + str(exc))
+        self.f.put(I.EXTENDED_CONFIG, b'[components]\nrfid: external\n')
+        def native_link():
+            self.f.host.restore_rfid_link(str(target))
+            I.Host.external_ready(self.f.host)
+        self.f.host.apply_rfid_support = native_link
+        self.f.install()
+        self.assertTrue(reader.is_symlink())
+        with patch.object(I.time, 'sleep', return_value=None):
+            self.f.installer.rollback()
+        self.assertTrue(reader.is_symlink())
+        self.assertEqual(os.readlink(reader), str(target))
+
+    def test_unknown_reader_override_and_running_pid_are_rejected(self):
+        self.f.put(I.RFID_LINK, b'[fm175xx_reader]\nenabled: True\n')
+        with self.assertRaisesRegex(RuntimeError, 'Custom disable-rfid-reader'):
+            self.f.installer.prepare(self.f.settings)
+        self.f.put('/var/run/openrfid.pid', b'12345\n')
+        self.f.put('/proc/12345/cmdline', b'/usr/bin/python3\0some-other-service.py\0')
+        with self.assertRaisesRegex(RuntimeError, 'belongs to another process'):
+            I.Host.rfid_running(self.f.host)
+
+    def put_daemon(self, pid=12345, registered=True):
+        self.f.put('/proc/%d/cmdline' % pid,
+                   b'/usr/bin/python3\0/usr/local/bin/openrfid.py\0/tmp/openrfid.cfg\0')
+        if registered:
+            self.f.put('/var/run/openrfid.pid', (str(pid) + '\n').encode())
+
+    def test_deleted_pid_file_does_not_prove_stop_or_external_activation(self):
+        self.put_daemon()
+        host = self.f.host
+        def native_stop(*args, **kwargs):
+            host.path('/var/run/openrfid.pid').unlink()
+        clock = itertools.count(0, .5)
+        with patch.object(I.subprocess, 'run', side_effect=native_stop) as run, \
+                patch.object(I.time, 'monotonic', side_effect=lambda: next(clock)), \
+                patch.object(I.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, 'service state did not settle'):
+                I.Host.rfid_service(host, 'stop')
+        run.assert_called_once()
+        self.assertEqual(run.call_args.args[0], ['/etc/init.d/S99openrfid', 'stop'])
+        self.assertTrue(host.path('/proc/12345/cmdline').exists())
+        with self.assertRaisesRegex(RuntimeError, 'Orphan OpenRFID'):
+            I.Host.rfid_running(host)
+        self.f.put(I.EXTENDED_CONFIG, b'[components]\nrfid: external\n')
+        original_path = host.path
+        valid_link = Mock(); valid_link.is_symlink.return_value = True
+        target = str(original_path(I.RFID_TWEAK))
+        with patch.object(host, 'path', side_effect=lambda name: valid_link if name == I.RFID_LINK else original_path(name)), \
+                patch.object(I.os, 'readlink', return_value=target), \
+                patch.object(host, 'rfid_running', side_effect=lambda: I.Host.rfid_running(host)):
+            with self.assertRaisesRegex(RuntimeError, 'Orphan OpenRFID'):
+                I.Host.external_ready(host)
+
+    def test_stop_waits_for_original_process_to_exit_after_pid_file_removal(self):
+        self.put_daemon()
+        host = self.f.host
+        def native_stop(*args, **kwargs):
+            host.path('/var/run/openrfid.pid').unlink()
+        waits = []
+        def delayed_exit(delay):
+            waits.append(delay)
+            if len(waits) == 2:
+                host.path('/proc/12345/cmdline').unlink()
+        clock = itertools.count(0, .2)
+        with patch.object(I.subprocess, 'run', side_effect=native_stop), \
+                patch.object(I.time, 'monotonic', side_effect=lambda: next(clock)), \
+                patch.object(I.time, 'sleep', side_effect=delayed_exit):
+            I.Host.rfid_service(host, 'stop')
+        self.assertEqual(waits, [.1, .1])
+        self.assertFalse(I.Host.rfid_running(host))
+
+    def test_orphan_multiple_and_unowned_daemons_are_never_signalled(self):
+        self.put_daemon(registered=False)
+        with patch.object(I.subprocess, 'run') as run:
+            with self.assertRaisesRegex(RuntimeError, 'Orphan OpenRFID'):
+                I.Host.rfid_service(self.f.host, 'stop')
+            self.put_daemon()
+            self.put_daemon(12346, registered=False)
+            with self.assertRaisesRegex(RuntimeError, 'Multiple OpenRFID'):
+                I.Host.rfid_service(self.f.host, 'stop')
+            self.f.host.path('/proc/12346/cmdline').unlink()
+            self.f.put('/proc/12345/cmdline', b'/usr/bin/python3\0-u\0/usr/local/bin/openrfid.py\0')
+            with self.assertRaisesRegex(RuntimeError, 'belongs to another process'):
+                I.Host.rfid_service(self.f.host, 'stop')
+            run.assert_not_called()
 
 
 if __name__ == '__main__':

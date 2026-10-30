@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="370" viewBox="0 0 1120 370" role="img" aria-labelledby="title desc">
+<title id="title">下载、解压、双击启动</title><desc id="desc">从浏览器下载安装包，右键全部解压缩，再双击START-HERE.cmd。此图为步骤示意，不是Windows实际截图。</desc>
+<rect width="1120" height="370" rx="24" fill="#f2f6fb"/>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" fill="#15283e">
+<text x="30" y="44" font-size="23" font-weight="700">不用输入命令：跟着三步做</text>
+<g fill="#fff" stroke="#ccd8e7"><rect x="30" y="70" width="330" height="246" rx="16"/><rect x="395" y="70" width="330" height="246" rx="16"/><rect x="760" y="70" width="330" height="246" rx="16"/></g>
+<g fill="#155ed1"><circle cx="64" cy="103" r="18"/><circle cx="429" cy="103" r="18"/><circle cx="794" cy="103" r="18"/></g>
+<g fill="#fff" font-size="19" text-anchor="middle"><text x="64" y="110">1</text><text x="429" y="110">2</text><text x="794" y="110">3</text></g>
+<g font-size="22" font-weight="700"><text x="96" y="111">下载</text><text x="461" y="111">解压</text><text x="826" y="111">双击启动</text></g>
+<rect x="74" y="145" width="240" height="62" rx="10" fill="#155ed1"/><text x="194" y="184" text-anchor="middle" font-size="21" fill="#fff">下载安装包 ZIP</text>
+<rect x="439" y="145" width="240" height="62" rx="10" fill="#e6eefb" stroke="#155ed1"/><text x="559" y="184" text-anchor="middle" font-size="21">右键 → 全部解压缩</text>
+<rect x="797" y="145" width="256" height="62" rx="10" fill="#e3f5ec" stroke="#1c8551"/><text x="925" y="184" text-anchor="middle" font-size="21" font-weight="700">START-HERE.cmd</text>
+<g font-size="17"><text x="54" y="246">等待下载完成，打开“下载”。</text><text x="419" y="246">打开新解压得到的文件夹。</text><text x="784" y="246">快速点两次鼠标左键。</text><text x="54" y="278">文件名称以 .zip 结尾。</text><text x="419" y="278">不要在压缩包内直接运行。</text><text x="784" y="278">接下来按窗口中的中文操作。</text></g>
+<text x="30" y="348" font-size="15" fill="#52657b">操作示意图；不同 Windows 版本的按钮文字可能略有不同。</text>
+</g></svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="370" viewBox="0 0 1120 370" role="img" aria-labelledby="title desc">
+<title id="title">Download, extract, and start</title><desc id="desc">Download the archive, extract all files, then double-click START-HERE.cmd. This is a step diagram, not a screenshot.</desc>
+<rect width="1120" height="370" rx="24" fill="#f2f6fb"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#15283e">
+<text x="30" y="44" font-size="23" font-weight="700">Install without typing commands</text>
+<g fill="#fff" stroke="#ccd8e7"><rect x="30" y="70" width="330" height="246" rx="16"/><rect x="395" y="70" width="330" height="246" rx="16"/><rect x="760" y="70" width="330" height="246" rx="16"/></g>
+<g fill="#155ed1"><circle cx="64" cy="103" r="18"/><circle cx="429" cy="103" r="18"/><circle cx="794" cy="103" r="18"/></g>
+<g fill="#fff" font-size="19" text-anchor="middle"><text x="64" y="110">1</text><text x="429" y="110">2</text><text x="794" y="110">3</text></g>
+<g font-size="22" font-weight="700"><text x="96" y="111">Download</text><text x="461" y="111">Extract</text><text x="826" y="111">Start</text></g>
+<rect x="74" y="145" width="240" height="62" rx="10" fill="#155ed1"/><text x="194" y="184" text-anchor="middle" font-size="21" fill="#fff">Download the ZIP</text>
+<rect x="439" y="145" width="240" height="62" rx="10" fill="#e6eefb" stroke="#155ed1"/><text x="559" y="184" text-anchor="middle" font-size="21">Right-click: Extract All</text>
+<rect x="797" y="145" width="256" height="62" rx="10" fill="#e3f5ec" stroke="#1c8551"/><text x="925" y="184" text-anchor="middle" font-size="21" font-weight="700">START-HERE.cmd</text>
+<g font-size="17"><text x="54" y="246">Open your Downloads folder.</text><text x="419" y="246">Open the extracted folder.</text><text x="784" y="246">Click the left button twice.</text><text x="54" y="278">Find the downloaded ZIP.</text><text x="419" y="278">Do not run inside the ZIP.</text><text x="784" y="278">Select English in the window.</text></g>
+<text x="30" y="348" font-size="15" fill="#52657b">Step diagram. Button labels can differ between Windows versions.</text>
+</g></svg>

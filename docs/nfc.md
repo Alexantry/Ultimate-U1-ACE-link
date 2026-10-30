@@ -28,6 +28,15 @@ It does not transfer its keys to ACE.
 
 ## Select External mode
 
+The installer now sets External mode automatically.
+It also applies the internal-reader configuration and stops the OpenRFID service.
+The installation result verifies the active reader state.
+Backups include the previous mode and service state for rollback.
+
+The exact menu is **Snapmaker Components → Filament Detection → External**.
+There is no reader option named **extended**.
+Use the following manual steps only to inspect or troubleshoot the setting.
+
 1. Open the printer's `/firmware-config/` page.
 2. Find **Snapmaker Components**.
 3. Select **External** for **Filament Detection**.

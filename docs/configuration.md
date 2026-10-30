@@ -1,5 +1,9 @@
 # Configuration and calibration
 
+The [guided launcher](quick-start.md) writes settings for you.
+Existing installations keep their current values by default.
+The tables and manual commands below are reference material.
+
 All distances below use millimeters.
 Speed values are protocol requests in millimeters per second.
 They are not measurements of actual roller or filament speed.
@@ -8,11 +12,13 @@ They are not measurements of actual roller or filament speed.
 
 `config/settings.example.json` disables forward take-up.
 `config/settings.tested-reference.json` contains the tested 300 mm take-up configuration.
-Both files require a real serial path and an explicit calibration acknowledgement.
+The installer can identify one matching ACE interface automatically.
+Both templates require an explicit calibration acknowledgement.
 
 | Setting | Tested reference | Purpose |
 | --- | --- | --- |
 | `serial` | Your ACE USB device path | Identifies the ACE serial device. |
+| `auto_detect_serial` | `true` by default | Find one matching ACE when no existing or custom serial choice applies. |
 | `baud` | `115200` | Serial connection speed. |
 | `feed_speed` | `200` | Legacy direct-feed default. It does not replace the staged-load settings. |
 | `feed_length` | `1250` | Legacy direct-feed length. It is not the head-sensor load endpoint. |
@@ -29,6 +35,9 @@ Both files require a real serial path and an explicit calibration acknowledgemen
 | `apply_existing_settings` | `false` in the conservative template | Preserves existing ACE settings unless explicitly changed to `true`. |
 
 The installer writes ACE options to `/home/lava/printer_data/config/extended/klipper/ace.cfg`.
+It also sets External detection and applies the internal-reader service configuration.
+Multiple automatic serial candidates stop installation instead of selecting one arbitrarily.
+For an explicit path equal to the example default, set `auto_detect_serial` to `false`.
 It sets staged-load constants in the installed `ace.py` from the JSON settings.
 Use the installer for later parameter changes instead of editing that module directly.
 

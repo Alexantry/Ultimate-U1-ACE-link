@@ -4,10 +4,12 @@ import json
 from pathlib import Path
 import re
 import zipfile
+from build_beginner_guide import main as build_beginner_guide
 
 ROOT = Path(__file__).resolve().parents[1]
 TOP = {'.gitignore', '.gitattributes', 'README.md', 'README.zh-CN.md', 'LICENSE',
-       'THIRD_PARTY.md', 'SOURCES.json', 'manifest.json', 'installer.py', 'CHANGELOG.md'}
+       'THIRD_PARTY.md', 'SOURCES.json', 'manifest.json', 'installer.py', 'CHANGELOG.md',
+       'Install.ps1', 'START-HERE.cmd', 'START-HERE.html', 'START-HERE.en.html'}
 TEMPLATES = {'config/settings.example.json', 'config/settings.tested-reference.json'}
 TOOL_JSON = {'tools/ace_usb/images.json', 'tools/ace_usb/device-profile.json'}
 
@@ -25,7 +27,7 @@ def source_files():
                    (rel.startswith('payload/') and path.name in
                     ('ace.py', 'filament_feed.py', 'filament_detect.py', 'extruder.py')) or
                    (rel.startswith('docs/') and path.suffix in ('.md', '.svg')) or
-                   (rel.startswith('tests/') and path.suffix == '.py') or
+                   (rel.startswith('tests/') and path.suffix in ('.py', '.ps1')) or
                    (rel.startswith('tools/') and path.suffix == '.py') or
                    rel == '.github/workflows/verify.yml')
         if allowed:
@@ -37,6 +39,7 @@ def source_files():
 
 
 def main():
+    build_beginner_guide()
     manifest = json.loads((ROOT / 'manifest.json').read_text(encoding='utf8'))
     version = manifest['release']
     assert re.fullmatch(r'\d+\.\d+\.\d+', version)
@@ -70,7 +73,13 @@ def main():
             assert z.read(prefix + rel) == p.read_bytes(), rel
         assert not any(n.endswith(('.bin', '.pyc', '.key', '.pem', 'openrfid_user.cfg')) for n in z.namelist())
     archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
-    (out / 'SHA256SUMS').write_text(archive_hash + '  ' + archive.name + '\n', encoding='ascii')
+    sums = archive_hash + '  ' + archive.name + '\n'
+    retained = out / 'Ultimate-U1-ACE-link-v0.1.0.zip'
+    if retained.exists():
+        previous_hash = '81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e'
+        assert hashlib.sha256(retained.read_bytes()).hexdigest() == previous_hash, 'Retained v0.1.0 changed'
+        sums = previous_hash + '  ' + retained.name + '\n' + sums
+    (out / 'SHA256SUMS').write_text(sums, encoding='ascii')
     print(json.dumps({'archive': archive.name, 'files': len(files),
                       'bytes': archive.stat().st_size, 'sha256': archive_hash,
                       'private_configuration_included': False}, indent=2))

@@ -1,119 +1,104 @@
 # Ultimate U1-ACE link
 
-[简体中文](README.zh-CN.md) · [Installation](docs/installation.md) · [Configuration](docs/configuration.md) · [Troubleshooting](docs/troubleshooting.md)
+Connect an Anycubic ACE Pro Gen 1 to a Snapmaker U1.
+Load from the U1 screen, keep recognized material data, and reduce loose filament with optional forward take-up.
 
-[Download v0.1.0 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.0.zip) · [Archive SHA-256](https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/downloads/SHA256SUMS)
+**Built with OpenAI Codex. You do not need Codex, programming knowledge, or an API key to install this project.**
 
-Use an Anycubic ACE Pro Gen 1 with a Snapmaker U1 through USB.
-This project extends SnapAce for U1 firmware 2.0, NFC material transfer, controlled filament transport, and material retention.
+[简体中文](README.zh-CN.md) · [Download v0.1.1 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.1.zip) · [SHA-256](downloads/SHA256SUMS)
 
-The current implementation is `port7-forward-takeup`.
-It contains the integrated work from October 28–30, 2026.
-The installer does not run a filament transport test.
+> [!CAUTION]
+> **Do not copy old SnapAce `filament_feed.py` or `extruder.py` onto U1 firmware 2.0.**
+>
+> **This project replaces the original SnapAce software installation steps.**
+> Use the upstream **hardware connection guide** for the cable arrangement.
 
-## Install the prerequisites first
+## Choose your installation path
 
-| Order | Project or component | Required preparation |
-| --- | --- | --- |
-| 1 | [SnapmakerU1-Extended-Firmware](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware) | Install the tested stable release, `v2.0.0-paxx12-24`. |
-| 2 | U1 access | Enable Advanced Mode and Root Access. Confirm Wi-Fi and SSH access. |
-| 3 | ACE Pro Gen 1 firmware | Use the tested `CV1.3.863` / OpenCubic `1.1.1` combination for the NFC path. |
-| 4 | [SnapAce hardware connection](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring) | Prepare the USB cable and four PTFE paths. |
-| 5 | Ultimate U1-ACE link | Install this compatible software port with [the installation guide](docs/installation.md). |
-
-This project replaces the **software installation steps** in the original SnapAce instructions.
-Do not copy the old SnapAce `filament_feed.py` or `extruder.py` over U1 firmware 2.0 files.
-Use the upstream hardware guide for the cable arrangement.
-
-The tested versions form one compatibility baseline.
-A newer U1 release, ACE revision, or tag format needs separate validation.
-See [NFC prerequisites](docs/nfc.md) for ACE firmware and private-key boundaries.
-
-## Current behavior
-
-The following distances apply to the tested reference configuration.
-The standard installation template disables the forward take-up movement until you calibrate your PTFE paths.
-
-| Event | Result |
+| I want prompts | I want to inspect each command |
 | --- | --- |
-| Insert filament into an empty ACE inlet | ACE takes a short bite and reads NFC. It does not automatically send 1250 mm. |
-| Select Load on the U1, with a known insertion position | Send 1150 mm at speed 200, then speed 50 until the head sensor detects filament. |
-| Select Unload on the U1 | Complete the hotend unload, then retract 1250 mm at speed 80. |
-| Complete the reference unload | Send 300 mm toward the U1 at speed 50 to reduce loose filament. |
-| Select Load after that unload, without reinsertion | Send 850 mm at speed 200, then speed 50 until the head sensor detects filament. |
-| Load after restart or an uncertain movement | Use speed 50 throughout. |
-| Unload while filament remains in the ACE inlet | Retain the material brand, type, subtype, and color. |
-| Remove filament from the ACE inlet | Clear that slot's material data after a confirmed empty state. |
+| **[Bilingual guided installation](docs/quick-start.md)** | **[Manual source installation](docs/installation.md)** |
+| Double-click `START-HERE.cmd`, then choose a language. | Review the source, then enter the documented commands. |
 
-Speeds are protocol requests in mm/s.
-ACE firmware can limit the actual transport speed.
-The head sensor determines the normal load endpoint.
-The total 2500 mm load limit is a fault limit, not the normal travel distance.
+The **[original v0.1.0 package](docs/install-options.md#retained-v010)** remains available unchanged.
 
-## What changed
+## Start with four steps
 
-- U1 2.0 compatibility replaces the old feeder integration.
-- One operation owns ACE transport across both U1 feeder modules.
-- Insertion performs NFC recognition without automatic full loading.
-- Loading waits for NFC before the separate movement timeout starts.
-- Two-stage loading uses a short slow approach to the head sensor.
-- Successful unloading records the forward movement for the next fast distance.
-- Disconnects, cancellations, and uncertain positions remove permission for the fast stage.
-- NFC transfer preserves recognized brands instead of forcing every brand to Generic.
-- Material data remains available during normal load and unload cycles.
-- The optional forward take-up movement reduces loose filament after retraction.
+1. Complete the [machine preparation](docs/installation.md#1-prepare-the-prerequisite-projects).
+2. Download the ZIP above.
+3. Extract all files.
+4. Double-click **START-HERE.cmd** and select **English** or **中文**.
 
-## Limits
+The launcher enters commands and transfers files for you.
+Open **START-HERE.html** or **START-HERE.en.html** for the illustrated offline guide.
 
-The forward take-up movement pulls filament toward the U1.
-It does not drive the spool roller independently.
-It uses a fixed configured distance, without tension detection.
-The implementation does not modify ACE gear ratios or ACE motor firmware.
+Prefer to inspect the commands and source first?
+The [manual source procedure](docs/installation.md) remains available and does not run the Windows launcher.
+It still runs the open-source `installer.py` on the printer.
+[Installation choices and the retained v0.1.0 package](docs/install-options.md) explain both paths.
 
-Brand conversion does not prove support for every physical NFC tag.
-Tag recognition depends on ACE firmware, tag format, antenna position, and any required authentication material.
-This repository contains no NFC keys.
-Users must obtain their own keys independently.
+![Download, extract, and start](docs/images/first-steps.en.svg)
 
-The U1 **External** detection setting disables its internal reader path.
-It prevents conflicting material updates in this setup.
-It does not define the NFC capabilities of ACE firmware.
-See [NFC behavior](docs/nfc.md).
+## What is automatic?
 
-## Validation
-
-The integrated candidate passed **194 offline tests** before installation on the test printer.
-One complete **slot 4** unload and reload cycle passed the recorded physical check.
-The user confirmed that the unload result was satisfactory.
-The recorded reload used 850/200, then sensor-controlled speed 50, and reached `load_finish`.
-Material data remained unchanged throughout that recorded cycle.
-
-This result does not establish physical validation for all four slots or all spool types.
-See [validation details](docs/validation.md) for the evidence boundary.
-
-## Guides
-
-- [Installation](docs/installation.md): prerequisites, Windows transfer, checks, and installation.
-- [Configuration](docs/configuration.md): parameters and PTFE calibration.
-- [NFC](docs/nfc.md): firmware responsibilities, material transfer, and key privacy.
-- [Update and rollback](docs/update-and-rollback.md): backups and version changes.
-- [Troubleshooting](docs/troubleshooting.md): connection, recognition, and transport faults.
-- [Validation](docs/validation.md): software tests and physical checks.
-- [Glossary](docs/glossary.md): consistent technical terms.
-
-## Attribution
-
-| Project | Contribution |
+| The installer does this | You supply or prepare this |
 | --- | --- |
-| [BlackFrogKok/SnapAce](https://github.com/BlackFrogKok/SnapAce) | The original ACE-to-U1 integration, serial transport, and hardware connection guide. |
-| [paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware) | The tested U1 firmware environment, configuration interface, and external material interface. |
-| [Snapmaker/U1-klipper](https://github.com/Snapmaker/U1-klipper) | The U1 Klipper implementation and native filament workflow. |
-| [Jupsi/OpenCubic](https://github.com/Jupsi/OpenCubic) | The ACE firmware prerequisite for the tested external NFC path. |
-| [OpenRFID](https://github.com/suchmememanyskill/OpenRFID) | The upstream tag-format ecosystem and material naming reference. |
-| [Godless50/ACE-PRO-v1.-NFC-UID](https://github.com/Godless50/ACE-PRO-v1.-NFC-UID) | The Gen 1 USB/IAP protocol research used by the corrected optional updater. |
+| Check firmware and device state | Install the supported prerequisite firmware and connect the hardware. |
+| Find the ACE interface or preserve the existing one | Enter the printer address and SSH password. |
+| Set **Filament Detection → External** | Review the physical distances for a new installation. |
+| Save backups and configure persistence | Keep the machine idle and cold. |
+| Install modules and verify the result | Check one slot after installation. |
 
-See [THIRD_PARTY.md](THIRD_PARTY.md) and [SOURCES.json](SOURCES.json) for pinned sources, changes, and distribution terms.
-The host software license does not grant rights to third-party firmware or proprietary NFC keys.
+The actual reader option is **External**, not a setting named extended.
+The installer also disables the internal reader path and verifies the configuration.
+Existing ACE parameters remain unchanged by default.
+New installations start with forward take-up disabled.
 
-The English procedures use short sentences and consistent terms, informed by [ASD-STE100 Issue 9](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf).
-This project does not claim certification or formal STE compliance.
+## Prerequisites
+
+> [!IMPORTANT]
+> **Complete these prerequisites before installation.**
+> **ACE Pro Gen 1 and the exact U1 version below are the tested baseline.**
+
+| Component | Tested baseline |
+| --- | --- |
+| U1 extended firmware | `2.0.0-paxx12-24` |
+| U1 access | Advanced Mode enabled; Root Access Open |
+| ACE hardware | ACE Pro Gen 1, correct USB connection, four PTFE paths |
+| ACE NFC firmware | `CV1.3.863` / OpenCubic `1.1.1` |
+
+U1 firmware installation, ACE firmware changes, and cable preparation are separate prerequisite tasks.
+
+## How it works
+
+- Insertion performs a short bite and NFC recognition, then waits.
+- The U1 Load button starts fast feed followed by a slower sensor-controlled approach.
+- Unload retracts the configured distance while retaining filament in ACE.
+- Material data stays until the ACE inlet becomes empty.
+- Optional forward take-up reduces loose filament after retraction.
+
+Reference values are 1150 mm at speed 200, then speed 50; unload is 1250 mm at speed 80.
+The tested take-up value is 300 mm at speed 50.
+**These distances are examples for the tested tube arrangement, not universal settings.**
+Forward take-up has no tension feedback and does not independently drive the spool roller.
+See [configuration](docs/configuration.md) and [validation limits](docs/validation.md).
+
+## Project sources and development
+
+| Project | Foundation |
+| --- | --- |
+| [SnapAce](https://github.com/BlackFrogKok/SnapAce) | ACE control and the original hardware integration. |
+| [U1 Extended Firmware](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware) | The U1 firmware environment and configuration interface. |
+| [Snapmaker U1 Klipper](https://github.com/Snapmaker/u1-klipper) | The native printer and filament workflow. |
+| [OpenCubic](https://github.com/Jupsi/OpenCubic) | The tested ACE NFC firmware. |
+| [OpenRFID](https://github.com/suchmememanyskill/OpenRFID) | Tag-format and material naming references. |
+| [ACE Gen 1 protocol research](https://github.com/Godless50/ACE-PRO-v1.-NFC-UID) | The foundation for the separate optional USB updater. |
+
+The user supplied requirements and performed physical tests.
+**OpenAI Codex wrote and integrated this project's code, installation tools, and documentation.**
+Upstream authors retain their credits and licenses. See [THIRD_PARTY.md](THIRD_PARTY.md) and [SOURCES.json](SOURCES.json).
+
+This repository contains no NFC keys. Users must obtain required proprietary keys independently.
+English procedures follow ASD-STE100 writing principles; this is not a certification claim.
+
+[Beginner guide](docs/quick-start.md) · [NFC](docs/nfc.md) · [Update and rollback](docs/update-and-rollback.md) · [Troubleshooting](docs/troubleshooting.md)

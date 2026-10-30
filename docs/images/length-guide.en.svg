@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
+<title id="title">Two lengths to check for your tube arrangement</title><desc id="desc">Fast feed must end before the head. Retraction must leave filament inside ACE and the rear tube. This diagram is not to scale.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#1459c7"/></marker></defs>
+<rect width="1120" height="560" rx="24" fill="#f2f6fb"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#15283e">
+<text x="30" y="45" font-size="24" font-weight="700">The launcher sets common options. These two lengths depend on your tubes.</text>
+<text x="30" y="82" font-size="17">This diagram is not to scale. Do not measure the illustration.</text>
+<rect x="34" y="118" width="165" height="100" rx="15" fill="#fff" stroke="#8dabc6"/><text x="115" y="161" text-anchor="middle" font-size="24">ACE</text><text x="115" y="191" text-anchor="middle" font-size="16">Inlet and feed mechanism</text>
+<rect x="912" y="118" width="175" height="100" rx="15" fill="#fff" stroke="#8dabc6"/><text x="999" y="161" text-anchor="middle" font-size="23">U1 head</text><text x="999" y="191" text-anchor="middle" font-size="16">Filament detection</text>
+<path d="M200 167H910" stroke="#c2d4e7" stroke-width="24"/><path d="M205 167H765" stroke="#1459c7" stroke-width="6" marker-end="url(#arrow)"/><path d="M787 167H900" stroke="#25814b" stroke-width="6" stroke-dasharray="12 8"/>
+<text x="370" y="142" font-size="21" fill="#1459c7">Fast feed</text><text x="778" y="142" font-size="19" fill="#25814b">Slow approach</text>
+<text x="35" y="259" font-size="19" font-weight="700">B: Fast-feed distance (less than A)</text><text x="35" y="292" font-size="18">Use the shortest path. Leave space for a slow approach. Reference: 1150 mm, then speed 50.</text>
+<path d="M204 372H909" stroke="#c2d4e7" stroke-width="24"/><path d="M208 372H400" stroke="#ea8634" stroke-width="7"/><circle cx="400" cy="372" r="7" fill="#ea8634"/>
+<text x="37" y="379" font-size="23">ACE rear</text><text x="920" y="379" font-size="22">Head</text><text x="265" y="342" font-size="18" fill="#985114">Tip stays in the tube</text><text x="593" y="343" font-size="17">Empty part of the tube</text>
+<text x="35" y="434" font-size="19" font-weight="700">A: Retraction distance</text><text x="35" y="467" font-size="18">Release the head, but retain filament in ACE. Reference: 1250 mm. Recalibrate for different tubes.</text>
+<text x="35" y="519" font-size="17" fill="#52657b">Existing installation: the launcher keeps your current values. You do not enter these lengths again.</text>
+</g></svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
+<title id="title">两项需要按自己管路确认的长度</title><desc id="desc">快速送料需在打印头前提前减速；退料后线材应离开打印头，但仍留在ACE和后方料管内。示意无固定比例，不能直接测量图片。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#1459c7"/></marker></defs>
+<rect width="1120" height="560" rx="24" fill="#f2f6fb"/>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" fill="#15283e">
+<text x="30" y="45" font-size="24" font-weight="700">通用设置由向导完成；这两个长度取决于你的料管</text>
+<text x="30" y="82" font-size="17">图是位置关系示意，没有固定比例；不要从图上量长度。</text>
+<rect x="34" y="118" width="165" height="100" rx="15" fill="#fff" stroke="#8dabc6"/><text x="115" y="161" text-anchor="middle" font-size="24">ACE</text><text x="115" y="191" text-anchor="middle" font-size="16">入口及内部送料机构</text>
+<rect x="912" y="118" width="175" height="100" rx="15" fill="#fff" stroke="#8dabc6"/><text x="999" y="161" text-anchor="middle" font-size="23">U1 打印头</text><text x="999" y="191" text-anchor="middle" font-size="16">头端到料检测</text>
+<path d="M200 167H910" stroke="#c2d4e7" stroke-width="24"/><path d="M205 167H765" stroke="#1459c7" stroke-width="6" marker-end="url(#arrow)"/><path d="M787 167H900" stroke="#25814b" stroke-width="6" stroke-dasharray="12 8"/>
+<text x="370" y="142" font-size="21" fill="#1459c7">快速送料段</text><text x="778" y="142" font-size="19" fill="#25814b">提前减速</text>
+<text x="35" y="259" font-size="19" font-weight="700">B：快速送料长度（小于 A）</text><text x="35" y="292" font-size="18">按最短的一路确定；到头前留出慢速接近空间。参考机器：1150 mm，随后速度 50。</text>
+<path d="M204 372H909" stroke="#c2d4e7" stroke-width="24"/><path d="M208 372H400" stroke="#ea8634" stroke-width="7"/><circle cx="400" cy="372" r="7" fill="#ea8634"/>
+<text x="37" y="379" font-size="23">ACE 后方</text><text x="920" y="379" font-size="22">打印头</text><text x="265" y="342" font-size="18" fill="#985114">退料后仍留在线管内</text><text x="593" y="343" font-size="17">空出的料管</text>
+<text x="35" y="434" font-size="19" font-weight="700">A：退料长度</text><text x="35" y="467" font-size="18">让线材退出打印头，但不退出 ACE。参考机器：1250 mm。换管长后需重新校准。</text>
+<text x="35" y="519" font-size="17" fill="#52657b">已经安装过的用户：向导会保留原参数，不需要重新填写这两个数值。</text>
+</g></svg>

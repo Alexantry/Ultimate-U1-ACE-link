@@ -7,6 +7,7 @@ calibration are performed. check/status are read-only. Python standard library.
 import argparse
 import configparser
 import datetime
+import errno
 import glob
 import hashlib
 import importlib.util
@@ -25,6 +26,14 @@ import urllib.request
 TARGET = '2.0.0-paxx12-24'
 CONFIG_ROOT = '/home/lava/printer_data/config'
 ACE_CONFIG = CONFIG_ROOT + '/extended/klipper/ace.cfg'
+EXTENDED_CONFIG = CONFIG_ROOT + '/extended/extended2.cfg'
+RFID_LINK = CONFIG_ROOT + '/extended/klipper/disable-rfid-reader.cfg'
+RFID_TWEAK = '/usr/local/share/firmware-config/tweaks/klipper/disable-rfid-reader.cfg'
+RFID_SERVICES = {
+    '/etc/init.d/S59rfid-support': '60214bc1e0188774004e32fc2a1ae860c39d7a2c89c49da8b09a119a2b94eafd',
+    '/etc/init.d/S99openrfid': '4eaf41a2c6e2c0cd72232c3f08723d3b2a3a058ae81a49d3738bdcb2b689f512',
+    RFID_TWEAK: '80387430b72f73bcc459d6d5e895c2ab2c4bde58dcaf8967f871551a8dd585d3',
+}
 STATE_ROOT = '/userdata/ultimate-u1-ace-link'
 RECEIPT = STATE_ROOT + '/install-state.json'
 DEBUG = '/oem/.debug'
@@ -41,13 +50,14 @@ DEFAULTS = {
     'max_dryer_temperature': 55, 'fast_load_length': 1150, 'fast_load_speed': 200,
     'sensor_load_speed': 50, 'sensor_load_max_length': 2500,
     'calibrated_acknowledged': False, 'apply_existing_settings': False,
+    'auto_detect_serial': True,
 }
 CONSTANTS = {'fast_load_length': ('FAST_LOAD_LENGTH', 1150),
              'fast_load_speed': ('FAST_LOAD_SPEED', 200),
              'sensor_load_speed': ('SENSOR_LOAD_SPEED', 50),
              'sensor_load_max_length': ('SENSOR_LOAD_MAX_LENGTH', 2500)}
 CONFIG_KEYS = tuple(k for k in DEFAULTS if k not in CONSTANTS and
-                    k not in ('calibrated_acknowledged', 'apply_existing_settings'))
+                    k not in ('calibrated_acknowledged', 'apply_existing_settings', 'auto_detect_serial'))
 
 
 def require(ok, message):
@@ -66,7 +76,7 @@ def json_bytes(value):
 def validate_settings(raw):
     require(isinstance(raw, dict) and not set(raw) - set(DEFAULTS), 'Unknown settings keys')
     s = dict(DEFAULTS, **raw)
-    for key in ('calibrated_acknowledged', 'apply_existing_settings'):
+    for key in ('calibrated_acknowledged', 'apply_existing_settings', 'auto_detect_serial'):
         require(type(s[key]) is bool, key + ' must be true or false')
     require(isinstance(s['serial'], str) and re.fullmatch(r'/dev/[A-Za-z0-9_./:+-]+', s['serial'])
             and '..' not in s['serial'].split('/'), 'serial must be a local /dev path')
@@ -119,6 +129,36 @@ def patch_ace_config(data, values, add_save_variables):
     return text.encode('utf-8')
 
 
+def filament_detection(data):
+    parser = configparser.RawConfigParser(strict=True)
+    if data:
+        parser.read_string(data.decode('utf-8'))
+    mode = parser.get('components', 'rfid', fallback='snapmaker').strip()
+    require(mode in ('snapmaker', 'external', 'openrfid', 'openrfid-generic'),
+            'Unknown filament detection mode; manual review required')
+    return mode
+
+
+def external_config(data):
+    """Change only [components] rfid, preserving other settings and key files."""
+    filament_detection(data)  # Reject malformed/duplicate configuration first.
+    text = data.decode('utf-8') if data else ''
+    headers = list(re.finditer(r'(?m)^\s*\[([^\]\r\n]+)\][ \t]*(?:[#;].*)?\r?$', text))
+    section = next((m for m in headers if m[1] == 'components'), None)
+    if section is None:
+        return (text.rstrip('\r\n') + '\n\n[components]\nrfid: external\n').encode('utf-8')
+    start = section.end()
+    end = next((m.start() for m in headers if m.start() > start), len(text))
+    body, count = re.subn(r'(?mi)^([ \t]*rfid[ \t]*[:=][ \t]*)[^\r\n]*(\r?)$',
+                          lambda m: m[1] + 'external' + m[2], text[start:end])
+    require(count <= 1, 'Duplicate filament detection setting')
+    if not count:
+        body = body.rstrip('\r\n') + '\nrfid: external\n\n'
+    result = (text[:start] + body + text[end:]).encode('utf-8')
+    require(filament_detection(result) == 'external', 'External setting verification failed')
+    return result
+
+
 class Host:
     """root/state_reader/service_runner are injection points for offline tests only."""
     def __init__(self, root=Path('/'), state_reader=None, service_runner=None):
@@ -138,11 +178,15 @@ class Host:
             if current.is_symlink():
                 # This is the firmware's exact, pre-existing printer-data link.
                 # Follow no other links, including links below its destination.
-                expected = self.root / 'oem/printer_data'
-                require(current == self.root / 'home/lava/printer_data'
-                        and os.readlink(current) == str(expected)
-                        and current.resolve() == expected
-                        and self.path('/oem/printer_data') == expected,
+                if current == self.root / 'home/lava/printer_data':
+                    expected = self.path('/oem/printer_data')
+                elif current in (self.root / RFID_LINK.lstrip('/'),
+                                 self.root / 'oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg'):
+                    expected = self.path(RFID_TWEAK)
+                else:
+                    raise RuntimeError('Unexpected symlink: ' + absolute)
+                require(os.readlink(current) == str(expected)
+                        and current.resolve() == expected,
                         'Unexpected symlink: ' + absolute)
         return p
 
@@ -199,6 +243,120 @@ class Host:
         if self.root == Path('/'):
             require(importlib.util.find_spec('serial') is not None,
                     'The printer Python lacks pyserial; install the documented dependency before continuing')
+
+    def serial_candidates(self):
+        """Identify unique ACE Gen 1 USB paths without opening a serial port."""
+        found = {}
+        for link in sorted((self.root / 'dev/serial/by-id').glob('usb-ANYCUBIC_ACE_*-if00')):
+            try:
+                target = link.resolve(strict=True)
+                info = target.stat()
+                if not stat.S_ISCHR(info.st_mode):
+                    continue
+                node = (self.root / ('sys/dev/char/%d:%d/device' %
+                                    (os.major(info.st_rdev), os.minor(info.st_rdev)))).resolve(strict=True)
+                for parent in (node, *node.parents):
+                    vid, pid = parent / 'idVendor', parent / 'idProduct'
+                    if vid.is_file() and pid.is_file():
+                        if (vid.read_text().strip().lower(), pid.read_text().strip().lower()) == ('28e9', '018a'):
+                            found.setdefault(str(target), '/' + link.relative_to(self.root).as_posix())
+                        break
+            except (OSError, ValueError):
+                continue
+        return sorted(found.values())
+
+    def rfid_files(self):
+        for path, expected in RFID_SERVICES.items():
+            data = self.read(path)
+            require(data is not None and digest(data) == expected,
+                    'Unreviewed firmware RFID support file: ' + path)
+
+    def _rfid_process_state(self):
+        """Read actual daemon processes, independently of the removable PID file."""
+        script = b'/usr/local/bin/openrfid.py'
+
+        def daemon(command, native=False):
+            argv = command.rstrip(b'\0').split(b'\0')
+            # The native service puts the script at argv[1]. A manually
+            # launched Python with extra flags is still a competing candidate,
+            # but is never treated as owned by the native PID file.
+            return (len(argv) >= 2 and (argv[1] == script if native else script in argv[1:]) and
+                    re.fullmatch(rb'(?:.*/)?python(?:3(?:\.\d+)?)?', argv[0]) is not None)
+
+        def command_at(path):
+            try:
+                return path.read_bytes()
+            except OSError as exc:
+                if exc.errno in (errno.ENOENT, errno.ESRCH):
+                    return b''  # The process exited while /proc was enumerated.
+                raise
+
+        # /var/run can itself be a system symlink. This read-only runtime path
+        # is separate from the strict managed-file mutation path policy.
+        pidfile = self.root / 'var/run/openrfid.pid'
+        registered = None
+        if pidfile.exists():
+            value = pidfile.read_text().strip()
+            require(value.isdigit() and int(value) > 1, 'Invalid OpenRFID PID file')
+            registered = int(value)
+            command = command_at(self.root / ('proc/%d/cmdline' % registered))
+            require(not command or daemon(command, native=True),
+                    'OpenRFID PID belongs to another process; refusing to signal it')
+        pids = set()
+        for process in (self.root / 'proc').glob('[0-9]*'):
+            if process.name.isdigit() and daemon(command_at(process / 'cmdline')):
+                pids.add(int(process.name))
+        require(len(pids) <= 1, 'Multiple OpenRFID processes found; refusing automatic service control')
+        return registered, pids
+
+    def rfid_running(self):
+        registered, pids = self._rfid_process_state()
+        require(not pids or pids == {registered},
+                'Orphan OpenRFID process has no matching PID file; manual review required')
+        return bool(pids)
+
+    def rfid_service(self, action):
+        require(action in ('start', 'stop'), 'Invalid OpenRFID service action')
+        registered, original_pids = self._rfid_process_state()
+        require(not original_pids or original_pids == {registered},
+                'Orphan OpenRFID process has no matching PID file; refusing to signal it')
+        subprocess.run(['/etc/init.d/S99openrfid', action], check=True, timeout=30,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        deadline = time.monotonic() + 3
+        while time.monotonic() < deadline:
+            registered, remaining = self._rfid_process_state()
+            if action == 'stop':
+                require(remaining <= original_pids,
+                        'A new OpenRFID process appeared during stop; refusing further signals')
+                if not remaining:
+                    return
+            elif remaining and remaining == {registered}:
+                return
+            time.sleep(.1)
+        raise RuntimeError('OpenRFID service state did not settle')
+
+    def apply_rfid_support(self):
+        subprocess.run(['/etc/init.d/S59rfid-support', 'restart'], check=True, timeout=30,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        self.external_ready()
+
+    def external_ready(self):
+        link = self.path(RFID_LINK)
+        require(filament_detection(self.read(EXTENDED_CONFIG)) == 'external'
+                and link.is_symlink() and os.readlink(link) == str(self.path(RFID_TWEAK))
+                and not self.rfid_running(), 'External filament detection is not fully active')
+
+    def restore_rfid_link(self, target):
+        require(target == str(self.path(RFID_TWEAK)), 'Unexpected backed-up RFID link')
+        path = self.path(RFID_LINK)
+        temporary = path.with_name('.' + path.name + '.u1-ace-link')
+        require(not temporary.exists() and not temporary.is_symlink(), 'Unexpected leftover RFID link stage')
+        try:
+            temporary.symlink_to(target)
+            os.replace(temporary, path)
+        finally:
+            if temporary.is_symlink():
+                temporary.unlink()
 
     def service(self, action):
         if self.service_runner:
@@ -284,7 +442,15 @@ class Installer:
     def prepare(self, raw_settings):
         self.firmware()
         s = validate_settings(raw_settings)
+        requested_serial = s['serial']
         before = self.host.state(); self.host.idle(before); self.host.persistence(); self.host.dependencies()
+        require(('ace' in before) == ('ace' in before['configfile']['settings']),
+                'ACE object and loaded configuration disagree; resolve printer state before installation')
+        self.host.rfid_files()
+        rfid_before = {'mode': filament_detection(self.host.read(EXTENDED_CONFIG)),
+                       'running': self.host.rfid_running()}
+        require(not rfid_before['running'] or rfid_before['mode'] in ('openrfid', 'openrfid-generic'),
+                'OpenRFID is running with an inconsistent configured mode; manual review required')
         if 'ace' not in before:
             require(not any(sensors(before)), 'First install requires all four U1 heads empty; also empty all ACE slots before continuing')
         entries = self.manifest['files']
@@ -326,11 +492,32 @@ class Installer:
             for key in CONSTANTS:
                 s[key] = receipt['settings'][key]
             s = validate_settings(s)
+        if loaded.get('serial') and (not s['apply_existing_settings'] or
+                                     (requested_serial == DEFAULTS['serial'] and s['auto_detect_serial'])):
+            s['serial'] = loaded['serial']
+            serial_selection = 'existing_config'
+        elif requested_serial != DEFAULTS['serial'] or not s['auto_detect_serial']:
+            s['serial'] = requested_serial
+            serial_selection = 'explicit_setting'
+        else:
+            candidates = self.host.serial_candidates()
+            require(len(candidates) == 1,
+                    'Automatic ACE serial selection requires exactly one verified device; found %d. '
+                    'Use status to inspect candidates and choose an explicit serial path.' % len(candidates))
+            s['serial'] = candidates[0]
+            serial_selection = 'auto_discovered'
+        s = validate_settings(s)
         require(self.host.root != Path('/') or Path(s['serial']).exists(), 'ACE serial device was not found')
         changes[DESTINATIONS['ace.py']] = configured_payload(changes[DESTINATIONS['ace.py']], s)
         old_cfg = self.host.read(ACE_CONFIG)
         require(old_cfg is None or ace_sections, 'Unloaded ace.cfg exists; refusing ambiguous configuration')
         changes[ACE_CONFIG] = patch_ace_config(old_cfg, {k: s[k] for k in CONFIG_KEYS}, not save_sections)
+        changes[EXTENDED_CONFIG] = external_config(self.host.read(EXTENDED_CONFIG))
+        tweak = self.host.read(RFID_TWEAK)
+        current_reader = self.host.read(RFID_LINK)
+        require(current_reader is None or current_reader == tweak,
+                'Custom disable-rfid-reader.cfg requires manual review')
+        changes[RFID_LINK] = tweak
         if not save_sections:
             variable_path = CONFIG_ROOT + '/ace_vars.cfg'
             if self.host.read(variable_path) is None:
@@ -357,7 +544,8 @@ class Installer:
         for dest, data in changes.items():
             expected[dest] = digest(data)
         return {'changes': changes, 'expected': expected, 'protected': protected,
-                'settings': s, 'before': before}
+                'settings': s, 'before': before, 'rfid_before': rfid_before,
+                'serial_selection': serial_selection, 'filament_detection': 'external'}
 
     def protected_ok(self, hashes):
         for name, expected in hashes.items():
@@ -384,9 +572,12 @@ class Installer:
                 if 'ace' in before and 'ace' in s:
                     require(s['ace']['gate_status'] == before['ace']['gate_status'], 'ACE gate changed')
                 if version:
+                    self.host.external_ready()
                     require(s['ace']['port_version'] == version, 'Unexpected active integration version')
                     loaded = s['configfile']['settings']['ace']
                     require(all(loaded.get(k) == settings[k] for k in CONFIG_KEYS), 'Loaded ACE settings mismatch')
+                    require(s['configfile']['settings'].get('fm175xx_reader', {}).get('enabled') is False,
+                            'Klipper internal RFID reader is not disabled')
                 stable += 1
                 if stable >= 3:
                     return s
@@ -403,13 +594,17 @@ class Installer:
         self.host.path(backup).mkdir(parents=True, mode=0o700, exist_ok=False)
         metadata = {'schema': 1, 'id': ident, 'target_firmware': TARGET, 'files': [],
                     'protected': plan['protected'], 'before': plan['before'],
-                    'previous_receipt': self.receipt(), 'installed_hashes': plan['expected']}
+                    'previous_receipt': self.receipt(), 'installed_hashes': plan['expected'],
+                    'rfid_before': plan['rfid_before']}
         for i, (name, data) in enumerate(plan['changes'].items()):
             old = self.host.read(name); p = self.host.path(name)
             entry = {'path': name, 'existed': old is not None, 'backup': str(i),
                      'before_sha256': digest(old) if old is not None else None}
             if old is not None:
                 st = p.stat(); entry.update(mode=stat.S_IMODE(st.st_mode), uid=st.st_uid, gid=st.st_gid)
+                if p.is_symlink():
+                    require(name == RFID_LINK, 'Unexpected managed symlink')
+                    entry['symlink_target'] = os.readlink(p)
                 self.host.write(backup + '/' + str(i), old, {'mode': 0o600, 'uid': 0, 'gid': 0})
             metadata['files'].append(entry)
         self.host.write(backup + '/backup.json', json_bytes(metadata), {'mode': 0o600, 'uid': 0, 'gid': 0})
@@ -423,19 +618,24 @@ class Installer:
                 old = self.host.read(entry['path'])
                 require((digest(old) if old is not None else None) == entry['before_sha256'], 'File changed during preflight')
             self.protected_ok(plan['protected'])
+            require(self.host.rfid_running() == plan['rfid_before']['running'], 'OpenRFID service changed during preflight')
             stopped = True; self.host.service('stop')
+            self.host.rfid_service('stop')
             for name, data in plan['changes'].items():
                 self.host.write(name, data)
+            self.host.apply_rfid_support()
             self.host.service('start')
             after = self.ready(plan['before'], self.manifest['version'], plan['settings'])
             self.protected_ok(plan['protected'])
             require(all(digest(self.host.read(n)) == h for n, h in plan['expected'].items()), 'Installed file verification failed')
             receipt = {'schema': 1, 'backup': ident, 'version': self.manifest['version'],
-                       'settings': plan['settings'], 'installed_hashes': plan['expected']}
+                       'settings': plan['settings'], 'installed_hashes': plan['expected'],
+                       'filament_detection': 'external', 'serial_selection': plan['serial_selection']}
             self.host.write(RECEIPT, json_bytes(receipt), {'mode': 0o600, 'uid': 0, 'gid': 0})
             return {'installed': True, 'backup': ident, 'ready_samples': 3, 'settings': plan['settings'],
                     'fresh_install': 'ace' not in plan['before'],
-                    'empty_slot_metadata_initialized': material(after) != material(plan['before'])}
+                    'empty_slot_metadata_initialized': material(after) != material(plan['before']),
+                    'filament_detection': 'external', 'serial_selection': plan['serial_selection']}
         except BaseException as original:
             if stopped:
                 try:
@@ -454,8 +654,11 @@ class Installer:
             raise
 
     def restore(self, metadata, backup, verify=True):
-        allowed = set(DESTINATIONS.values()) | {ACE_CONFIG, CONFIG_ROOT + '/ace_vars.cfg', DEBUG}
+        allowed = set(DESTINATIONS.values()) | {ACE_CONFIG, CONFIG_ROOT + '/ace_vars.cfg', DEBUG,
+                                              EXTENDED_CONFIG, RFID_LINK}
         require(len({e['path'] for e in metadata['files']}) == len(metadata['files']), 'Duplicate backup destinations')
+        if 'rfid_before' in metadata:
+            self.host.rfid_files()
         prepared = []
         for entry in metadata['files']:
             name = entry['path']; require(name in allowed, 'Backup contains an unexpected destination')
@@ -463,20 +666,30 @@ class Installer:
                 require(re.fullmatch(r'\d+', entry['backup']), 'Invalid backup member')
                 data = self.host.read(backup + '/' + entry['backup'])
                 require(data is not None and digest(data) == entry['before_sha256'], 'Backup content mismatch')
+                if entry.get('symlink_target') is not None:
+                    require(name == RFID_LINK and entry['symlink_target'] == str(self.host.path(RFID_TWEAK)),
+                            'Unexpected backed-up symlink')
             else:
                 data = None
             prepared.append((entry, data))
         self.host.service('stop')
+        if 'rfid_before' in metadata:
+            self.host.rfid_service('stop')
         for entry, data in reversed(prepared):
             name = entry['path']
             if entry['existed']:
-                self.host.write(name, data, entry)
+                if entry.get('symlink_target') is not None:
+                    self.host.restore_rfid_link(entry['symlink_target'])
+                else:
+                    self.host.write(name, data, entry)
             elif self.host.path(name).exists():
                 self.host.path(name).unlink()
         for entry, data in prepared:
             actual = self.host.read(entry['path'])
             require(actual == data, 'Restored file verification failed: ' + entry['path'])
         self.host.service('start')
+        if metadata.get('rfid_before', {}).get('running'):
+            self.host.rfid_service('start')
         if verify:
             prior = metadata['before'].get('ace', {}).get('port_version')
             # Older releases may not expose every newly added config key.
@@ -484,6 +697,10 @@ class Installer:
             if prior:
                 require(self.host.state()['ace']['port_version'] == prior, 'Rollback version mismatch')
             self.protected_ok(metadata['protected'])
+            if 'rfid_before' in metadata:
+                original = metadata['rfid_before']
+                require(filament_detection(self.host.read(EXTENDED_CONFIG)) == original['mode']
+                        and self.host.rfid_running() == original['running'], 'Rollback RFID state mismatch')
         previous = metadata.get('previous_receipt')
         if previous is None:
             if self.host.path(RECEIPT).exists():
@@ -546,7 +763,14 @@ def main():
         s = installer.host.state()
         result = {'firmware': TARGET, 'klipper_state': s['webhooks']['state'],
                   'ace_version': s.get('ace', {}).get('port_version'),
-                  'managed': installer.receipt() is not None}
+                  'managed': installer.receipt() is not None,
+                  'existing_ace': 'ace' in s or 'ace' in s['configfile']['settings'],
+                  'ace_settings': {k: v for k, v in s['configfile']['settings'].get('ace', {}).items()
+                                   if k in CONFIG_KEYS},
+                  'serial_candidates': installer.host.serial_candidates(),
+                  'filament_detection': filament_detection(installer.host.read(EXTENDED_CONFIG)),
+                  'internal_rfid_enabled': s['configfile']['settings'].get('fm175xx_reader', {}).get('enabled'),
+                  'openrfid_running': installer.host.rfid_running()}
     elif args.command == 'rollback':
         result = installer.rollback(args.backup, args.offline_recovery, args.confirm_idle_and_cold)
     else:
@@ -558,7 +782,11 @@ def main():
             plan = installer.prepare(settings)
             result = {'compatible': True, 'read_only': True, 'destinations': list(plan['changes']),
                       'effective_settings': plan['settings'],
-                      'calibration_acknowledged': plan['settings']['calibrated_acknowledged']}
+                      'calibration_acknowledged': plan['settings']['calibrated_acknowledged'],
+                      'serial_selection': plan['serial_selection'],
+                      'fresh_install': 'ace' not in plan['before'],
+                      'filament_detection': plan['filament_detection'],
+                      'previous_filament_detection': plan['rfid_before']['mode']}
     print(json.dumps(result, indent=2))
 
 

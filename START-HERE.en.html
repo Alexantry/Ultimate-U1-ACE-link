@@ -1,0 +1,158 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Start here · Ultimate U1-ACE link</title><style>
+:root{color-scheme:light;font-family:"Microsoft YaHei",system-ui,sans-serif;color:#15283e;background:#eff3f8}
+*{box-sizing:border-box}body{margin:0}main{max-width:1020px;margin:auto;padding:32px 22px 64px}
+header{padding:34px;background:#132d4c;border-radius:20px;color:#fff}header p{color:#dce8f7}h1{font-size:34px;margin:12px 0}
+.tag{font-size:14px;letter-spacing:2px;color:#93c6ff}h2{font-size:27px;margin-top:12px}h3{font-size:24px;margin-top:32px}h4{font-size:20px}
+p,li,td,th{font-size:17px;line-height:1.8}li{margin:8px 0}a{color:#125dc2;text-underline-offset:3px}header a{color:#b2dbff}
+section,details{background:#fff;border:1px solid #dbe4ef;border-radius:18px;padding:28px;margin-top:24px}
+summary{cursor:pointer;font-size:23px;font-weight:bold}summary small{display:block;font-size:15px;font-weight:normal;margin-top:10px;color:#52657b}
+img{display:block;max-width:100%;height:auto;margin:20px auto}code{font-family:Consolas,monospace;background:#edf2f8;padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding:12px;text-align:left;vertical-align:top}th{background:#edf3fa}.table{overflow:auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.steps div{background:#fff;padding:22px;border-radius:14px;border:1px solid #dbe4ef}.steps b{display:block;font-size:20px;margin-bottom:12px}
+.note{background:#e9f6ef;border-left:4px solid #25814b;padding:14px 18px;margin-top:22px}.note p{margin:0}
+.alert{padding:18px 22px;border:1px solid #c8d3e2;border-left-width:6px;border-radius:12px;margin:24px 0;background:#f4f7fc}
+.alert-title{font-size:19px;font-weight:800;margin-bottom:10px;letter-spacing:.3px}.alert p{margin:8px 0}
+.alert.caution{color:#8c1421;background:#fff1f2;border-color:#d42b40}.alert.caution strong{font-weight:800}
+.alert.important{color:#41297a;background:#f4f0ff;border-color:#7c55c7}.alert.warning{color:#734200;background:#fff8e6;border-color:#c58100}
+footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{grid-template-columns:1fr}main{padding:14px}section,details,header{padding:20px}h1{font-size:27px}td,th{min-width:140px}}
+@media print{body{background:#fff}section,details,header{break-inside:avoid}header{background:#fff;color:#15283e}details>*{display:block}}
+</style></head><body><main>
+<header><div class="tag">ULTIMATE U1-ACE LINK · <a href="START-HERE.html">简体中文</a></div>
+<h1>No programming knowledge is required.</h1>
+<p>Prepare the machine. Double-click <strong>START-HERE.cmd</strong>. Select <strong>2. English</strong>.</p>
+<p>This is the offline guide. It does not start installation when opened.</p>
+<p>Built with <strong>OpenAI Codex</strong>. Installation does not require Codex or an API key.</p></header>
+<aside class="alert caution"><div class="alert-title">CAUTION</div>
+<p><strong>Do not copy old SnapAce <code>filament_feed.py</code> or <code>extruder.py</code> onto U1 firmware 2.0.</strong></p>
+<p><strong>This project replaces the original SnapAce software installation steps.</strong> Use its upstream guide for hardware connections only.</p>
+</aside>
+<div class="steps"><div><b>1. Extract all files</b>Right-click the downloaded ZIP. Select Extract All.</div>
+<div><b>2. Open the new folder</b>Double-click START-HERE.cmd in the extracted folder.</div>
+<div><b>3. Select English</b>Follow the prompts. The launcher enters the commands for you.</div></div>
+<div class="note"><p><strong>External detection is automatic.</strong> The installer saves backups, sets External, and verifies the internal-reader service state.</p></div>
+<section id="start"><h2>Start here</h2>
+<p>You do not need programming knowledge, Codex, or an API key.</p>
+<p>Use a Windows 10 or Windows 11 computer on the printer&#x27;s network.</p>
+<p>The guided launcher offers <strong>English</strong> and <strong>中文</strong> at startup.</p>
+<p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md">manual source procedure</a> remains available if you prefer to inspect and enter each command.</p>
+<p>It skips the Windows launcher but still runs the open-source printer installer.</p>
+<p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md#retained-v010">previous package</a> remains available unchanged.</p>
+
+<h3>Prepare the machine</h3>
+<ol>
+<li>Install the supported U1 firmware, <code>2.0.0-paxx12-24</code>.</li>
+<li>Enable Advanced Mode on the U1.</li>
+<li>Set Root Access to Open.</li>
+<li>Connect the ACE Pro Gen 1 and its four PTFE paths.</li>
+<li>Confirm the required ACE firmware before NFC use.</li>
+<li>Finish the current print.</li>
+<li>Let the nozzle and bed cool.</li>
+</ol>
+<p>The tested ACE firmware is <code>CV1.3.863</code> with OpenCubic <code>1.1.1</code>.</p>
+<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md#1-prepare-the-prerequisite-projects">prerequisite instructions</a>.</p>
+<p>The launcher does not install U1 firmware, flash ACE, or change hardware.</p>
+<p><strong>First installation:</strong> empty all four ACE inlets and all four U1 heads before installation.</p>
+<p><strong>Existing installation:</strong> an update does not require all four channels to be emptied.</p>
+<h3>Install with the launcher</h3>
+<ol>
+<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.1.zip">the project ZIP</a>.</li>
+<li>Right-click the ZIP in your Downloads folder.</li>
+<li>Select Extract All.</li>
+<li>Open the extracted <code>Ultimate-U1-ACE-link</code> folder.</li>
+<li>Double-click <code>START-HERE.cmd</code>.</li>
+<li>Select <strong>2. English</strong>.</li>
+<li>Enter the printer address shown on its Wi-Fi page.</li>
+<li>Review the installation summary.</li>
+<li>Confirm installation when the machine is idle and cold.</li>
+<li>Wait for the success result.</li>
+</ol>
+<p>Do not run the launcher from inside the ZIP viewer.</p>
+<p><img alt="Download, extract, and start" src="docs/images/first-steps.en.svg"></p>
+<p>Password entry shows no characters or asterisks.</p>
+<p>The launcher does not save passwords.</p>
+<p>Open <code>START-HERE.en.html</code> for this guide without an internet connection.</p>
+<p>Use <code>START-HERE.html</code> for the Chinese guide.</p>
+<h3>What the installer sets</h3>
+<div class="table"><table><thead><tr><th>Item</th><th>Automatic action</th></tr></thead><tbody>
+<tr><td>File transfer</td><td>Copy the required public files to a new staging directory.</td></tr>
+<tr><td>Existing parameters</td><td>Keep the current ACE settings.</td></tr>
+<tr><td>ACE interface</td><td>Use the existing interface or identify one matching device.</td></tr>
+<tr><td>Filament Detection</td><td>Set <strong>External</strong> and disable the internal reader path.</td></tr>
+<tr><td>Persistence</td><td>Create the required debug marker when missing.</td></tr>
+<tr><td>Configuration</td><td>Add the ACE and save-variable settings as needed.</td></tr>
+<tr><td>Recovery</td><td>Save the original files before changes.</td></tr>
+<tr><td>Completion</td><td>Restart services and verify the active settings.</td></tr>
+</tbody></table></div>
+<p>The setting name is <strong>External</strong>.</p>
+<p>The word <strong>extended</strong> describes the firmware and its configuration files.</p>
+<p>You do not need to select External manually before guided installation.</p>
+<h3>Values that depend on your machine</h3>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>Do not copy the example lengths without checking your tube arrangement.</strong></p>
+<p><strong>The installer cannot measure physical tube lengths or filament tension.</strong></p>
+</aside>
+<p>The first installation asks for reviewed fast-feed and retract distances.</p>
+<p>Existing installations keep their current settings.</p>
+<p><img alt="Fast-feed and retraction lengths" src="docs/images/length-guide.en.svg"></p>
+<div class="table"><table><thead><tr><th>Letter in the launcher</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><strong>A</strong></td><td>Retract from the head while keeping the tip inside ACE and its rear tube.</td></tr>
+<tr><td><strong>B</strong></td><td>Feed quickly from the known starting position, stopping before the head. Use a value smaller than A.</td></tr>
+</tbody></table></div>
+<p>The tested distances are 1150 mm for fast feed and 1250 mm for retraction.</p>
+<p>These distances are examples for one tube arrangement.</p>
+<p>Use <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/configuration.md#calibrate-the-ptfe-paths">the calibration guide</a> for a different arrangement.</p>
+<p>Common speed defaults are 200 for fast feed, 50 for the final approach, and 80 for retraction.</p>
+<p>Forward take-up is disabled on a new installation.</p>
+<p>Enable it only after the initial load and unload check.</p>
+<h3>Check one slot</h3>
+<ol>
+<li>Insert filament into one empty ACE inlet.</li>
+<li>Wait for the short bite and NFC recognition.</li>
+<li>Confirm that automatic full loading does not start.</li>
+<li>Select Load on the U1.</li>
+<li>Wait for load completion.</li>
+<li>Select Unload.</li>
+<li>Confirm that material data remains available.</li>
+<li>Select Load again without removing the filament.</li>
+</ol>
+<p>Keep your hands away from the rollers.</p>
+<p>The installer does not run this physical test.</p>
+<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">the validation limits</a>.</p>
+<h3>If the launcher stops</h3>
+<div class="table"><table><thead><tr><th>Message or situation</th><th>Next action</th></tr></thead><tbody>
+<tr><td>No characters appear during password entry</td><td>Type the password, then press Enter. Hidden input is normal.</td></tr>
+<tr><td>Upload failed before installation</td><td>Check the current address, Root Access, password, and network.</td></tr>
+<tr><td>The machine is busy or hot</td><td>End the task and dryer operation. Set heater targets to zero. Wait for temperatures below 50°C.</td></tr>
+<tr><td>ACE feed assist is still active</td><td>Use the U1 screen to unload that channel normally, then wait for cooling.</td></tr>
+<tr><td>No unique ACE interface</td><td>Check power and the correct USB connection. Connect only one ACE.</td></tr>
+<tr><td>Installation started but success was not confirmed</td><td>Keep the window and diagnostic file. Do not repeat installation or start printing.</td></tr>
+</tbody></table></div>
+<p>The launcher never automatically repeats installation after a lost connection.</p>
+<p>It shows the private diagnostic file and printer staging directory.</p>
+<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/update-and-rollback.md">recovery instructions</a> before further changes.</p>
+<p>Successful automatic recovery records <code>Automatic rollback VERIFIED</code> in the diagnostic output.</p>
+<p>A failed recovery records <code>automatic rollback FAILED</code> and a backup identifier.</p>
+<p>Remove private details before sharing diagnostics. Do not publish NFC keys or printer backups.</p>
+<h4>Missing Windows OpenSSH client</h4>
+<ol>
+<li>Select Start in Windows.</li>
+<li>Search for Optional Features.</li>
+<li>Open the matching settings page.</li>
+<li>Select View features or Add a feature.</li>
+<li>Search for OpenSSH.</li>
+<li>Select <strong>OpenSSH Client</strong>.</li>
+<li>Complete installation with the displayed buttons.</li>
+<li>Start the launcher again.</li>
+</ol>
+<p>The client is required. The server is not required.</p>
+<p>Your administrator can add the component if the computer is managed.</p>
+<p>See <a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">Microsoft&#x27;s component instructions</a>.</p>
+<h3>Development</h3>
+<p>This project was built with <strong>OpenAI Codex</strong>.</p>
+<p>The user supplied requirements, observed the machine, and performed physical tests.</p>
+<p>Codex wrote and integrated the code, installer, and documentation.</p>
+<p>Upstream contributions and licenses remain listed in <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>.</p></section>
+<footer>Source and reference links require internet access. The instructions on this page are available offline.</footer>
+</main></body></html>
