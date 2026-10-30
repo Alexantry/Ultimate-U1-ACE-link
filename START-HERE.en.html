@@ -9,6 +9,8 @@ p,li,td,th{font-size:17px;line-height:1.8}li{margin:8px 0}a{color:#125dc2;text-u
 section,details{background:#fff;border:1px solid #dbe4ef;border-radius:18px;padding:28px;margin-top:24px}
 summary{cursor:pointer;font-size:23px;font-weight:bold}summary small{display:block;font-size:15px;font-weight:normal;margin-top:10px;color:#52657b}
 img{display:block;max-width:100%;height:auto;margin:20px auto}code{font-family:Consolas,monospace;background:#edf2f8;padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+pre{padding:16px;background:#edf2f8;overflow:auto;border-radius:8px;white-space:pre}pre code{padding:0;background:none;overflow-wrap:normal}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.routes a{display:block;padding:24px;border:3px solid #125dc2;border-radius:14px;background:#fff;font-size:21px;font-weight:800;text-decoration:none}.routes a:last-child{border-color:#375143;color:#214e34;background:#effbf3}.routes small{display:block;font-size:15px;font-weight:400;margin-top:10px}
 table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding:12px;text-align:left;vertical-align:top}th{background:#edf3fa}.table{overflow:auto}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.steps div{background:#fff;padding:22px;border-radius:14px;border:1px solid #dbe4ef}.steps b{display:block;font-size:20px;margin-bottom:12px}
 .note{background:#e9f6ef;border-left:4px solid #25814b;padding:14px 18px;margin-top:22px}.note p{margin:0}
@@ -16,15 +18,15 @@ table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding
 .alert-title{font-size:19px;font-weight:800;margin-bottom:10px;letter-spacing:.3px}.alert p{margin:8px 0}
 .alert.caution{color:#8c1421;background:#fff1f2;border-color:#d42b40}.alert.caution strong{font-weight:800}
 .alert.important{color:#41297a;background:#f4f0ff;border-color:#7c55c7}.alert.warning{color:#734200;background:#fff8e6;border-color:#c58100}
-footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{grid-template-columns:1fr}main{padding:14px}section,details,header{padding:20px}h1{font-size:27px}td,th{min-width:140px}}
+footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,.routes{grid-template-columns:1fr}main{padding:14px}section,details,header{padding:20px}h1{font-size:27px}td,th{min-width:140px}}
 @media print{body{background:#fff}section,details,header{break-inside:avoid}header{background:#fff;color:#15283e}details>*{display:block}}
 </style></head><body><main>
 <header><div class="tag">ULTIMATE U1-ACE LINK · <a href="START-HERE.html">简体中文</a></div>
 <h1>No programming knowledge is required.</h1>
-<p>Prepare the machine. Double-click <strong>START-HERE.cmd</strong>. Select <strong>2. English</strong>.</p>
+<p>Double-click <strong>START-HERE.cmd</strong>. Select <strong>2. English</strong>. The wizard can start with U1 firmware preparation.</p>
 <p>This is the offline guide. It does not start installation when opened.</p>
 <p>Built with <strong>OpenAI Codex</strong>. Installation does not require Codex or an API key.</p></header>
-<aside class="alert caution"><div class="alert-title">CAUTION</div>
+<nav class="routes"><a href="#start">GUIDED INSTALLATION<small>Run START-HERE.cmd for preparation and installation prompts.</small></a><a href="MANUAL-INSTALL.html">MANUAL INSTALLATION<small>Read the source and enter the documented commands.</small></a></nav><aside class="alert caution"><div class="alert-title">CAUTION</div>
 <p><strong>Do not copy old SnapAce <code>filament_feed.py</code> or <code>extruder.py</code> onto U1 firmware 2.0.</strong></p>
 <p><strong>This project replaces the original SnapAce software installation steps.</strong> Use its upstream guide for hardware connections only.</p>
 </aside>
@@ -32,19 +34,22 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <div><b>2. Open the new folder</b>Double-click START-HERE.cmd in the extracted folder.</div>
 <div><b>3. Select English</b>Follow the prompts. The launcher enters the commands for you.</div></div>
 <div class="note"><p><strong>External detection is automatic.</strong> The installer saves backups, sets External, and verifies the internal-reader service state.</p></div>
-<section id="start"><h2>Start here</h2>
+<section id="start"><h2 id="start-here">Start here</h2>
 <p>You do not need programming knowledge, Codex, or an API key.</p>
 <p>Use a Windows 10 or Windows 11 computer on the printer&#x27;s network.</p>
 <p>The guided launcher offers <strong>English</strong> and <strong>中文</strong> at startup.</p>
-<p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md">manual source procedure</a> remains available if you prefer to inspect and enter each command.</p>
+<p>The <a href="MANUAL-INSTALL.html">manual source procedure</a> remains available if you prefer to inspect and enter each command.</p>
 <p>It skips the Windows launcher but still runs the open-source printer installer.</p>
 <p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md#retained-v010">previous package</a> remains available unchanged.</p>
 
-<h3>Prepare the machine</h3>
+<h3 id="prepare-the-machine">Prepare the machine</h3>
+<p>The same wizard now includes <a href="#firmware">U1 firmware preparation</a>.</p>
+<p>Select that path if the required firmware is not already installed.</p>
+<p>It downloads and verifies the original <code>2.0.0-paxx12-24</code> file, then copies it to your selected FAT32 USB drive.</p>
 <ol>
-<li>Install the supported U1 firmware, <code>2.0.0-paxx12-24</code>.</li>
-<li>Enable Advanced Mode on the U1.</li>
-<li>Set Root Access to Open.</li>
+<li>Follow the wizard&#x27;s screen instructions to install the prepared file on U1.</li>
+<li>Enable Advanced Mode on the U1 screen and complete the requested restart.</li>
+<li>Set Root Access to Open on the screen.</li>
 <li>Connect the ACE Pro Gen 1 and its four PTFE paths.</li>
 <li>Confirm the required ACE firmware before NFC use.</li>
 <li>Finish the current print.</li>
@@ -52,18 +57,19 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 </ol>
 <p>The tested ACE firmware is <code>CV1.3.863</code> with OpenCubic <code>1.1.1</code>.</p>
 <p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md#1-prepare-the-prerequisite-projects">prerequisite instructions</a>.</p>
-<p>The launcher does not install U1 firmware, flash ACE, or change hardware.</p>
+<p>The launcher prepares the U1 file and guides the physical steps. The printer performs the update after your screen confirmation.</p>
+<p>It does not flash ACE or change hardware.</p>
 <p><strong>First installation:</strong> empty all four ACE inlets and all four U1 heads before installation.</p>
 <p><strong>Existing installation:</strong> an update does not require all four channels to be emptied.</p>
-<h3>Install with the launcher</h3>
+<h3 id="install-with-the-launcher">Install with the launcher</h3>
 <ol>
-<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.1.zip">the project ZIP</a>.</li>
+<li>Download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip">the project ZIP</a>.</li>
 <li>Right-click the ZIP in your Downloads folder.</li>
 <li>Select Extract All.</li>
 <li>Open the extracted <code>Ultimate-U1-ACE-link</code> folder.</li>
 <li>Double-click <code>START-HERE.cmd</code>.</li>
 <li>Select <strong>2. English</strong>.</li>
-<li>Enter the printer address shown on its Wi-Fi page.</li>
+<li>Complete U1 preparation, or select the already-prepared path. Enter the current printer address.</li>
 <li>Review the installation summary.</li>
 <li>Confirm installation when the machine is idle and cold.</li>
 <li>Wait for the success result.</li>
@@ -74,8 +80,9 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <p>The launcher does not save passwords.</p>
 <p>Open <code>START-HERE.en.html</code> for this guide without an internet connection.</p>
 <p>Use <code>START-HERE.html</code> for the Chinese guide.</p>
-<h3>What the installer sets</h3>
+<h3 id="what-the-installer-sets">What the installer sets</h3>
 <div class="table"><table><thead><tr><th>Item</th><th>Automatic action</th></tr></thead><tbody>
+<tr><td>U1 firmware preparation</td><td>Download and verify v24, then copy it to selected FAT32 USB. Screen approval remains manual.</td></tr>
 <tr><td>File transfer</td><td>Copy the required public files to a new staging directory.</td></tr>
 <tr><td>Existing parameters</td><td>Keep the current ACE settings.</td></tr>
 <tr><td>ACE interface</td><td>Use the existing interface or identify one matching device.</td></tr>
@@ -88,7 +95,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <p>The setting name is <strong>External</strong>.</p>
 <p>The word <strong>extended</strong> describes the firmware and its configuration files.</p>
 <p>You do not need to select External manually before guided installation.</p>
-<h3>Values that depend on your machine</h3>
+<h3 id="values-that-depend-on-your-machine">Values that depend on your machine</h3>
 <aside class="alert important"><div class="alert-title">IMPORTANT</div>
 <p><strong>Do not copy the example lengths without checking your tube arrangement.</strong></p>
 <p><strong>The installer cannot measure physical tube lengths or filament tension.</strong></p>
@@ -106,7 +113,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <p>Common speed defaults are 200 for fast feed, 50 for the final approach, and 80 for retraction.</p>
 <p>Forward take-up is disabled on a new installation.</p>
 <p>Enable it only after the initial load and unload check.</p>
-<h3>Check one slot</h3>
+<h3 id="check-one-slot">Check one slot</h3>
 <ol>
 <li>Insert filament into one empty ACE inlet.</li>
 <li>Wait for the short bite and NFC recognition.</li>
@@ -120,7 +127,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <p>Keep your hands away from the rollers.</p>
 <p>The installer does not run this physical test.</p>
 <p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">the validation limits</a>.</p>
-<h3>If the launcher stops</h3>
+<h3 id="if-the-launcher-stops">If the launcher stops</h3>
 <div class="table"><table><thead><tr><th>Message or situation</th><th>Next action</th></tr></thead><tbody>
 <tr><td>No characters appear during password entry</td><td>Type the password, then press Enter. Hidden input is normal.</td></tr>
 <tr><td>Upload failed before installation</td><td>Check the current address, Root Access, password, and network.</td></tr>
@@ -135,7 +142,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <p>Successful automatic recovery records <code>Automatic rollback VERIFIED</code> in the diagnostic output.</p>
 <p>A failed recovery records <code>automatic rollback FAILED</code> and a backup identifier.</p>
 <p>Remove private details before sharing diagnostics. Do not publish NFC keys or printer backups.</p>
-<h4>Missing Windows OpenSSH client</h4>
+<h4 id="missing-windows-openssh-client">Missing Windows OpenSSH client</h4>
 <ol>
 <li>Select Start in Windows.</li>
 <li>Search for Optional Features.</li>
@@ -149,10 +156,756 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <p>The client is required. The server is not required.</p>
 <p>Your administrator can add the component if the computer is managed.</p>
 <p>See <a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">Microsoft&#x27;s component instructions</a>.</p>
-<h3>Development</h3>
+<h3 id="development">Development</h3>
 <p>This project was built with <strong>OpenAI Codex</strong>.</p>
 <p>The user supplied requirements, observed the machine, and performed physical tests.</p>
 <p>Codex wrote and integrated the code, installer, and documentation.</p>
 <p>Upstream contributions and licenses remain listed in <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>.</p></section>
-<footer>Source and reference links require internet access. The instructions on this page are available offline.</footer>
+<details id="firmware"><summary>U1 firmware and access setup</summary><h2 id="prepare-u1-firmware-in-the-guided-workflow">Prepare U1 firmware in the guided workflow</h2>
+<p><a href="START-HERE.html#firmware">简体中文</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">Guided installation</a> · <strong><a href="MANUAL-INSTALL.html">Manual source installation</a></strong></p>
+<p>The preparation stage handles the U1 firmware file and shows the required screen actions.</p>
+<p>It uses the <strong>original upstream file</strong>, not a new combined firmware image.</p>
+<p>It does not flash ACE.</p>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>The first firmware update still requires confirmation on the U1 screen.</strong></p>
+<p><strong>Advanced Mode and Root Access must also be enabled before remote installation.</strong></p>
+<p>These steps are part of the guide. They are not silently performed over an unopened connection.</p>
+</aside>
+<h3 id="what-you-need">What you need</h3>
+<ul>
+<li>A Windows 10 or Windows 11 computer with internet access.</li>
+<li>A removable USB drive that already uses <strong>FAT32</strong>, with at least 300 MB free.</li>
+<li>The extracted project package.</li>
+<li>An idle U1. Save any existing custom configuration privately before a firmware update.</li>
+</ul>
+<p>The host installer&#x27;s later backup does not protect changes from an earlier firmware update.</p>
+<p>If you already have the exact supported firmware, choose the existing-preparation path instead.</p>
+<p>Do not replace a customized or newer firmware merely to pass an installation check.</p>
+<h3 id="guided-steps">Guided steps</h3>
+<ol>
+<li>Extract the complete project ZIP.</li>
+<li>Double-click <strong>START-HERE.cmd</strong>.</li>
+<li>Select <strong>English</strong> or <strong>中文</strong>.</li>
+<li>Select the U1 firmware preparation path.</li>
+<li>Insert your FAT32 USB drive into the computer.</li>
+<li>Select its drive from the displayed list. Check its letter, label, and capacity.</li>
+<li>Confirm that destination.</li>
+<li>Wait for download, SHA-256 verification, file copy, and destination verification.</li>
+<li>Use Windows <strong>Eject</strong> after the copy has finished.</li>
+<li>Insert the drive into U1.</li>
+<li>Select <strong>Settings → About → Firmware Version → Local Update</strong> on the U1 screen.</li>
+<li>Select <code>U1_extended_2.0.0-paxx12-24_upgrade.bin</code>. Confirm the update.</li>
+<li>Wait for the update and restart to finish. Keep power connected.</li>
+<li>Open <strong>Settings → Maintenance → Advanced Mode</strong>. Enable it and complete the requested restart.</li>
+<li>Open <strong>Settings → Maintenance → Root Access</strong>. Read the notice, scroll to <strong>Agree</strong>, and select <strong>Open</strong>.</li>
+<li>Check Wi-Fi. Reconnect if necessary. Read the current printer IP address.</li>
+<li>Continue in the same computer wizard when these checks are complete.</li>
+</ol>
+<p>The next stage asks for the printer address, SSH password, and reviewed tube distances.</p>
+<p>It then runs the existing compatibility, backup, installation, and verification procedure.</p>
+<p>The firmware preparation stage does not contact or move the printer.</p>
+<h3 id="what-the-preparation-stage-will-not-change">What the preparation stage will not change</h3>
+<p>It does not format disks, use a fixed internal disk, or overwrite a different file with the same name.</p>
+<p>It copies only the verified firmware file to the selected USB root.</p>
+<p>Other USB files stay in place.</p>
+<p>If a conflicting file exists, inspect it yourself before another attempt.</p>
+<p>If no suitable drive appears, use a FAT32 removable drive; do not change the program to force another disk.</p>
+<p>The download is cached under the Windows user&#x27;s Local AppData project folder.</p>
+<p>A complete matching file can be reused. A partial or incorrect download is not offered for installation.</p>
+<p>No downloaded script is executed.</p>
+<h3 id="exact-firmware-identity">Exact firmware identity</h3>
+<div class="table"><table><thead><tr><th>Field</th><th>Required value</th></tr></thead><tbody>
+<tr><td>Upstream release</td><td><code>v2.0.0-paxx12-24</code></td></tr>
+<tr><td>Filename</td><td><code>U1_extended_2.0.0-paxx12-24_upgrade.bin</code></td></tr>
+<tr><td>Size</td><td><code>253893376</code> bytes</td></tr>
+<tr><td>SHA-256</td><td><code>42dcf59e06ef0f6fab20745883322f24ddd3c1a09da07449b356dd9dab943070</code></td></tr>
+</tbody></table></div>
+<p><a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/tag/v2.0.0-paxx12-24">Upstream release and checksum</a> · <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/download/v2.0.0-paxx12-24/U1_extended_2.0.0-paxx12-24_upgrade.bin">Exact upstream download</a></p>
+<p>The checksum identifies the upstream asset; it is not a Snapmaker signature.</p>
+<p>The project archive contains no U1 firmware binary.</p>
+<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">third-party licensing</a>.</p>
+<h3 id="manual-alternative">Manual alternative</h3>
+<p>You can download that exact file from the release page yourself.</p>
+<p>Check its SHA-256, copy it to the FAT32 USB root, then perform screen steps 11–16 above.</p>
+<p>Continue with <strong><a href="MANUAL-INSTALL.html">manual source installation</a></strong> if you do not want to run the wizard.</p>
+<p>The full Chinese <a href="START-HERE.html#prepare">machine preparation guide</a> includes file-explorer and USB instructions.</p>
+<h3 id="why-not-enable-everything-inside-a-new-firmware-image">Why not enable everything inside a new firmware image?</h3>
+<p>An image containing this project and changed startup defaults would be a different firmware build.</p>
+<p>It would need its own identity, source obligations, recovery checks, and hardware validation.</p>
+<p>It would still need the first screen-confirmed update.</p>
+<p>This release instead retains the exact tested upstream baseline and automates its preparation.</p>
+<p>Sources: <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 installation</a>, <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode requirement</a>, and <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH access</a>.</p></details><details id="parameters"><summary>Tube lengths and take-up settings</summary><h2 id="configuration-and-calibration">Configuration and calibration</h2>
+<p><a href="START-HERE.html#parameters">中文说明</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">Guided installation</a></p>
+<p>Tube length affects the settings. It is not the same as a transport command length.</p>
+<p>Use three separate values:</p>
+<div class="table"><table><thead><tr><th>Letter</th><th>JSON setting</th><th>Function</th><th>Reference only</th></tr></thead><tbody>
+<tr><td><strong>A</strong></td><td><code>retract_length</code></td><td>Main ACE return distance, after the U1 releases filament from the hotend.</td><td>1250 mm at speed 80</td></tr>
+<tr><td><strong>B</strong></td><td><code>fast_load_length</code></td><td>Base fast segment. Leave room for the slow approach to the head.</td><td>1150 mm at speed 200</td></tr>
+<tr><td><strong>C</strong></td><td><code>forward_takeup_length</code></td><td>Forward movement after A, to draw loose filament into the PTFE tube.</td><td>Start at 0; tested reference 300 mm at speed 50</td></tr>
+</tbody></table></div>
+<p><strong>All four slots share A, B, C, and the speed settings.</strong></p>
+<p>This version has no separate length setting for each slot.</p>
+<p>Check all four paths before you accept a common setting.</p>
+<p>Distances use millimeters (mm). Speeds are protocol requests in millimeters per second (mm/s).</p>
+<p>They are not measurements of actual motor or filament speed.</p>
+<aside class="alert caution"><div class="alert-title">CAUTION</div>
+<p><strong>1250, 1150, and 300 are reference values for one tested arrangement.</strong></p>
+<p><strong>They are not universal values for every tube layout.</strong></p>
+<p>Loading stops at the U1 head sensor. It does not intentionally push until a mechanical stall.</p>
+<p>A travel limit and a timeout stop an unsuccessful attempt.</p>
+</aside>
+<h3 id="settings-files">Settings files</h3>
+<p>The <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">guided launcher</a> asks for A and B during a first installation.</p>
+<p>It starts with C disabled and uses the reference speeds below.</p>
+<p>For an existing installation, the launcher keeps the current settings.</p>
+<p><strong>Running the launcher again does not apply new A, B, or C values.</strong></p>
+<p>Use <a href="#apply-changed-settings">Apply changed settings</a> for an intentional change.</p>
+<div class="table"><table><thead><tr><th>File</th><th>Use</th></tr></thead><tbody>
+<tr><td><code>config/settings.example.json</code></td><td>Conservative template. C is 0. Existing settings are preserved.</td></tr>
+<tr><td><code>config/settings.tested-reference.json</code></td><td>Tested reference. C is 300. It requests replacement of existing settings.</td></tr>
+<tr><td><code>config/settings.local.json</code></td><td>Your working file for the manual procedure below.</td></tr>
+</tbody></table></div>
+<p>Both templates have <code>calibrated_acknowledged: false</code>.</p>
+<p>Review your physical lengths and speeds before changing it to <code>true</code>.</p>
+<p>The acknowledgement does not measure or test your tubes.</p>
+<div class="table"><table><thead><tr><th>Setting</th><th>Reference value</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>serial</code></td><td>Your ACE USB path</td><td>Preserves an existing choice or identifies one matching ACE.</td></tr>
+<tr><td><code>auto_detect_serial</code></td><td><code>true</code> by default</td><td>Automatic selection requires one matching device.</td></tr>
+<tr><td><code>baud</code></td><td><code>115200</code></td><td>Serial connection speed. Keep this value.</td></tr>
+<tr><td><code>feed_speed</code></td><td><code>200</code></td><td>Default speed for direct <code>ACE_FEED</code>, not the staged-load speed setting.</td></tr>
+<tr><td><code>feed_length</code></td><td><code>1250</code></td><td>Retained legacy preload option. Automatic long preload is disabled. This is <strong>not B</strong>.</td></tr>
+<tr><td><code>retract_speed</code></td><td><code>80</code></td><td>Main ACE return speed.</td></tr>
+<tr><td><code>retract_length</code></td><td><code>1250</code></td><td>A: main ACE return distance.</td></tr>
+<tr><td><code>forward_takeup_length</code></td><td><code>0</code> initially</td><td>C: forward take-up distance. Zero disables this movement.</td></tr>
+<tr><td><code>forward_takeup_speed</code></td><td><code>50</code></td><td>Speed of C when enabled.</td></tr>
+<tr><td><code>fast_load_length</code></td><td><code>1150</code></td><td>B: fast distance before the recorded advance deduction.</td></tr>
+<tr><td><code>fast_load_speed</code></td><td><code>200</code></td><td>Fast-stage speed.</td></tr>
+<tr><td><code>sensor_load_speed</code></td><td><code>50</code></td><td>Final approach speed.</td></tr>
+<tr><td><code>sensor_load_max_length</code></td><td><code>2500</code></td><td>Total load travel allowance across both stages. A fault limit, not the target.</td></tr>
+<tr><td><code>max_dryer_temperature</code></td><td><code>55</code></td><td>Dryer ceiling. Keep your existing value during length calibration.</td></tr>
+<tr><td><code>calibrated_acknowledged</code></td><td><code>false</code> in templates</td><td>Set <code>true</code> after reviewing the physical lengths and speeds.</td></tr>
+<tr><td><code>apply_existing_settings</code></td><td><code>false</code> normally</td><td>Set <code>true</code> to apply intentional changes to an existing installation.</td></tr>
+</tbody></table></div>
+<p><code>ACE_FEED</code> requires its own <code>LENGTH</code> argument. It does not use <code>feed_length</code> as its default length.</p>
+<p>For the U1 screen&#x27;s Load action, change <code>fast_load_length</code>, not <code>feed_length</code>.</p>
+<p>For Unload, change <code>retract_length</code> and, if required, <code>forward_takeup_length</code>.</p>
+<p>The installer writes ACE options to <code>/home/lava/printer_data/config/extended/klipper/ace.cfg</code>.</p>
+<p>It applies staged-load constants to the installed module.</p>
+<p>It also configures External detection and the internal-reader service.</p>
+<p><strong>Use the installer for parameter changes. Do not edit <code>ace.py</code> yourself.</strong></p>
+<p>The installer accepts these relationships:</p>
+<ul>
+<li>C is 0–500 mm, and is smaller than both A and B.</li>
+<li>B does not exceed A, and is smaller than the total load allowance.</li>
+<li>Fast speed does not exceed 200. Slow and take-up speeds do not exceed 50.</li>
+</ul>
+<p>These checks reject invalid inputs. They do not prove mechanical suitability.</p>
+<p>Keep the 2500 mm fault limit during this procedure. Do not increase it to hide a feed failure.</p>
+<h3 id="how-the-distances-interact">How the distances interact</h3>
+<p>Insertion starts the ACE&#x27;s short bite and NFC recognition.</p>
+<p>It does not start long transport to the U1 head.</p>
+<p>Select <strong>Load</strong> on the U1 when you want to load that slot.</p>
+<p>With a valid starting-position record, the controller uses:</p>
+<pre><code>
+fast request = max(0, B - recorded forward advance)
+slow allowance = 2500 - fast request
+</code></pre>
+<p>The head sensor can stop either stage early.</p>
+<p>The slow allowance is a maximum request, not a distance that must be completed.</p>
+<p>After detection, the U1 completes its normal extruder loading sequence.</p>
+<div class="table"><table><thead><tr><th>Starting state</th><th>Example fast request</th><th>Final approach</th></tr></thead><tbody>
+<tr><td>Verified new insertion; B = 1150</td><td>1150 mm at speed 200</td><td>Speed 50; maximum remaining allowance 1350 mm</td></tr>
+<tr><td>Successful unload; B = 1150 and C = 300</td><td><strong>850 mm at speed 200</strong></td><td>Speed 50; maximum remaining allowance 1650 mm</td></tr>
+<tr><td>Restart, interrupted operation, or uncertain position</td><td>No fast stage</td><td>Speed 50; total allowance 2500 mm</td></tr>
+</tbody></table></div>
+<p><strong>Do not enter 850 as B to compensate for C = 300.</strong></p>
+<p>Keep B = 1150 in that reference example. The controller subtracts the recorded 300 itself.</p>
+<p>Entering B = 850 would produce a 550 mm fast request after that unload.</p>
+<p><img alt="Conceptual transport distances" src="docs/images/feed-cycle.svg"></p>
+<p>The picture shows control stages, not tube dimensions.</p>
+<p>The recorded advance is a conservative allowance, not a measured tip position.</p>
+<p>The controller consumes the starting-position record once. A restart clears it.</p>
+<p>A slow first load after installation can therefore be normal.</p>
+<p>During Unload, the sequence is:</p>
+<ol>
+<li>The U1 performs its normal hotend release.</li>
+<li>ACE retracts A at speed 80.</li>
+<li>The controller checks the head and ACE inlet states.</li>
+<li>If enabled, ACE feeds C toward the U1 at speed 50.</li>
+<li>The controller confirms completion and records C for the next load.</li>
+</ol>
+<p>Filament must remain in the ACE inlet and rear PTFE path, with the U1 head sensor empty.</p>
+<p>Material data remains while filament remains in the ACE inlet.</p>
+<p>An uncertain completion does not authorize an automatic retry.</p>
+<h3 id="calibrate-the-ptfe-paths">Calibrate the PTFE paths</h3>
+<h4 id="measure-and-record-all-four-paths">Measure and record all four paths</h4>
+<p><strong>Measure the installed tube along its bends, not the straight distance between the machines.</strong></p>
+<p>The ACE internal path, initial bite, head path, and hotend release also affect transport.</p>
+<p>A tape measure does not measure these movements. This project does not measure tube length automatically.</p>
+<ol>
+<li>Finish printing and any filament operation.</li>
+<li>Let the printer cool before inspecting the paths.</li>
+<li>Remove power before disconnecting tubing or hardware.</li>
+<li>Label both ends of each tube with its ACE slot and U1 head.</li>
+<li>Measure each installed PTFE route along its bends.</li>
+<li>Record inaccessible sections as unknown. Do not guess them as zero.</li>
+<li>Record the intended tip position after unloading.</li>
+<li>Reconnect every tube securely before a powered test.</li>
+</ol>
+<p>Use a parking point inside the ACE-side PTFE tube.</p>
+<p>The tip must not reach the head or leave the ACE inlet after unloading.</p>
+<p>A starts after the U1&#x27;s hotend release, not at one end of the tape measure.</p>
+<p><strong>Do not copy the measured tube length directly into A, B, and C.</strong></p>
+<div class="table"><table><thead><tr><th>Slot / U1 head</th><th>Measured PTFE route (mm)</th><th>Internal sections or unknowns</th><th>Tip position after unload</th><th>A / B / C tested</th><th>Load → unload → reload result</th></tr></thead><tbody>
+<tr><td>ACE 1 → head ___</td><td>___</td><td>___</td><td>___</td><td>___ / ___ / ___</td><td>___</td></tr>
+<tr><td>ACE 2 → head ___</td><td>___</td><td>___</td><td>___</td><td>___ / ___ / ___</td><td>___</td></tr>
+<tr><td>ACE 3 → head ___</td><td>___</td><td>___</td><td>___</td><td>___ / ___ / ___</td><td>___</td></tr>
+<tr><td>ACE 4 → head ___</td><td>___</td><td>___</td><td>___</td><td>___ / ___ / ___</td><td>___</td></tr>
+</tbody></table></div>
+<p>Use one common set that works on every row.</p>
+<p>Check B against the shortest effective path to a head.</p>
+<p>It must end before the head, leaving a slow approach.</p>
+<p>Check both a new insertion and a reload after unloading.</p>
+<p>The reference difference between A = 1250 and B = 1150 is 100 mm.</p>
+<p><strong>That difference does not establish a 100 mm physical clearance on your printer.</strong></p>
+<p>Do not assume that another layout needs the same margin.</p>
+<p>If the four paths have no safe common setting, correct the tube arrangement before proceeding.</p>
+<h4 id="choose-and-check-the-first-values">Choose and check the first values</h4>
+<p>Start from recorded, working values for your arrangement, when available.</p>
+<p>Measurements help assess clearance. They do not establish an exact A by themselves.</p>
+<p>If the path or parking point is unknown, resolve it before entering an unverified long return.</p>
+<p>You can exit the first-installation wizard without installing.</p>
+<ol>
+<li>Set C to <code>0</code> for the initial checks.</li>
+<li>Keep fast speed <code>200</code>, approach speed <code>50</code>, and return speed <code>80</code>.</li>
+<li>Choose B short enough to leave a slow approach before the head.</li>
+<li>Choose A to return the tip to the recorded ACE-side parking point.</li>
+<li>Apply the values below, or enter A and B during first installation.</li>
+<li>Test one slot with the U1&#x27;s normal Load, Unload, and Load actions.</li>
+<li>Wait for each action to finish before selecting the next action.</li>
+<li>Record the final tip position, head state, inlet state, and loose filament.</li>
+<li>Test the other three slots with the same settings.</li>
+<li>Keep the record with your installed settings.</li>
+</ol>
+<p>Keep hands away from moving rollers. Inspect the final tip only after motion stops.</p>
+<p>Remove power before disconnecting a tube to inspect it.</p>
+<p>Use the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md#repeat-the-acceptance-check">acceptance checklist</a> to record the full cycle.</p>
+<h4 id="what-to-change-after-an-observation">What to change after an observation</h4>
+<div class="table"><table><thead><tr><th>Observation</th><th>Next action</th></tr></thead><tbody>
+<tr><td>Fast travel reaches the head before a slow approach.</td><td>Reduce B. A sensor stop does not prove sufficient fast-stage clearance.</td></tr>
+<tr><td>The slow approach is long, but loading succeeds.</td><td>You can keep B. Increase it only after verifying the remaining clearance on all four paths.</td></tr>
+<tr><td>After unloading, the tip is too far toward U1; the head is empty and no fault occurred.</td><td>Consider a small increase in A, within the measured ACE retention margin. Retest with C = 0.</td></tr>
+<tr><td>The tip leaves the ACE inlet, or the inlet becomes empty.</td><td>Reduce A after correcting the physical state. Do not repeat Unload to recover it.</td></tr>
+<tr><td>Unload fails, the head still detects filament, or filament slips or jams.</td><td>Inspect hotend release and the tube path. Do not increase A blindly.</td></tr>
+<tr><td>Unload succeeds, but loose loops remain at the spool.</td><td>Keep A and B. Evaluate C separately in the next section.</td></tr>
+<tr><td>A changed B seems unused on the first load after restart.</td><td>An unknown position uses the slow stage. Check a reload after a successful unload.</td></tr>
+</tbody></table></div>
+<p>Change one distance at a time, within the clearance you can verify.</p>
+<p>No universal increment or tube-length ratio guarantees a correct result.</p>
+<h4 id="after-changing-or-rerouting-a-tube">After changing or rerouting a tube</h4>
+<ol>
+<li>Save the last working settings and four-slot record.</li>
+<li>Measure the changed route and update the record.</li>
+<li>Recheck the shortest path across all four slots.</li>
+<li>Disable C during the new calibration.</li>
+<li>Review A and B before the next load or unload.</li>
+<li>Repeat the four-slot checks.</li>
+<li>Re-enable C only after the new A and B pass.</li>
+</ol>
+<p>A change to one tube can invalidate the common B setting.</p>
+<p>Do not use old values merely to discover whether a new tube is too short.</p>
+<h3 id="enable-forward-take-up">Enable forward take-up</h3>
+<p>C draws loose filament into the PTFE tube after the main return.</p>
+<p>It does not independently turn spool rollers. It has no tension-sensor endpoint.</p>
+<ol>
+<li>Confirm successful loading, unloading, and reloading with C = <code>0</code>.</li>
+<li>Inspect the loose filament after unloading.</li>
+<li>Select a limited C for the observed slack and available head clearance.</li>
+<li>Keep <code>forward_takeup_speed</code> at or below <code>50</code>.</li>
+<li>Apply the change and test one normal unload.</li>
+<li>Check that the head remains empty and the ACE inlet remains occupied.</li>
+<li>Check the next load without removing the filament.</li>
+<li>Repeat the checks on all four slots.</li>
+</ol>
+<p><strong>The tested C = 300 is not an automatic recommendation for your setup.</strong></p>
+<p>See the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">recorded slot-4 test</a> for its scope.</p>
+<p>More C consumes more of the parked distance toward the head.</p>
+<p>If slack remains, first confirm that filament moves freely.</p>
+<p>Increase C only within verified clearance and the accepted limits.</p>
+<p>If filament becomes tight, snags, or reaches the head, stop and reduce or disable C.</p>
+<p>Do not increase A merely to compensate for excessive C.</p>
+<h3 id="apply-changed-settings">Apply changed settings</h3>
+<p>This procedure changes an <strong>existing installation</strong>.</p>
+<p>For a first installation, use the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">guided launcher</a>. It asks for A and B and starts with C = 0.</p>
+<p>The procedure exports effective current settings before editing them.</p>
+<p>This preserves your serial path, dryer ceiling, and other values.</p>
+<p><strong>Do not replace your full settings file with a generic example.</strong></p>
+<h4 id="1-prepare-the-printer-and-project-folder">1. Prepare the printer and project folder</h4>
+<ol>
+<li>Finish printing and all filament operations.</li>
+<li>Complete the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md#5-check-before-installation">idle preparation</a>.</li>
+<li>Keep heater targets at zero and actual temperatures below 50 °C.</li>
+<li>Stop the ACE dryer and feed assist.</li>
+<li>Open an extracted project version that supports your installed version.</li>
+<li>Enter the folder containing <code>installer.py</code> and <code>manifest.json</code>.</li>
+<li>Type <code>powershell</code> in File Explorer&#x27;s address bar, then press Enter.</li>
+</ol>
+<p>Use the same PowerShell window for every block.</p>
+<p>Copy commands inside each block, without the surrounding backticks.</p>
+<p>If any command reports an error, stop before the next block.</p>
+<pre><code>
+$ProjectDir = (Get-Location).Path
+if (-not (Test-Path -LiteralPath .\installer.py)) { throw &quot;Open the folder containing installer.py first.&quot; }
+$PrinterAddress = Read-Host &quot;Printer IP from the Wi-Fi page&quot;
+$PrinterTarget = &quot;root@$PrinterAddress&quot;
+$RemoteDir = &quot;/userdata/ultimate-u1-ace-tuning-&quot; + (Get-Date -Format &quot;yyyyMMdd-HHmmss&quot;)
+Get-Command ssh, scp
+scp -O -r &quot;$ProjectDir&quot; &quot;${PrinterTarget}:$RemoteDir&quot;
+if ($LASTEXITCODE -ne 0) { throw &quot;Upload failed. Stop here.&quot; }
+</code></pre>
+<p>Enter the root password when requested. SSH does not display password characters.</p>
+<p>Verify new host-key prompts with the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md#confirm-the-connection">connection instructions</a>.</p>
+<h4 id="2-export-the-current-settings">2. Export the current settings</h4>
+<p>The read-only check uses the conservative template to retain current settings. It does not install that template.</p>
+<p>These commands preserve any previous local working file before writing the export.</p>
+<pre><code>
+$PlanText = ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.example.json&quot;
+if ($LASTEXITCODE -ne 0) { throw &quot;Check failed. Stop here.&quot; }
+$Plan = ($PlanText -join &quot;`n&quot;) | ConvertFrom-Json
+if ($Plan.compatible -ne $true -or $Plan.fresh_install -ne $false) { throw &quot;This procedure requires a supported existing installation.&quot; }
+if (Test-Path -LiteralPath .\config\settings.local.json) {
+    Copy-Item -LiteralPath .\config\settings.local.json -Destination (&quot;.\config\settings.local.before-&quot; + (Get-Date -Format &quot;yyyyMMdd-HHmmss&quot;) + &quot;.json&quot;)
+}
+$Plan.effective_settings | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath .\config\settings.local.json -Encoding UTF8
+notepad .\config\settings.local.json
+</code></pre>
+<h4 id="3-edit-the-three-distances">3. Edit the three distances</h4>
+<p>Find these entries in Notepad.</p>
+<p>This is a <strong>partial example</strong>, not a replacement for the complete file.</p>
+<p>The distances are references. Use your calibration record.</p>
+<pre><code>
+{
+  &quot;retract_length&quot;: 1250,
+  &quot;fast_load_length&quot;: 1150,
+  &quot;forward_takeup_length&quot;: 0,
+  &quot;apply_existing_settings&quot;: true,
+  &quot;calibrated_acknowledged&quot;: true
+}
+</code></pre>
+<ol>
+<li>Change <code>retract_length</code> to your A.</li>
+<li>Change <code>fast_load_length</code> to your B.</li>
+<li>Change <code>forward_takeup_length</code> to your C. Use 0 during initial calibration.</li>
+<li>Set <code>apply_existing_settings</code> to <code>true</code>.</li>
+<li>Set <code>calibrated_acknowledged</code> to <code>true</code> after reviewing the physical values.</li>
+<li>Keep every other entry from the exported file.</li>
+<li>Save the file and close Notepad.</li>
+</ol>
+<p>Use whole numbers without quotation marks or units. Use lowercase <code>true</code> and <code>false</code>.</p>
+<p>Keep commas, quotation marks, and braces in place.</p>
+<p>Leave <code>feed_length</code> unchanged. It is not the current U1 loading distance.</p>
+<p>Reference speeds are <code>retract_speed: 80</code>, <code>fast_load_speed: 200</code>, and <code>sensor_load_speed: 50</code>.</p>
+<p>Review custom speeds separately instead of silently replacing them.</p>
+<h4 id="4-check-apply-and-verify">4. Check, apply, and verify</h4>
+<ol>
+<li>Upload the edited file and run the read-only check.</li>
+</ol>
+<pre><code>
+scp -O .\config\settings.local.json &quot;${PrinterTarget}:$RemoteDir/config/settings.local.json&quot;
+if ($LASTEXITCODE -ne 0) { throw &quot;Settings upload failed. Stop here.&quot; }
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.local.json&quot;
+if ($LASTEXITCODE -ne 0) { throw &quot;Check failed. Do not install.&quot; }
+</code></pre>
+<ol>
+<li>Read <code>effective_settings</code> in the output.</li>
+<li>Confirm A, B, C, speeds, serial path, and dryer ceiling.</li>
+<li>Confirm that <code>apply_existing_settings</code> and the check&#x27;s <code>calibration_acknowledged</code> are <code>true</code>.</li>
+<li>Keep the printer idle and cold, then apply the settings.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py install --settings config/settings.local.json&quot;
+if ($LASTEXITCODE -ne 0) { throw &quot;Install failed. Read the rollback result and backup ID. Stop here.&quot; }
+</code></pre>
+<ol>
+<li>Save the reported backup ID.</li>
+<li>Run the read-only check again.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.local.json&quot;
+if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a transport test.&quot; }
+</code></pre>
+<ol>
+<li>Confirm effective values, then perform the four-slot checks above.</li>
+</ol>
+<p>The installer restarts Klipper and verifies the loaded configuration.</p>
+<p>It preserves NFC secrets and checks existing material data.</p>
+<p>If installation fails, read the automatic rollback result before proceeding.</p>
+<p>Use <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/update-and-rollback.md">Update and rollback</a> when recovery is needed.</p></details><details id="nfc"><summary>NFC support and key configuration</summary><h2 id="nfc-and-material-data">NFC and material data</h2>
+<p><a href="START-HERE.html#nfc">简体中文</a></p>
+<p>With compatible ACE firmware, this project synchronizes recognized brand, material, subtype, and color with the U1.</p>
+<p>It receives decoded tag data; it does not add tag decoders to ACE firmware.</p>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>ACE and the U1 internal reader are separate systems.</strong></p>
+<p>The tested ACE setup needs no additional Bambu key entry in this project&#x27;s installer.</p>
+<p>The key-file instructions below apply only to the U1 internal OpenRFID reader.</p>
+</aside>
+<h3 id="what-you-need-for-ace-recognition">What you need for ACE recognition</h3>
+<div class="table"><table><thead><tr><th>Item</th><th>Required setup</th></tr></thead><tbody>
+<tr><td>Hardware</td><td>Anycubic ACE Pro Gen 1, connected to the U1.</td></tr>
+<tr><td>ACE firmware</td><td><code>CV1.3.863</code>, with OpenCubic CFW <code>1.1.1</code>.</td></tr>
+<tr><td>Firmware download</td><td><code>ACE_V1.3.863_20260716.bin</code> from <a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">OpenCubic release v1.0.2</a>.</td></tr>
+<tr><td>U1 reader mode</td><td><strong>External</strong>; the current installer sets this automatically.</td></tr>
+<tr><td>Filament</td><td>A supported tag correctly positioned on the spool.</td></tr>
+</tbody></table></div>
+<p>The release name <code>v1.0.2</code> and embedded CFW version <code>1.1.1</code> identify different parts of the release.</p>
+<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">the ACE firmware guide</a> before changing firmware.</p>
+<p>Do not use an ACE 2 firmware image on ACE Pro Gen 1.</p>
+<p>The tested ACE firmware reads supported Bambu tags without a separate key supplied by this host project.</p>
+<p>The project provides no ACE key-entry field.</p>
+<p>The pinned OpenCubic documentation provides no supported runtime procedure for adding proprietary keys to ACE.</p>
+<p>Do not put keys in this project&#x27;s settings JSON.</p>
+<h3 id="supported-tags-upstream-status-and-our-tests">Supported tags: upstream status and our tests</h3>
+<p>The following table follows <a href="https://github.com/Jupsi/OpenCubic/blob/v1.0.2/docs/supported-spools.md">OpenCubic&#x27;s detailed v1.0.2 support document</a>.</p>
+<p>The Anycubic generation labels describe tag variants, not the required ACE hardware generation.</p>
+<div class="table"><table><thead><tr><th>Tag brand or format</th><th>Status in the detailed upstream document</th><th>Physical validation in this project</th></tr></thead><tbody>
+<tr><td>Anycubic Gen 1 tags</td><td>Confirmed</td><td>Not tested here.</td></tr>
+<tr><td>Anycubic Gen 2 tags</td><td>Confirmed</td><td>Not tested here.</td></tr>
+<tr><td>Bambu Lab</td><td>Confirmed</td><td>Brand, PLA Matte, and color synchronization confirmed.</td></tr>
+<tr><td>TigerTag</td><td>Confirmed on ACE Pro Gen 1</td><td>Not tested here.</td></tr>
+<tr><td>OpenSpool</td><td>Confirmed on ACE Pro Gen 1</td><td>Not tested here.</td></tr>
+<tr><td>Elegoo</td><td>Implemented, untested</td><td>Not tested here.</td></tr>
+<tr><td>OpenPrintTag, including Prusa format</td><td>Implemented, untested</td><td>Not tested here.</td></tr>
+<tr><td>QIDI</td><td>Not supported; upstream reports unknown AES keys and a stub</td><td>Not tested here.</td></tr>
+<tr><td>Creality</td><td>Not supported; upstream reports unknown AES keys and a stub</td><td>Not tested here.</td></tr>
+</tbody></table></div>
+<p>The same release&#x27;s README still labels TigerTag and OpenSpool as untested.</p>
+<p>Its detailed support document reports physical confirmation; this table uses that more specific document.</p>
+<p>Our own physical NFC evidence is limited to Bambu tags.</p>
+<p>It does not establish compatibility with every spool, production batch, or tag placement.</p>
+<p><strong>Adding a key to the U1 configuration does not add QIDI or Creality support to ACE.</strong></p>
+<p>Brand-name conversion also cannot add that support.</p>
+<p>The supported OpenRFID formats on the U1 internal reader are a different compatibility list.</p>
+<h3 id="two-separate-reader-paths">Two separate reader paths</h3>
+<pre><code>
+flowchart LR
+    Tag[Spool tag inside ACE] --&gt; Reader[ACE reader and firmware]
+    Reader --&gt; Data[get_filament_info]
+    Data --&gt; Port[Ultimate U1-ACE link]
+    Port --&gt; U1[U1 material data]
+    Internal[U1 internal reader] --&gt; OpenRFID[U1 OpenRFID service]
+    Keys[Private openrfid_user.cfg] --&gt; OpenRFID
+</code></pre>
+<p>ACE reads the spool inside ACE and sends decoded data through <code>get_filament_info</code>.</p>
+<p>This project writes that data into the U1 material configuration.</p>
+<p>The U1 internal reader cannot read a spool remotely through the ACE USB connection.</p>
+<p>The U1 OpenRFID service uses its own reader and private configuration.</p>
+<p>Preserving that configuration does not transfer its keys to ACE.</p>
+<h3 id="select-external-mode">Select External mode</h3>
+<p>The current installer sets <strong>External</strong>, disables the internal reader path, and stops the U1 OpenRFID service.</p>
+<p>It verifies those changes and backs up the previous configuration and service state.</p>
+<p>The retained v0.1.0 package requires manual External selection.</p>
+<ol>
+<li>Open the printer&#x27;s <code>/firmware-config/</code> page.</li>
+<li>Find <strong>Snapmaker Components</strong>.</li>
+<li>Check <strong>Filament Detection</strong>.</li>
+</ol>
+<p><strong>Expected:</strong> the selected value is <strong>External</strong>.</p>
+<p>For v0.1.0 setup or deliberate troubleshooting, select External and wait for the service changes to finish.</p>
+<p>The correct option is <strong>External</strong>; there is no reader option named <strong>extended</strong>.</p>
+<p>Some upstream documentation calls the control <strong>RFID Detection System</strong>.</p>
+<p>External prevents the internal reader from competing with ACE material updates.</p>
+<p>It does not restrict ACE to OpenSpool tags.</p>
+<p>The external-reader rows in the <a href="https://snapmakeru1-extended-firmware.pages.dev/design/rfid">upstream RFID table</a> describe those particular reader projects.</p>
+<p>ACE recognition depends on its own firmware and tags.</p>
+<aside class="alert caution"><div class="alert-title">CAUTION</div>
+<p><strong>Keep External selected while using this ACE integration.</strong></p>
+<p>Do not enable internal OpenRFID merely to enter keys or improve ACE recognition.</p>
+<p>That change activates a separate reader path and can conflict with ACE material handling.</p>
+</aside>
+<h3 id="check-recognition-and-material-retention">Check recognition and material retention</h3>
+<ol>
+<li>Insert filament into an empty ACE inlet.</li>
+<li>Keep your hands away from the rollers.</li>
+<li>Wait for the short bite and NFC recognition to finish.</li>
+<li>Open that slot&#x27;s material details on the U1.</li>
+<li>Compare the brand, type, subtype, and color with the spool.</li>
+</ol>
+<p><strong>Expected:</strong> supported material data appears, while the filament waits for the U1 Load action.</p>
+<p>Insertion does not automatically send the filament all the way to the print head.</p>
+<p>Recognition can take longer when several slots change close together.</p>
+<p>The host waits up to 180 seconds for readiness before starting the load movement budget.</p>
+<p>Do not issue repeated Load commands during recognition.</p>
+<p>Filament without a tag can use manually entered material data in the U1 interface.</p>
+<p>Normal loading and unloading retain recognized or manually entered data while the ACE inlet remains occupied.</p>
+<p>A confirmed empty inlet clears that slot&#x27;s data.</p>
+<p>An unknown or disconnected state does not count as an empty inlet.</p>
+<h3 id="brand-conversion-is-not-tag-support">Brand conversion is not tag support</h3>
+<div class="table"><table><thead><tr><th>Decoded ACE brand</th><th>U1 brand</th></tr></thead><tbody>
+<tr><td><code>Bambu Lab</code>, <code>BambuLab</code>, or <code>Bambu</code></td><td><code>Bambu</code></td></tr>
+<tr><td><code>Creality</code></td><td><code>Creality</code></td></tr>
+<tr><td><code>Elegoo</code></td><td><code>Elegoo</code></td></tr>
+<tr><td><code>Qidi</code></td><td><code>QIDI</code></td></tr>
+<tr><td><code>Snapmaker</code></td><td><code>Snapmaker</code></td></tr>
+<tr><td><code>Anycubic</code></td><td><code>Anycubic</code></td></tr>
+<tr><td>Another nonempty brand</td><td>The received brand text</td></tr>
+<tr><td>Empty brand</td><td><code>Generic</code></td></tr>
+</tbody></table></div>
+<p>These conversions normalize names after a successful read.</p>
+<p>They do not add a tag decoder or authentication key to ACE firmware.</p>
+<p>For example, <code>PLA Matte</code> becomes material type <code>PLA</code> and subtype <code>Matte</code>.</p>
+<p>Color transfers separately.</p>
+<p>A valid brand does not guarantee that a slicer contains a matching filament profile.</p>
+<h3 id="u1-internal-openrfid-key-file-reference-only">U1 internal OpenRFID key file: reference only</h3>
+<p><strong>Skip this section for normal ACE installation.</strong></p>
+<p>It explains an existing U1 internal-reader configuration, not a missing ACE installation step.</p>
+<p>The installer preserves this private file without reading its keys into ACE.</p>
+<div class="table"><table><thead><tr><th>Location</th><th>Path</th></tr></thead><tbody>
+<tr><td>Canonical printer path</td><td><code>/oem/printer_data/config/extended/openrfid_user.cfg</code></td></tr>
+<tr><td>Equivalent path on supported U1 firmware</td><td><code>/home/lava/printer_data/config/extended/openrfid_user.cfg</code></td></tr>
+<tr><td>Web file manager</td><td><strong>Configuration → extended → openrfid_user.cfg</strong></td></tr>
+</tbody></table></div>
+<h4 id="find-the-file-and-save-a-private-backup">Find the file and save a private backup</h4>
+<ol>
+<li>Open the printer&#x27;s normal web interface in your browser.</li>
+<li>Open <strong>Configuration</strong>.</li>
+<li>Open the <code>extended</code> folder.</li>
+<li>Find <code>openrfid_user.cfg</code>.</li>
+<li>Download a private backup with the file menu.</li>
+<li>Store the backup outside the public project folder.</li>
+<li>Open the original file in the web editor.</li>
+</ol>
+<p>A missing file does not prevent ACE recognition.</p>
+<p>Do not create it to fix ACE recognition.</p>
+<p>For a separate U1 internal-reader configuration, create this exact filename only if it does not already exist.</p>
+<p>The <a href="https://snapmakeru1-extended-firmware.pages.dev/design/rfid">upstream RFID design</a> describes that separate reader system.</p>
+<h4 id="edit-existing-sections">Edit existing sections</h4>
+<p>A leading <code>#</code> makes a configuration line a comment.</p>
+<p>Removing that <code>#</code> activates the line in the file; it does not start the disabled OpenRFID service.</p>
+<p>Use an existing section when present.</p>
+<p>Do not create a second section with the same name.</p>
+<p>Keep unrelated sections and existing working values unchanged.</p>
+<ol>
+<li>Find <code>[bambu_lab_tag_processor]</code> or its commented form.</li>
+<li>Remove the leading <code>#</code> from the section header when configuring this internal reader.</li>
+<li>Remove the leading <code>#</code> from its <code>key</code> line.</li>
+<li>Replace its value with your independently obtained Bambu key.</li>
+</ol>
+<p>Bambu configuration has one field:</p>
+<pre><code>
+[bambu_lab_tag_processor]
+key = &lt;YOUR_BAMBU_KEY_32_HEX&gt;
+</code></pre>
+<p>The angle-bracket text is a placeholder, not a key.</p>
+<p>Do not save that placeholder as a working value.</p>
+<p>A key must contain exactly 32 hexadecimal characters: <code>0</code>–<code>9</code>, <code>a</code>–<code>f</code>, or <code>A</code>–<code>F</code>.</p>
+<p>Do not add <code>0x</code>, quotation marks, spaces, or angle brackets.</p>
+<p>A correctly formatted value is not necessarily the correct authentication key.</p>
+<ol>
+<li>Check that no duplicate section or placeholder remains.</li>
+<li>Save the file.</li>
+</ol>
+<p>Creality internal-reader configuration has two separate fields:</p>
+<pre><code>
+[creality_tag_processor]
+key = &lt;YOUR_CREALITY_KEY_32_HEX&gt;
+encryption_key = &lt;YOUR_CREALITY_ENCRYPTION_KEY_32_HEX&gt;
+</code></pre>
+<ol>
+<li>Find the existing <code>[creality_tag_processor]</code> section when configuring the U1 internal reader.</li>
+<li>Remove the leading <code>#</code> from that header.</li>
+<li>Remove the leading <code>#</code> from the <code>key</code> line.</li>
+<li>Remove the leading <code>#</code> from the <code>encryption_key</code> line.</li>
+<li>Put the correct 32-character value in <code>key</code>.</li>
+<li>Put the correct 32-character value in <code>encryption_key</code>.</li>
+<li>Check that no duplicate section or placeholder remains.</li>
+<li>Save the file.</li>
+</ol>
+<p><strong>Do not assume <code>key</code> and <code>encryption_key</code> have the same value.</strong></p>
+<p>The two fields serve different roles and require their corresponding values.</p>
+<p>These settings do not enable Creality support in ACE.</p>
+<p>Keep External selected for this project; the saved internal-reader configuration remains inactive.</p>
+<h3 id="keep-keys-private">Keep keys private</h3>
+<p>Users must obtain required proprietary keys independently.</p>
+<p>This project provides neither keys nor links to key sources.</p>
+<p>Do not publish the file, its backup, screenshots containing keys, or keys in issue reports.</p>
+<p>Do not add keys to the installer JSON, firmware download profile, or repository.</p>
+<p>Keep private configuration when changing firmware or reinstalling the host integration.</p>
+<h3 id="if-recognition-fails">If recognition fails</h3>
+<div class="table"><table><thead><tr><th>Observation</th><th>Next check</th></tr></thead><tbody>
+<tr><td>No tag on the spool</td><td>Enter material data manually.</td></tr>
+<tr><td>Type and color appear, but brand is Generic</td><td>Check whether ACE supplied a nonempty brand.</td></tr>
+<tr><td>A supported tag is not recognized</td><td>Check the exact ACE firmware, original tag presence, and tag position.</td></tr>
+<tr><td>Recognition is still running</td><td>Wait for completion before starting a load.</td></tr>
+<tr><td>QIDI or Creality fails on the pinned ACE firmware</td><td>Use manual material data; the U1 key file does not add ACE support.</td></tr>
+<tr><td>U1 shows Bambu, but the slicer does not</td><td>Check the slicer&#x27;s available filament profiles separately.</td></tr>
+</tbody></table></div>
+<p>See <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/troubleshooting.md">troubleshooting</a> and <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">the physical validation limits</a>.</p></details><details id="daily"><summary>Daily use and remote controls</summary><h2 id="daily-loading-and-unloading">Daily loading and unloading</h2>
+<p><a href="START-HERE.html#daily">简体中文</a> · <a href="#parameters">Tube calibration</a> · <a href="#nfc">NFC</a></p>
+<h3 id="insert-and-identify">Insert and identify</h3>
+<ol>
+<li>Insert filament into an empty ACE inlet.</li>
+<li>Keep your hands away from the rollers.</li>
+<li>Wait for the short intake and NFC search to finish.</li>
+<li>Check material details on U1. Enter them manually if the spool has no readable tag.</li>
+</ol>
+<p>The filament waits near ACE. Insertion alone does not start full loading to the head.</p>
+<p>ACE controls its recognition movement; this project does not promise a fixed intake distance for every tag.</p>
+<h3 id="load-to-the-head">Load to the head</h3>
+<ol>
+<li>Select the matching tool on the U1 screen.</li>
+<li>Start its normal <strong>Load</strong> operation.</li>
+<li>Follow the screen prompts. Wait for completion before sending another command.</li>
+</ol>
+<p>ACE first feeds the configured fast segment when its starting position is known.</p>
+<p>It then uses the slower approach until the head sensor detects filament.</p>
+<p>U1 completes its native hotend loading process.</p>
+<p>After a restart or uncertain position, transport can remain at the slower speed.</p>
+<h3 id="unload-and-reduce-loose-loops">Unload and reduce loose loops</h3>
+<ol>
+<li>Start normal <strong>Unload</strong> for the matching tool.</li>
+<li>Wait for U1 to finish releasing filament from the hotend.</li>
+<li>Wait for ACE to complete its configured retraction.</li>
+<li>If forward take-up is enabled, wait for that movement to finish.</li>
+<li>Confirm that the tip remains in ACE and its rear tube.</li>
+</ol>
+<p>Material information stays available while the ACE inlet remains occupied.</p>
+<p>To load again, select normal Load without removing the filament.</p>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>Forward take-up starts disabled on new installations. Calibrate it before use.</strong></p>
+<p>It feeds filament toward U1 to remove loose loops. It has no tension sensor and does not drive the roller independently.</p>
+</aside>
+<p>The tested example uses 1250 mm retraction at 80 mm/s, then 300 mm forward at 50 mm/s.</p>
+<p>These are not universal distances. See <a href="#parameters">the calibration procedure</a>.</p>
+<h3 id="remote-operation">Remote operation</h3>
+<p>The easiest remote control is the optional U1 screen mirror.</p>
+<p>Enable <strong>Firmware Config → Web → Remote Screen Access</strong>, then open <code>/screen/</code> on that printer.</p>
+<p>Use the same Load or Unload control as on the physical screen.</p>
+<p>This installer does not enable the screen mirror automatically.</p>
+<p>See the <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/remote_screen.md">v24 remote-screen instructions</a>.</p>
+<p>The web console also exposes the full native workflow.</p>
+<p>For slot 1, send <strong>one</strong> of these commands and follow the printer prompts:</p>
+<p>Load:</p>
+<pre><code>
+AUTO_FEEDING EXTRUDER=0 LOAD=1
+</code></pre>
+<p>Unload:</p>
+<pre><code>
+AUTO_FEEDING EXTRUDER=0 UNLOAD=1
+</code></pre>
+<div class="table"><table><thead><tr><th>ACE slot</th><th><code>EXTRUDER</code> value</th></tr></thead><tbody>
+<tr><td>1</td><td>0</td></tr>
+<tr><td>2</td><td>1</td></tr>
+<tr><td>3</td><td>2</td></tr>
+<tr><td>4</td><td>3</td></tr>
+</tbody></table></div>
+<p>Do not send Load and Unload together. Do not use <code>ACE_FEED</code> or <code>ACE_RETRACT</code> as substitutes for the hotend workflow.</p>
+<p>Those commands only perform lower-level transport.</p>
+<p>The optional <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/afc-lite.md">AFC panel</a> requires its own AFC Stub setting; it is not a default panel supplied by this installation.</p></details><details id="licensing"><summary>Use, sharing, and redistribution</summary><h2 id="licensing-and-redistribution">Licensing and redistribution</h2>
+<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/licensing.zh-CN.md">简体中文</a></p>
+<p>Reviewed on <strong>2026-10-30</strong> against the identified upstream sources and this project&#x27;s public source package.</p>
+<p>This review records available license evidence; it is not a guarantee for every jurisdiction or third-party asset.</p>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>The source package is GPLv3; external firmware images are not covered by that statement.</strong></p>
+<p>You can use, modify, and share the covered source, including commercially, subject to GPLv3 requirements.</p>
+<p>Public availability of a firmware download does not establish permission to redistribute or relicense that image.</p>
+</aside>
+<h3 id="what-you-can-do-with-this-source-package">What you can do with this source package</h3>
+<p>The repository includes the full <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/LICENSE">GNU GPL version 3</a>.</p>
+<p>The included source has no additional noncommercial-only or no-sharing restriction.</p>
+<p>GPLv3 permits charging for copies; it does not require all use to be noncommercial.</p>
+<p>Private use does not require publication of private modifications.</p>
+<p>Distribution of modified source creates obligations under the license.</p>
+<p>When sharing the source or a modified version:</p>
+<ol>
+<li>Keep existing copyright, license, and warranty notices.</li>
+<li>Include the GPLv3 license text.</li>
+<li>Identify your changes with a prominent notice and relevant date.</li>
+<li>License the covered combined work consistently with GPLv3.</li>
+<li>Provide the corresponding source required for what you distribute.</li>
+<li>Include required build and installation scripts with that source.</li>
+<li>Preserve the recipients&#x27; GPL rights without additional restrictions.</li>
+<li>Keep private credentials and printer backups outside the shared package.</li>
+</ol>
+<p>GPLv3 sections 4 and 5 govern source distribution.</p>
+<p>Section 6 adds requirements when distributing object code or binaries.</p>
+<p>Applicable installation information can also be required under section 6.</p>
+<p>The present package supplies readable source and its build/install tools, not compiled printer firmware.</p>
+<p>See the <a href="https://github.com/BlackFrogKok/SnapAce/blob/34a06e87bcd59ca3ebc845ed32a794627505437c/LICENSE">upstream GPLv3 text</a>.</p>
+<h3 id="included-code-and-its-license-evidence">Included code and its license evidence</h3>
+<div class="table"><table><thead><tr><th>Source</th><th>Evidence checked</th><th>Material in this project</th></tr></thead><tbody>
+<tr><td>SnapAce, commit <code>34a06e87bcd59ca3ebc845ed32a794627505437c</code></td><td><a href="https://github.com/BlackFrogKok/SnapAce/blob/34a06e87bcd59ca3ebc845ed32a794627505437c/LICENSE">GPLv3 LICENSE</a></td><td>Adapted ACE control and integration changes.</td></tr>
+<tr><td>Snapmaker U1 Klipper</td><td><a href="https://github.com/Snapmaker/u1-klipper/blob/93cb12faebf6e74c51bbc5f0be66e95124af14c8/COPYING">GPLv3 COPYING at `93cb12fa`</a></td><td>U1 core modules and test-only fixtures from the identified firmware baseline.</td></tr>
+<tr><td>Paxx12 U1 Extended Firmware, commit <code>417e6394f62366e010a3f76f8e567f67db770165</code></td><td><a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/LICENSE">GPLv3 LICENSE</a></td><td>Firmware-baseline changes and published RFID patches used by the host integration.</td></tr>
+<tr><td>ACE Gen 1 USB/IAP research, commit <code>ec8f37bf9928e7814efaafe6aaa794c69f8216d1</code></td><td><a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/LICENSE">GPLv3 LICENSE</a> and <a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">licensing-scope NOTICE</a></td><td>Adapted USB/IAP protocol and updater source, with synthetic offline tests.</td></tr>
+<tr><td>New Ultimate U1-ACE link contributions</td><td><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/LICENSE">Project LICENSE</a> and <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">modification notice</a></td><td>Host changes, installer, Windows tools, tests, diagrams, and documentation.</td></tr>
+</tbody></table></div>
+<p>The checked upstream GPL files contain the same GPLv3 text.</p>
+<p>No separate commercial-use prohibition was found for these included source components.</p>
+<p>The source identities and public-file hashes are recorded in <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/SOURCES.json">SOURCES.json</a>.</p>
+<p>The installation allowlist is recorded separately in <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/manifest.json">manifest.json</a>.</p>
+<p>The U1 core baseline comes from the exact extended-firmware release.</p>
+<p>The cited official Klipper revision establishes license provenance; it does not assert byte equality for every extracted file.</p>
+<p>The original Kevin O&#x27;Connor copyright and GPL notice remain in <code>payload/extruder.py</code>.</p>
+<p>The print-task fixture retains its GPL notice.</p>
+<p>The protocol fixture identifies its origin, extraction date, and limited test-only contents.</p>
+<p>The package&#x27;s modification notice identifies this project&#x27;s changes and their date.</p>
+<h3 id="openrfid-separate-runtime-component-and-references">OpenRFID: separate runtime component and references</h3>
+<p>OpenRFID publishes <a href="https://github.com/suchmememanyskill/OpenRFID/blob/f2608fa1a2d28abce80c7f1a8fbf7aa184f22bbd/LICENSE">GPLv3</a>.</p>
+<p>The current license was checked on 2026-10-30 and matched that fixed license revision.</p>
+<p>This package does not bundle OpenRFID tag decoders, authentication implementations, or its user configuration.</p>
+<p>The reviewed payload and fixtures contain no OpenRFID decoder imports or implementation files.</p>
+<p>Comparison with the extracted upstream reference found no substantial identical implementation block in those reviewed files.</p>
+<p>That comparison supports the recorded scope; it does not prove every historical source relationship.</p>
+<p>OpenRFID is an existing U1 component and a documentation/reference source.</p>
+<p>The ACE path receives decoded information from ACE firmware instead.</p>
+<p>The key examples in <a href="#nfc">the NFC guide</a> use configuration names and placeholders, not copied proprietary keys.</p>
+<p>Future copied OpenRFID code would need its applicable notices, attribution, and license treatment.</p>
+<h3 id="opencubic-firmware-and-qt-flash-tool-differ">OpenCubic: firmware and Qt flash tool differ</h3>
+<p>The pinned <a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/README.md#firmware-source">OpenCubic README</a> states that firmware source remains private.</p>
+<p>Its license section identifies the Qt flash tool as MIT and describes firmware binaries as provided as-is.</p>
+<p>A standalone license file was not present in the checked repository root or flash-tool directory.</p>
+<p>The MIT description for the tool must not be applied to the firmware.</p>
+<div class="table"><table><thead><tr><th>Material</th><th>Available permission evidence</th><th>Project treatment</th></tr></thead><tbody>
+<tr><td>OpenCubic ACE firmware</td><td>Official instructions invite users to download and flash it. No clear blanket redistribution or commercial firmware grant was found.</td><td>Not bundled, modified, or relicensed here.</td></tr>
+<tr><td>OpenCubic Qt flash tool</td><td>Upstream README labels the tool MIT.</td><td>No Qt flash-tool source or executable is included here.</td></tr>
+<tr><td>Our USB tool</td><td>Adapted from the separately GPLv3-licensed ACE research source.</td><td>Included as source under the project&#x27;s GPLv3 terms.</td></tr>
+</tbody></table></div>
+<p>The official <a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/docs/how-to-flash.md">flashing guide</a> supports the intended download-and-use workflow.</p>
+<p>It does not supply an unrestricted firmware redistribution, modification, or commercial-use license.</p>
+<p>The research project&#x27;s <a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">NOTICE</a> explicitly excludes third-party firmware images from its GPL grant.</p>
+<p>The optional downloader fetches a user-selected image directly from the identified upstream location.</p>
+<p>It verifies public size and hash values; those checks establish integrity, not copyright permission.</p>
+<p>The downloader&#x27;s own source license does not license its downloaded output.</p>
+<p>No separate automation permission was found in the reviewed firmware terms.</p>
+<p>Do not infer additional rights from an accessible URL, a successful download, or an as-is disclaimer.</p>
+<p>Obtain suitable permission before redistributing or commercially bundling those firmware images.</p>
+<h3 id="u1-and-anycubic-complete-firmware-images">U1 and Anycubic complete firmware images</h3>
+<p>Paxx12 licenses its main project under GPLv3 and directs users to individual dependencies for their licenses.</p>
+<p>Its <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/README.md#license">license statement</a> does not establish one license for every original-firmware component.</p>
+<p>A complete U1 image includes original manufacturer components and other dependencies.</p>
+<p>This review does not establish redistribution rights for every component in that image.</p>
+<p>The Anycubic stock image remains third-party manufacturer material.</p>
+<p>A community repository&#x27;s copy does not create a new license for that image.</p>
+<p>The <a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">ACE research NOTICE</a> expressly makes that distinction.</p>
+<p>Neither firmware family is covered by this source package&#x27;s GPL grant.</p>
+<p>A helper can direct users to a pinned upstream download and verify its hash.</p>
+<p>That workflow keeps the upstream asset separate; it is not a claim of unrestricted firmware rights.</p>
+<p>A modified first-boot U1 image would require a separate component-license and distribution review.</p>
+<h3 id="retained-archive-findings">Retained archive findings</h3>
+<p>The review inspected the locally retained <code>v0.1.0</code> and <code>v0.1.1</code> archives.</p>
+<p>Both contained the project LICENSE and THIRD_PARTY notice.</p>
+<p>Neither contained firmware <code>.bin</code> files, NFC key files, OpenRFID user configuration, or the OpenCubic Qt flash tool.</p>
+<p>The source hashes listed in SOURCES.json matched the reviewed files.</p>
+<p>These findings concern those inspected archives.</p>
+<p>A later package must be checked again; the earlier result does not automatically cover added files.</p>
+<p>Keep <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">the retained-version policy</a> separate from any new package&#x27;s audit result.</p>
+<h3 id="private-data-and-attribution">Private data and attribution</h3>
+<p>Private NFC keys and hashes of private key files must not be published.</p>
+<p>Public source-file and firmware checksums serve integrity checks; they do not contain a private-key-file audit record.</p>
+<p>Printer backups, device-specific write profiles, credentials, and raw private diagnostics remain excluded from public distribution.</p>
+<p>OpenAI Codex assisted this project&#x27;s development.</p>
+<p>That fact does not replace upstream copyright, license conditions, or required attribution.</p>
+<p>The project does not claim to be an official Snapmaker or Anycubic release.</p>
+<p>This audit found a compatible GPLv3 basis for the identified included source.</p>
+<p>It does not guarantee all legal rights for external firmware, trademarks, private keys, or future additions.</p></details><footer>Source and reference links require internet access. The instructions on this page are available offline.</footer>
 </main></body></html>

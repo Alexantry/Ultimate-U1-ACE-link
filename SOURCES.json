@@ -1,6 +1,7 @@
 {
   "schema": 1,
-  "release": "0.1.0",
+  "release": "0.1.2",
+  "payload_first_packaged_release": "0.1.0",
   "recorded_date": "2026-10-30",
   "distribution": "Source only; no firmware binaries, keys, device profiles with identities, backups, or raw printer logs",
   "upstreams": [
@@ -41,6 +42,7 @@
       "repository": "https://github.com/Jupsi/OpenCubic",
       "commit": "6a97e86eda2872e8f8046cefd9470d89906d9a36",
       "release": "v1.0.2",
+      "release_commit": "11121e2b9eef2e9349e97fc8f56a84db200f57f0",
       "license": "Firmware private-source/as-is; not redistributed or relicensed by this project. The separate upstream Qt flasher is MIT and is not bundled.",
       "readme_url": "https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/README.md",
       "manifest": "tools/ace_usb/images.json"

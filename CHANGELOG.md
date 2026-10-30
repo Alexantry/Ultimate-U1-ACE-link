@@ -1,5 +1,20 @@
 # Changes
 
+## 0.1.2 — 2026-10-30
+
+This release puts U1 preparation and installation in one bilingual workflow.
+The four production transport and NFC modules remain unchanged.
+
+- Download the original pinned U1 firmware, verify SHA-256, and prepare a selected FAT32 USB drive.
+- Guide the required screen update, Advanced Mode, Root Access, and Wi-Fi checks before host installation.
+- Put manual installation at the top of both homepages, in the wizard menu, and in an offline manual.
+- Expand daily-operation, NFC, private-key, and four-path tube-calibration guides in English and Chinese.
+- Distinguish ACE tag support from the separate U1 internal OpenRFID key configuration.
+- Retain both earlier release archives without modification.
+
+The preparation stage does not flash the printer remotely or automatically approve access.
+ACE firmware preparation remains separate. New USB and wizard paths have offline tests, not a complete physical installation test.
+
 ## 0.1.1 — 2026-10-30
 
 This release adds a guided Windows installation for new users.

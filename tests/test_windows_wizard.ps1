@@ -137,6 +137,16 @@ $script:uploadedSettings = $null
 $script:messages = New-Object 'Collections.Generic.List[string]'
 $script:coloredMessages = New-Object 'Collections.Generic.List[object]'
 $script:languageChosen = $false
+$script:manualUrls = New-Object 'Collections.Generic.List[string]'
+function Start-Process {
+    param([string]$FilePath)
+    $script:manualUrls.Add($FilePath)
+}
+function Invoke-WizardBootstrap {
+    param([string]$BundleRoot)
+    if ($script:scenario -eq 'bootstrap-failed') { throw (New-WizardException 'bundle_hash') }
+    return ($script:scenario -ne 'bootstrap-cancelled')
+}
 function Read-Host {
     param([string]$Prompt)
     if ($script:answers.Count -eq 0) { throw ('Unexpected prompt: ' + $Prompt) }
@@ -193,15 +203,17 @@ function Invoke-WizardNative {
 $testTemp = Join-Path ([IO.Path]::GetTempPath()) ('U1WizardTests-' + [guid]::NewGuid().ToString('N'))
 [void](New-Item -ItemType Directory -Path $testTemp)
 function Invoke-FakeWizard {
-    param([string]$Scenario, [string[]]$Answers, [ValidateSet('zh', 'en')][string]$Language = 'zh')
+    param([string]$Scenario, [string[]]$Answers, [ValidateSet('zh', 'en')][string]$Language = 'zh', [string]$Task = '1')
     $script:scenario = $Scenario
     $script:calls.Clear()
     $script:answers.Clear()
     $script:messages.Clear()
     $script:coloredMessages.Clear()
+    $script:manualUrls.Clear()
     $script:languageChosen = $false
     if ($Language -eq 'en') { $script:answers.Enqueue('2') }
     else { $script:answers.Enqueue('1') }
+    $script:answers.Enqueue($Task)
     foreach ($answer in $Answers) { $script:answers.Enqueue($answer) }
     $script:uploadedSettings = $null
     return Start-U1Wizard -BundleRoot $repo -LocalLogRoot $testTemp
@@ -321,6 +333,27 @@ try {
         foreach ($answer in @('bad', '2')) { $script:answers.Enqueue($answer) }
         Select-WizardLanguage
         Assert-True ($script:WizardLanguage -eq 'en' -and $script:answers.Count -eq 0) 'Language selection failed'
+    }
+    Test-Case 'manual_menu_opens_fixed_url_without_printer_access' {
+        foreach ($language in @('zh', 'en')) {
+            $code = Invoke-FakeWizard 'fresh' @() $language '3'
+            Assert-True ($code -eq 2 -and $script:calls.Count -eq 0) 'Manual menu contacted printer'
+            Assert-True ($script:manualUrls.Count -eq 1 -and $script:manualUrls[0] -eq 'https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md') 'Wrong manual destination'
+            if ($language -eq 'en') { Assert-EnglishOutput }
+        }
+    }
+    Test-Case 'usb_menu_cancel_does_not_start_ssh' {
+        $code = Invoke-FakeWizard 'bootstrap-cancelled' @() 'en' '2'
+        Assert-True ($code -eq 2 -and $script:calls.Count -eq 0) 'USB cancellation reached SSH'
+    }
+    Test-Case 'usb_menu_failure_does_not_start_ssh' {
+        $code = Invoke-FakeWizard 'bootstrap-failed' @() 'en' '2'
+        Assert-True ($code -eq 1 -and $script:calls.Count -eq 0) 'USB failure reached SSH'
+    }
+    Test-Case 'usb_menu_completion_continues_existing_install_flow' {
+        $code = Invoke-FakeWizard 'fresh' @('1', '1', '192.0.2.1', '1', '1400', '1200', '1', '1') 'en' '2'
+        Assert-True ($code -eq 0 -and (Count-InstallCalls) -eq 1) 'Completed USB setup did not continue'
+        Assert-EnglishOutput
     }
 } finally {
     $resolved = [IO.Path]::GetFullPath($testTemp)

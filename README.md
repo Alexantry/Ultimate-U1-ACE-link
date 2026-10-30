@@ -1,11 +1,23 @@
 # Ultimate U1-ACE link
 
-Connect an Anycubic ACE Pro Gen 1 to a Snapmaker U1.
-Load from the U1 screen, keep recognized material data, and reduce loose filament with optional forward take-up.
+Connect **Anycubic ACE Pro Gen 1** to **Snapmaker U1**.
+Read supported NFC spool tags, synchronize material details, and start loading from the U1 screen or its remote controls.
+Unload to ACE, keep material information, and reduce loose loops with calibrated forward take-up.
 
 **Built with OpenAI Codex. You do not need Codex, programming knowledge, or an API key to install this project.**
 
-[简体中文](README.zh-CN.md) · [Download v0.1.1 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.1.zip) · [SHA-256](downloads/SHA256SUMS)
+[简体中文](README.zh-CN.md) · [Download v0.1.2 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip) · [SHA-256](downloads/SHA256SUMS)
+
+## [GUIDED INSTALLATION — start here](docs/quick-start.md)
+
+Download, extract, and double-click **START-HERE.cmd**. Select **English** or **中文**.
+The same wizard can prepare the required U1 firmware on a USB drive and guide the screen steps.
+
+## [MANUAL INSTALLATION — read source and run commands yourself](docs/installation.md)
+
+**This is a complete alternative to the Windows wizard.** No launcher or closed EXE is required.
+You still run the readable `installer.py` on the printer.
+[Compare methods and retained releases](docs/install-options.md).
 
 > [!CAUTION]
 > **Do not copy old SnapAce `filament_feed.py` or `extruder.py` onto U1 firmware 2.0.**
@@ -13,29 +25,23 @@ Load from the U1 screen, keep recognized material data, and reduce loose filamen
 > **This project replaces the original SnapAce software installation steps.**
 > Use the upstream **hardware connection guide** for the cable arrangement.
 
-## Choose your installation path
+## First installation in one guided workflow
 
-| I want prompts | I want to inspect each command |
-| --- | --- |
-| **[Bilingual guided installation](docs/quick-start.md)** | **[Manual source installation](docs/installation.md)** |
-| Double-click `START-HERE.cmd`, then choose a language. | Review the source, then enter the documented commands. |
+1. Prepare the Gen 1 cable and four PTFE paths with the [SnapAce hardware guide](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring).
+2. Download and extract this project's ZIP. Double-click **START-HERE.cmd**.
+3. Select the U1 preparation path if the required firmware is not installed.
+4. Let the wizard download, verify, and copy the exact U1 firmware to a suitable USB drive.
+5. Follow its printer-screen steps for Local Update, Advanced Mode, and Root Access.
+6. Continue in the same wizard with the printer address, password, and reviewed tube distances.
+7. Confirm installation. Wait for the verified result, then perform the guided physical checks.
 
-The **[original v0.1.0 package](docs/install-options.md#retained-v010)** remains available unchanged.
+Open **START-HERE.html** or **START-HERE.en.html** for illustrated offline instructions.
+The original **v0.1.0 and v0.1.1 archives remain unchanged**.
 
-## Start with four steps
-
-1. Complete the [machine preparation](docs/installation.md#1-prepare-the-prerequisite-projects).
-2. Download the ZIP above.
-3. Extract all files.
-4. Double-click **START-HERE.cmd** and select **English** or **中文**.
-
-The launcher enters commands and transfers files for you.
-Open **START-HERE.html** or **START-HERE.en.html** for the illustrated offline guide.
-
-Prefer to inspect the commands and source first?
-The [manual source procedure](docs/installation.md) remains available and does not run the Windows launcher.
-It still runs the open-source `installer.py` on the printer.
-[Installation choices and the retained v0.1.0 package](docs/install-options.md) explain both paths.
+> [!IMPORTANT]
+> **Initial firmware installation and access approval still need the printer screen.**
+> The wizard prepares the official v24 file; it does not create a different firmware image or bypass these controls.
+> **ACE firmware preparation is separate when the compatible OpenCubic build is not installed.** See [ACE preparation](docs/ace-firmware.md).
 
 ![Download, extract, and start](docs/images/first-steps.en.svg)
 
@@ -43,7 +49,9 @@ It still runs the open-source `installer.py` on the printer.
 
 | The installer does this | You supply or prepare this |
 | --- | --- |
-| Check firmware and device state | Install the supported prerequisite firmware and connect the hardware. |
+| Download the pinned U1 file, check its SHA-256, and copy it to FAT32 USB | Select the USB drive and confirm Local Update on the U1 screen. |
+| Show the access setup steps in the selected language | Enable Advanced Mode and set Root Access to Open on the screen. |
+| Check firmware and device state | Connect the hardware and prepare compatible ACE firmware. |
 | Find the ACE interface or preserve the existing one | Enter the printer address and SSH password. |
 | Set **Filament Detection → External** | Review the physical distances for a new installation. |
 | Save backups and configure persistence | Keep the machine idle and cold. |
@@ -57,7 +65,7 @@ New installations start with forward take-up disabled.
 ## Prerequisites
 
 > [!IMPORTANT]
-> **Complete these prerequisites before installation.**
+> **The guided preparation covers the U1 steps below. The host installation starts only after they are complete.**
 > **ACE Pro Gen 1 and the exact U1 version below are the tested baseline.**
 
 | Component | Tested baseline |
@@ -67,21 +75,44 @@ New installations start with forward take-up disabled.
 | ACE hardware | ACE Pro Gen 1, correct USB connection, four PTFE paths |
 | ACE NFC firmware | `CV1.3.863` / OpenCubic `1.1.1` |
 
-U1 firmware installation, ACE firmware changes, and cable preparation are separate prerequisite tasks.
+The wizard uses the original upstream U1 file. It does not silently reflash an existing system.
+Its USB preparation does not format a drive or overwrite a different file with the same name.
+See [the integrated preparation guide](docs/u1-preparation.md) for the exact file, checksum, and manual alternative.
 
 ## How it works
 
-- Insertion performs a short bite and NFC recognition, then waits.
-- The U1 Load button starts fast feed followed by a slower sensor-controlled approach.
-- Unload retracts the configured distance while retaining filament in ACE.
-- Material data stays until the ACE inlet becomes empty.
-- Optional forward take-up reduces loose filament after retraction.
+| Action | What happens | What to expect |
+| --- | --- | --- |
+| Insert into an empty ACE slot | ACE grips the filament and performs its short intake and NFC search. | It waits near ACE; it does not send the full tube length automatically. Untagged filament can use manual material details. |
+| Select Load on U1 or an enabled remote control | ACE sends a fast segment, then approaches the head more slowly. | The head sensor ends the ACE transport stage; U1 completes its native hotend loading sequence. |
+| Select Unload | U1 releases filament from the hotend, then ACE retracts the configured distance. | The tip remains in ACE and the rear tube. The material data stays available. |
+| Finish unloading with forward take-up enabled | ACE feeds a calibrated short distance toward U1. | This takes up loose loops at the spool. It is not an independently powered roller or a tension-sensor stop. |
+| Load again without removing the spool | The next fast segment accounts for successful take-up. | No new tag scan is required merely because the head was unloaded. |
+| Remove filament from the ACE inlet | The inlet is confirmed empty. | Only then is that slot's stored material cleared. |
+
+![Insertion, loading, unloading, and take-up](docs/images/feed-cycle.svg)
+
+Use the physical U1 screen, [enabled remote screen, or web-console commands](docs/daily-use.md).
+The installer does not enable the optional remote screen or AFC panel automatically.
 
 Reference values are 1150 mm at speed 200, then speed 50; unload is 1250 mm at speed 80.
 The tested take-up value is 300 mm at speed 50.
 **These distances are examples for the tested tube arrangement, not universal settings.**
 Forward take-up has no tension feedback and does not independently drive the spool roller.
-See [configuration](docs/configuration.md) and [validation limits](docs/validation.md).
+**New installations start with take-up disabled.** Calibrate it before expecting automatic slack removal.
+See [tube measurement and parameter editing](docs/configuration.md), [daily operation](docs/daily-use.md), and [validation limits](docs/validation.md).
+
+## NFC support and keys
+
+**Bambu brand, PLA Matte, and color were confirmed in this project.**
+The pinned ACE firmware also reports support for Anycubic and several open tag formats.
+This is not a claim that every mainstream brand works.
+**Creality and QIDI are not usable decoders in the pinned ACE release.**
+
+Read the [brand support table and key-entry instructions](docs/nfc.md).
+The separate U1 internal-reader file is `extended/openrfid_user.cfg`.
+**Keys in that file do not configure ACE.** The tested Bambu ACE workflow needs no extra key entry in this project.
+No keys or links to proprietary key sources are included.
 
 ## Project sources and development
 
@@ -100,5 +131,12 @@ Upstream authors retain their credits and licenses. See [THIRD_PARTY.md](THIRD_P
 
 This repository contains no NFC keys. Users must obtain required proprietary keys independently.
 English procedures follow ASD-STE100 writing principles; this is not a certification claim.
+
+## Use and sharing
+
+**This source package uses GPLv3. You can use, modify, and share it under those conditions.**
+Keep copyright notices, the license, change notices, and the corresponding source when distributing it.
+Separately downloaded U1 and ACE firmware are not relicensed by this project.
+See the **[license audit and redistribution rules](docs/licensing.md)** before making a combined firmware or commercial package.
 
 [Beginner guide](docs/quick-start.md) · [NFC](docs/nfc.md) · [Update and rollback](docs/update-and-rollback.md) · [Troubleshooting](docs/troubleshooting.md)

@@ -13,9 +13,13 @@ The [previous package](install-options.md#retained-v010) remains available uncha
 
 ## Prepare the machine
 
-1. Install the supported U1 firmware, `2.0.0-paxx12-24`.
-2. Enable Advanced Mode on the U1.
-3. Set Root Access to Open.
+The same wizard now includes [U1 firmware preparation](u1-preparation.md).
+Select that path if the required firmware is not already installed.
+It downloads and verifies the original `2.0.0-paxx12-24` file, then copies it to your selected FAT32 USB drive.
+
+1. Follow the wizard's screen instructions to install the prepared file on U1.
+2. Enable Advanced Mode on the U1 screen and complete the requested restart.
+3. Set Root Access to Open on the screen.
 4. Connect the ACE Pro Gen 1 and its four PTFE paths.
 5. Confirm the required ACE firmware before NFC use.
 6. Finish the current print.
@@ -23,20 +27,21 @@ The [previous package](install-options.md#retained-v010) remains available uncha
 
 The tested ACE firmware is `CV1.3.863` with OpenCubic `1.1.1`.
 See [prerequisite instructions](installation.md#1-prepare-the-prerequisite-projects).
-The launcher does not install U1 firmware, flash ACE, or change hardware.
+The launcher prepares the U1 file and guides the physical steps. The printer performs the update after your screen confirmation.
+It does not flash ACE or change hardware.
 
 **First installation:** empty all four ACE inlets and all four U1 heads before installation.
 **Existing installation:** an update does not require all four channels to be emptied.
 
 ## Install with the launcher
 
-1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.1.zip).
+1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip).
 2. Right-click the ZIP in your Downloads folder.
 3. Select Extract All.
 4. Open the extracted `Ultimate-U1-ACE-link` folder.
 5. Double-click `START-HERE.cmd`.
 6. Select **2. English**.
-7. Enter the printer address shown on its Wi-Fi page.
+7. Complete U1 preparation, or select the already-prepared path. Enter the current printer address.
 8. Review the installation summary.
 9. Confirm installation when the machine is idle and cold.
 10. Wait for the success result.
@@ -54,6 +59,7 @@ Use `START-HERE.html` for the Chinese guide.
 
 | Item | Automatic action |
 | --- | --- |
+| U1 firmware preparation | Download and verify v24, then copy it to selected FAT32 USB. Screen approval remains manual. |
 | File transfer | Copy the required public files to a new staging directory. |
 | Existing parameters | Keep the current ACE settings. |
 | ACE interface | Use the existing interface or identify one matching device. |

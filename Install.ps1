@@ -104,6 +104,14 @@ $script:WizardMessages = @{
     unexpected_error = @('向导遇到意外错误。请保留诊断文件，并查看 START-HERE.html 的故障处理说明。', 'The wizard encountered an unexpected error. Keep the diagnostic file. Read the recovery instructions in START-HERE.en.html.')
     startup_failed = @('向导未能继续。请保留此窗口，并查看 START-HERE.html 的故障处理说明。', 'The wizard could not continue. Keep this window. Read the recovery instructions in START-HERE.en.html.')
     close_prompt = @('按回车关闭窗口', 'Press Enter to close this window')
+    task_title = @('请选择下一步：', 'Choose the next step:')
+    task_ready = @('  1. U1 已准备好，安装或更新 ACE 适配', '  1. U1 is ready: install or update ACE integration')
+    task_usb = @('  2. 准备 U1 固件 U 盘，并查看屏幕操作指引', '  2. Prepare U1 firmware USB and follow the screen instructions')
+    task_manual = @('  3. 手动安装（英文命令说明），打开文档并退出', '  3. Manual installation: open the instructions and exit')
+    task_prompt = @('请输入 1、2 或 3', 'Enter 1, 2, or 3')
+    task_invalid = @('请输入列表中的数字 1、2 或 3。', 'Enter 1, 2, or 3 from the list.')
+    manual_opened = @('已在浏览器打开手动安装说明；向导不会连接打印机。', 'The manual installation guide is open in your browser. The wizard will not contact the printer.')
+    stage_bootstrap = @('准备固件 U 盘', 'Preparing firmware USB')
 }
 
 function Get-WizardText {
@@ -140,6 +148,33 @@ function Select-WizardLanguage {
         if ($choice -eq '2') { $script:WizardLanguage = 'en'; return }
         Write-Host 'Enter 1 or 2 / 请输入 1 或 2。'
     }
+}
+
+function Select-WizardTask {
+    Write-Host ''
+    Write-Host (Get-WizardText 'task_title') -ForegroundColor Cyan
+    foreach ($id in @('task_ready', 'task_usb', 'task_manual')) { Write-Host (Get-WizardText $id) }
+    while ($true) {
+        $choice = Read-Host (Get-WizardText 'task_prompt')
+        if ($choice -in @('1', '2', '3')) { return $choice }
+        Write-Host (Get-WizardText 'task_invalid') -ForegroundColor Yellow
+    }
+}
+
+function Open-WizardManual {
+    Start-Process -FilePath 'https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/installation.md'
+    Write-Host (Get-WizardText 'manual_opened') -ForegroundColor Cyan
+}
+
+function Invoke-WizardBootstrap {
+    param([string]$BundleRoot)
+    $bootstrapPath = Join-Path $BundleRoot 'Bootstrap.ps1'
+    $bootstrapFile = Get-Item -LiteralPath $bootstrapPath -Force
+    if ($bootstrapFile.PSIsContainer -or ($bootstrapFile.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw (New-WizardException 'bundle_regular')
+    }
+    . $bootstrapPath
+    return (Start-U1Bootstrap -BundleRoot $BundleRoot)
 }
 
 function Test-PrinterAddress {
@@ -329,6 +364,13 @@ function Start-U1Wizard {
         Write-Host (Get-WizardText 'warning_core') -ForegroundColor Red
         Write-Host (Get-WizardText 'warning_hardware') -ForegroundColor Red
         Write-Host ''
+        $task = Select-WizardTask
+        if ($task -eq '3') { Open-WizardManual; return 2 }
+        if ($task -eq '2') {
+            $stage = Get-WizardText 'stage_bootstrap'
+            if (-not (Invoke-WizardBootstrap -BundleRoot $BundleRoot)) { return 2 }
+            $stage = Get-WizardText 'stage_prepare'
+        }
         Write-Host (Get-WizardText 'guide_first')
         if (-not (Read-WizardChoice (Get-WizardText 'prerequisites_question') (Get-WizardText 'prerequisites_yes') (Get-WizardText 'prerequisites_no'))) { return 2 }
         Write-Host (Get-WizardText 'cold_notice')

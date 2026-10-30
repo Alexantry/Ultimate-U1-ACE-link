@@ -1,5 +1,10 @@
 # Third-party sources and licensing
 
+**[Sharing and use: license audit](docs/licensing.md) · [中文许可核查](docs/licensing.zh-CN.md)**
+
+The source package can be used, modified, and shared under GPLv3, with its conditions.
+That statement does not license separately downloaded U1 or ACE firmware, proprietary keys, or third-party trademarks.
+
 ## Development with OpenAI Codex
 
 This integration was developed with **OpenAI Codex**.
@@ -32,6 +37,14 @@ The payload core baseline is extracted from the identified extended-firmware rel
 - **Runtime dependencies:** Klipper, Moonraker, the U1 Python runtime, and pyserial are prerequisites from their respective projects. They are not bundled or automatically installed by the USB tooling.
 
 ## Preserved boundaries
+
+The [unchanged Godless50 upstream notice](docs/licenses/Godless50-NOTICE.md) retains its source-versus-firmware distinction.
+Its references to included binaries describe that upstream repository; those binaries are **not** in this package.
+Source: [NOTICE.md at the recorded commit](https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md).
+
+The U1 preparation wizard obtains the unchanged upstream image only when a user selects that step.
+It does not rehost the image or assert a GPL grant over all original-vendor components inside it.
+OpenCubic's published download/use instructions do not establish unrestricted rights to redistribute or sell its firmware binaries.
 
 Only source payloads and synthetic offline tests are distributed. This repository excludes printer backups, personal filesystem paths, private network addresses, NFC keys, and hashes of private key files. It also excludes per-device write profiles, firmware binaries, and raw hardware logs. The shipped USB profile is a generic, write-disabled template; recipients create any reviewed device profile locally and never commit it.
 

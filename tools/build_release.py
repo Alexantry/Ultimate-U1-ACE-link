@@ -9,7 +9,8 @@ from build_beginner_guide import main as build_beginner_guide
 ROOT = Path(__file__).resolve().parents[1]
 TOP = {'.gitignore', '.gitattributes', 'README.md', 'README.zh-CN.md', 'LICENSE',
        'THIRD_PARTY.md', 'SOURCES.json', 'manifest.json', 'installer.py', 'CHANGELOG.md',
-       'Install.ps1', 'START-HERE.cmd', 'START-HERE.html', 'START-HERE.en.html'}
+       'Install.ps1', 'Bootstrap.ps1', 'START-HERE.cmd', 'START-HERE.html', 'START-HERE.en.html',
+       'MANUAL-INSTALL.html'}
 TEMPLATES = {'config/settings.example.json', 'config/settings.tested-reference.json'}
 TOOL_JSON = {'tools/ace_usb/images.json', 'tools/ace_usb/device-profile.json'}
 
@@ -74,11 +75,15 @@ def main():
         assert not any(n.endswith(('.bin', '.pyc', '.key', '.pem', 'openrfid_user.cfg')) for n in z.namelist())
     archive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
     sums = archive_hash + '  ' + archive.name + '\n'
-    retained = out / 'Ultimate-U1-ACE-link-v0.1.0.zip'
-    if retained.exists():
-        previous_hash = '81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e'
-        assert hashlib.sha256(retained.read_bytes()).hexdigest() == previous_hash, 'Retained v0.1.0 changed'
-        sums = previous_hash + '  ' + retained.name + '\n' + sums
+    retained_sums = ''
+    for previous, previous_hash in [
+            ('0.1.0', '81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e'),
+            ('0.1.1', 'f684badeac36d7a66d47ed65c04ae0ec278e5731a5289aabaa8a7c521e86b497')]:
+        retained = out / ('Ultimate-U1-ACE-link-v' + previous + '.zip')
+        if retained.exists():
+            assert hashlib.sha256(retained.read_bytes()).hexdigest() == previous_hash, 'Retained v' + previous + ' changed'
+            retained_sums += previous_hash + '  ' + retained.name + '\n'
+    sums = retained_sums + sums
     (out / 'SHA256SUMS').write_text(sums, encoding='ascii')
     print(json.dumps({'archive': archive.name, 'files': len(files),
                       'bytes': archive.stat().st_size, 'sha256': archive_hash,

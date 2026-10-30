@@ -1,0 +1,382 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Manual installation / 手动安装</title><style>
+:root{color-scheme:light;font-family:"Microsoft YaHei",system-ui,sans-serif;color:#15283e;background:#eff3f8}
+*{box-sizing:border-box}body{margin:0}main{max-width:1020px;margin:auto;padding:32px 22px 64px}
+header{padding:34px;background:#132d4c;border-radius:20px;color:#fff}header p{color:#dce8f7}h1{font-size:34px;margin:12px 0}
+.tag{font-size:14px;letter-spacing:2px;color:#93c6ff}h2{font-size:27px;margin-top:12px}h3{font-size:24px;margin-top:32px}h4{font-size:20px}
+p,li,td,th{font-size:17px;line-height:1.8}li{margin:8px 0}a{color:#125dc2;text-underline-offset:3px}header a{color:#b2dbff}
+section,details{background:#fff;border:1px solid #dbe4ef;border-radius:18px;padding:28px;margin-top:24px}
+summary{cursor:pointer;font-size:23px;font-weight:bold}summary small{display:block;font-size:15px;font-weight:normal;margin-top:10px;color:#52657b}
+img{display:block;max-width:100%;height:auto;margin:20px auto}code{font-family:Consolas,monospace;background:#edf2f8;padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+pre{padding:16px;background:#edf2f8;overflow:auto;border-radius:8px;white-space:pre}pre code{padding:0;background:none;overflow-wrap:normal}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.routes a{display:block;padding:24px;border:3px solid #125dc2;border-radius:14px;background:#fff;font-size:21px;font-weight:800;text-decoration:none}.routes a:last-child{border-color:#375143;color:#214e34;background:#effbf3}.routes small{display:block;font-size:15px;font-weight:400;margin-top:10px}
+table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding:12px;text-align:left;vertical-align:top}th{background:#edf3fa}.table{overflow:auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.steps div{background:#fff;padding:22px;border-radius:14px;border:1px solid #dbe4ef}.steps b{display:block;font-size:20px;margin-bottom:12px}
+.note{background:#e9f6ef;border-left:4px solid #25814b;padding:14px 18px;margin-top:22px}.note p{margin:0}
+.alert{padding:18px 22px;border:1px solid #c8d3e2;border-left-width:6px;border-radius:12px;margin:24px 0;background:#f4f7fc}
+.alert-title{font-size:19px;font-weight:800;margin-bottom:10px;letter-spacing:.3px}.alert p{margin:8px 0}
+.alert.caution{color:#8c1421;background:#fff1f2;border-color:#d42b40}.alert.caution strong{font-weight:800}
+.alert.important{color:#41297a;background:#f4f0ff;border-color:#7c55c7}.alert.warning{color:#734200;background:#fff8e6;border-color:#c58100}
+footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,.routes{grid-template-columns:1fr}main{padding:14px}section,details,header{padding:20px}h1{font-size:27px}td,th{min-width:140px}}
+@media print{body{background:#fff}section,details,header{break-inside:avoid}header{background:#fff;color:#15283e}details>*{display:block}}
+</style></head><body><main><header><h1>MANUAL INSTALLATION / 手动安装</h1><p>Read the source and enter each command. This page does not execute anything.</p><p>本页提供完整英文命令步骤，不运行 Windows 向导；仍会使用可阅读的 printer installer.py。</p><a href="START-HERE.html">中文说明</a> · <a href="START-HERE.en.html">English guide</a></header><section><h2 id="manual-source-installation">Manual source installation</h2>
+<p>You can use this procedure without <code>START-HERE.cmd</code> or <code>Install.ps1</code>.</p>
+<p>You enter the commands yourself and can inspect the source before execution.</p>
+<p><strong>This procedure still runs the open-source <code>installer.py</code> on the printer.</strong></p>
+<p>It is not an installer-free procedure.</p>
+<p>Neither route requires AI, Codex, or an API key.</p>
+<aside class="alert caution"><div class="alert-title">CAUTION</div>
+<p><strong>Do not copy old SnapAce <code>filament_feed.py</code> or <code>extruder.py</code> onto U1 firmware 2.0.</strong></p>
+<p><strong>This project replaces the upstream software installation steps.</strong> Use the original SnapAce guide for hardware connections only.</p>
+</aside>
+<div class="table"><table><thead><tr><th>Route</th><th>What you run</th><th>Guide</th></tr></thead><tbody>
+<tr><td>Optional Windows wizard</td><td><code>START-HERE.cmd</code>, then <code>Install.ps1</code> and the printer&#x27;s <code>installer.py</code></td><td><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/quick-start.md">Guided installation</a></td></tr>
+<tr><td>Manual source procedure</td><td>PowerShell, <code>scp</code>, <code>ssh</code>, and the printer&#x27;s <code>installer.py</code></td><td>This page</td></tr>
+<tr><td>Preserved v0.1.0</td><td>The original manual procedure with manual External selection</td><td><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">Version choices and fixed downloads</a></td></tr>
+</tbody></table></div>
+<p>The manual command sequence remains available in every release.</p>
+<p>The current package includes <strong>MANUAL-INSTALL.html</strong> for offline reading.</p>
+<aside class="alert important"><div class="alert-title">IMPORTANT</div>
+<p><strong>Do not combine an installer, manifest, and payload from different versions.</strong></p>
+<p><strong>v0.1.0 needs manual External selection. v0.1.1 and v0.1.2 set External automatically.</strong></p>
+</aside>
+<p>The computer needs Windows PowerShell and OpenSSH.</p>
+<p>It does not need Python or additional Python packages.</p>
+<p>The printer uses its existing Python 3 interpreter and <code>pyserial</code> dependency.</p>
+<p>Use OpenSSH <code>scp</code> with <code>-O</code> for the file transfers below.</p>
+<p>The preflight check refuses a missing dependency instead of installing packages automatically.</p>
+<h3 id="1-prepare-the-prerequisite-projects">1. Prepare the prerequisite projects</h3>
+<pre><code>
+flowchart TD
+    FW[Install U1 v2.0.0-paxx12-24] --&gt; Access[Enable Advanced Mode and Root Access]
+    Access --&gt; ACE[Prepare compatible ACE Gen 1 firmware]
+    ACE --&gt; Cable[Follow SnapAce hardware connection guide]
+    Cable --&gt; Version{Project version?}
+    Version --&gt;|v0.1.0| External[Select External manually]
+    Version --&gt;|v0.1.1 or newer| Check[Review source and check the plan]
+    External --&gt; Check
+    Check --&gt; Install[Run installer.py]
+    Install --&gt; Test[Calibrate and test one slot]
+</code></pre>
+<ol>
+<li>Finish the current print.</li>
+<li>Save a private copy of your printer configuration.</li>
+<li>Download <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/tag/v2.0.0-paxx12-24">`v2.0.0-paxx12-24`</a>.</li>
+<li>Install that release with the <a href="https://snapmakeru1-extended-firmware.pages.dev/install">upstream installation guide</a>.</li>
+<li>Enable <strong>Settings → Maintenance → Advanced Mode</strong>.</li>
+<li>Open <strong>Settings → Maintenance → Root Access</strong>.</li>
+<li>Set Root Access to <strong>Open</strong>.</li>
+<li>Restart the printer if its interface requests a restart.</li>
+<li>Reconnect the printer to Wi-Fi if necessary.</li>
+<li>Read the current address from the printer&#x27;s Wi-Fi page.</li>
+</ol>
+<p><strong>Expected:</strong> the printer runs <code>2.0.0-paxx12-24</code>, and its address opens the web interface.</p>
+<p>Advanced Mode, Root Access, and persistence are separate controls.</p>
+<p>Root Access enables SSH access, as described in the <a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">upstream SSH guide</a>.</p>
+<p>The installer manages the <code>/oem/.debug</code> persistence marker as part of its backed-up changes.</p>
+<p>Firmware upgrades can remove that marker and system modifications. See <a href="https://snapmakeru1-extended-firmware.pages.dev/data_persistence">data persistence</a>.</p>
+<ol>
+<li>Check the ACE generation and firmware against <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/nfc.md">the NFC baseline</a>.</li>
+<li>Complete any required ACE firmware preparation with <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">the ACE firmware guide</a>.</li>
+<li>Prepare the cable with the <a href="https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring">SnapAce hardware guide</a>.</li>
+<li>Connect the four PTFE paths to their matching U1 channels.</li>
+<li>Keep the machine idle for installation.</li>
+</ol>
+<p>Do not perform the old SnapAce software-copy steps on U1 firmware 2.0.</p>
+<p>This installer supplies the compatible replacement modules.</p>
+<p>It does not automatically merge arbitrary edits in existing core files.</p>
+<p><img alt="Conceptual connection diagram" src="docs/images/system.svg"></p>
+<p>This diagram shows connections only.</p>
+<p>It is not an assembly drawing or a source of cable dimensions.</p>
+<h4 id="external-select-the-instruction-for-your-version">External: select the instruction for your version</h4>
+<p>The option is named <strong>External</strong>.</p>
+<p><code>extended</code> is part of firmware and configuration names; it is not this reader option.</p>
+<div class="table"><table><thead><tr><th>Project version</th><th>Required action</th></tr></thead><tbody>
+<tr><td>v0.1.0</td><td>Select External manually before <code>check</code> and <code>install</code>.</td></tr>
+<tr><td>v0.1.1 / v0.1.2</td><td>Leave the current selection unchanged; <code>install</code> sets and verifies External automatically.</td></tr>
+</tbody></table></div>
+<p>For v0.1.0, use these steps while the printer is idle:</p>
+<ol>
+<li>Open <code>http://&lt;printer-address&gt;/firmware-config/</code> with the address from the printer screen.</li>
+<li>Find <strong>Snapmaker Components → Filament Detection</strong>.</li>
+<li>Select <strong>External</strong>.</li>
+<li>Wait for the configuration change and Klipper restart to finish.</li>
+<li>Refresh the page.</li>
+<li>Confirm that <strong>External</strong> remains selected.</li>
+</ol>
+<p><strong>Expected:</strong> External is selected, and Klipper returns to ready.</p>
+<p>The firmware applies the reader-service change through this control.</p>
+<p>Changing a configuration word alone does not establish the correct service state.</p>
+<p>In v0.1.1 and v0.1.2, <code>check</code> reports the planned External setting without applying it.</p>
+<p><code>install</code> backs up the previous setting and reader-service state before changing them.</p>
+<p>It then verifies that the internal reader is disabled and OpenRFID is stopped.</p>
+<p>External prevents competing U1 reader paths; it does not limit the ACE&#x27;s supported tag brands.</p>
+<p>See the <a href="https://snapmakeru1-extended-firmware.pages.dev/design/rfid">upstream RFID design</a> and <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/nfc.md">this project&#x27;s NFC guide</a>.</p>
+<h3 id="2-prepare-windows-powershell">2. Prepare Windows PowerShell</h3>
+<h4 id="obtain-and-inspect-the-source">Obtain and inspect the source</h4>
+<p>Choose one complete version from <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">the version and download page</a>.</p>
+<p>For this procedure, download <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip">v0.1.2</a> and inspect <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link">the current source</a>.</p>
+<p>Use its matching entry in <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/downloads/SHA256SUMS">SHA256SUMS</a>.</p>
+<p>The checksum applies to the named project archive, not GitHub&#x27;s generated source ZIP.</p>
+<p>Earlier archives, fixed checksums, and their original instructions remain on the <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">version page</a>.</p>
+<p>A matching hash confirms the downloaded bytes match that published archive.</p>
+<p>It does not replace your decision to trust or review the source.</p>
+<ol>
+<li>Open Windows PowerShell.</li>
+<li>Enter the downloaded project ZIP path.</li>
+</ol>
+<pre><code>
+$ArchivePath = Read-Host &quot;Full path to the downloaded project ZIP&quot;
+</code></pre>
+<ol>
+<li>Calculate its checksum.</li>
+</ol>
+<pre><code>
+Get-FileHash -LiteralPath $ArchivePath -Algorithm SHA256
+</code></pre>
+<ol>
+<li>Compare the result with the checksum for that exact archive.</li>
+<li>Stop if the checksums differ.</li>
+<li>Extract the matching archive into a new folder.</li>
+<li>Enter the extracted folder containing <code>installer.py</code>.</li>
+</ol>
+<pre><code>
+$ProjectDir = Read-Host &quot;Full path to the folder containing installer.py&quot;
+Set-Location -LiteralPath $ProjectDir
+$ProjectDir = (Get-Location).Path
+</code></pre>
+<ol>
+<li>Open the installer source for review.</li>
+</ol>
+<pre><code>
+notepad .\installer.py
+</code></pre>
+<ol>
+<li>Open the manifest.</li>
+</ol>
+<pre><code>
+notepad .\manifest.json
+</code></pre>
+<ol>
+<li>Inspect the four module files in <code>payload</code> with your text editor.</li>
+</ol>
+<div class="table"><table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>installer.py</code></td><td>Checks, backups, host-file changes, service handling, verification, and rollback.</td></tr>
+<tr><td><code>manifest.json</code></td><td>Supported firmware, module destinations, and accepted file hashes.</td></tr>
+<tr><td><code>payload/ace.py</code></td><td>ACE communication, NFC synchronization, and transport control.</td></tr>
+<tr><td><code>payload/filament_feed.py</code></td><td>U1 loading and unloading workflow.</td></tr>
+<tr><td><code>payload/filament_detect.py</code></td><td>Material retention and detection events.</td></tr>
+<tr><td><code>payload/extruder.py</code></td><td>U1 extruder integration.</td></tr>
+</tbody></table></div>
+<p>These are readable Python and JSON files.</p>
+<p>The install command executes the inspected <code>installer.py</code>; it does not download another installer or flash either device&#x27;s firmware.</p>
+<p>Keep private backups and NFC keys outside the project folder.</p>
+<ol>
+<li>Check the required commands.</li>
+</ol>
+<pre><code>
+Get-Command ssh, scp
+</code></pre>
+<p><strong>Expected:</strong> PowerShell lists both <code>ssh</code> and <code>scp</code>.</p>
+<p>If either command is missing, enable <strong>OpenSSH Client</strong> in Windows Optional Features before continuing.</p>
+<h4 id="confirm-the-connection">Confirm the connection</h4>
+<ol>
+<li>Enter the printer address.</li>
+</ol>
+<pre><code>
+$PrinterAddress = Read-Host &quot;Printer address from the Wi-Fi page&quot;
+</code></pre>
+<ol>
+<li>Set the SSH target.</li>
+</ol>
+<pre><code>
+$PrinterTarget = &quot;root@$PrinterAddress&quot;
+</code></pre>
+<ol>
+<li>Check SSH access.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;id&quot;
+</code></pre>
+<p><strong>Expected:</strong> the output includes <code>uid=0(root)</code>.</p>
+<p>SSH can request host-key confirmation on the first connection.</p>
+<p>Confirm the intended printer before accepting its key.</p>
+<p>Stop if SSH reports that an existing host key changed unexpectedly.</p>
+<p>Enter the printer&#x27;s SSH password when prompted; password characters are not displayed.</p>
+<p>Do not put the password in a command or settings file.</p>
+<p>The <a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">upstream SSH guide</a> documents the factory credentials.</p>
+<h3 id="3-prepare-the-local-settings">3. Prepare the local settings</h3>
+<ol>
+<li>Copy the conservative template.</li>
+</ol>
+<pre><code>
+Copy-Item .\config\settings.example.json .\config\settings.local.json
+</code></pre>
+<ol>
+<li>List the printer&#x27;s serial device links.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;ls -l /dev/serial/by-id/&quot;
+</code></pre>
+<p><strong>Expected:</strong> an ACE USB device appears in the list.</p>
+<p>An absent or ambiguous device is a connection problem to resolve before installation.</p>
+<p>Do not guess a <code>/dev/ttyUSB</code> or <code>/dev/ttyACM</code> number.</p>
+<ol>
+<li>Identify the ACE USB serial path from your hardware connection.</li>
+<li>Open the local settings file.</li>
+</ol>
+<pre><code>
+notepad .\config\settings.local.json
+</code></pre>
+<ol>
+<li>Set <code>serial</code> to the exact ACE device path.</li>
+<li>Set transport values with <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/configuration.md">the configuration guide</a>.</li>
+<li>Keep <code>forward_takeup_length</code> at <code>0</code> for initial calibration.</li>
+</ol>
+<p>For v0.1.1 or v0.1.2, add <code>&quot;auto_detect_serial&quot;: false</code> if you require the explicit <code>serial</code> value.</p>
+<p>Do not add that option to v0.1.0, which requires the explicit serial path.</p>
+<p>The current default can find one matching ACE automatically when no existing or custom serial choice applies.</p>
+<p>JSON entries need separating commas; the final entry has no trailing comma.</p>
+<ol>
+<li>Set <code>calibrated_acknowledged</code> to <code>true</code> only after you review the path measurements.</li>
+<li>Save the file.</li>
+</ol>
+<p><strong>Expected:</strong> the JSON describes your connected ACE and measured paths.</p>
+<p>The reference distances of 1250 mm and 1150 mm are not universal defaults.</p>
+<p>The tested 300 mm forward take-up is optional; it has no tension feedback.</p>
+<p>Existing ACE settings remain unchanged unless <code>apply_existing_settings</code> is <code>true</code>.</p>
+<p>The installation plan shows the effective values before installation.</p>
+<h3 id="4-transfer-the-project">4. Transfer the project</h3>
+<ol>
+<li>Set a new remote directory name.</li>
+</ol>
+<pre><code>
+$RemoteDir = &quot;/userdata/ultimate-u1-ace-stage-&quot; + (Get-Date -Format &quot;yyyyMMdd-HHmmss&quot;)
+</code></pre>
+<ol>
+<li>Copy the project to the printer.</li>
+</ol>
+<pre><code>
+scp -O -r &quot;$ProjectDir&quot; &quot;${PrinterTarget}:$RemoteDir&quot;
+</code></pre>
+<ol>
+<li>Record the remote directory name.</li>
+</ol>
+<pre><code>
+$RemoteDir
+</code></pre>
+<ol>
+<li>Confirm that the main files arrived.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;ls &#x27;$RemoteDir/installer.py&#x27; &#x27;$RemoteDir/manifest.json&#x27; &#x27;$RemoteDir/config/settings.local.json&#x27;&quot;
+</code></pre>
+<p><strong>Expected:</strong> the three file paths appear without errors.</p>
+<p>The transfer does not install the modules.</p>
+<p>Each transfer uses a new directory.</p>
+<p>Keep this PowerShell session open; subsequent commands use the same variables.</p>
+<h3 id="5-check-before-installation">5. Check before installation</h3>
+<p>The printer must be idle, with no active print or filament operation.</p>
+<p>All nozzle and bed targets must be zero, with actual temperatures below 50 °C.</p>
+<p>The ACE dryer and feed assist must be off.</p>
+<div class="table"><table><thead><tr><th>Installation state</th><th>Required filament state</th></tr></thead><tbody>
+<tr><td>First installation</td><td>All four ACE inlets and all four U1 head sensors are empty.</td></tr>
+<tr><td>Existing ACE update</td><td>Keep current filament positions and material data unchanged.</td></tr>
+</tbody></table></div>
+<p>Complete any necessary normal unloading before the cooling checks.</p>
+<p>Do not unload all four slots merely to update an existing ACE installation.</p>
+<p>First installation can clear stale material labels from confirmed empty slots.</p>
+<p>The installer reports that change and requires three stable samples.</p>
+<h4 id="stop-active-feed-assist-on-an-existing-installation">Stop active feed assist on an existing installation</h4>
+<p>This preparation applies only when an existing ACE installation reports active feed assist.</p>
+<p>It does not require unloading all four slots.</p>
+<p><strong><code>ACE_DISABLE_FEED_ASSIST</code> causes movement.</strong></p>
+<p>It stops feed assist, then requests a 5 mm retraction at speed 10.</p>
+<p>The installer does not run this command automatically.</p>
+<ol>
+<li>Confirm that no print or filament operation is active.</li>
+<li>Open the printer&#x27;s web console in Fluidd or Mainsail.</li>
+<li>Keep your hands away from the rollers.</li>
+<li>Run the command below.</li>
+</ol>
+<pre><code>
+ACE_DISABLE_FEED_ASSIST
+</code></pre>
+<ol>
+<li>Wait for ACE to return to ready.</li>
+</ol>
+<p>Alternatively, use the U1&#x27;s normal Unload action for the active slot.</p>
+<p>That alternative performs the complete configured unload cycle.</p>
+<p>Repeat the cooling checks below after any unload cycle.</p>
+<h4 id="finish-the-idle-checks">Finish the idle checks</h4>
+<ol>
+<li>Set all heater targets to zero in the printer interface.</li>
+<li>Stop the ACE dryer if it is active.</li>
+<li>Wait until all nozzle and bed temperatures are below 50 °C.</li>
+</ol>
+<p>On an existing ACE installation, <code>ACE_STOP_DRYING</code> stops the dryer through the web console.</p>
+<ol>
+<li>Read the current installation status.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py status&quot;
+</code></pre>
+<p><strong>Expected:</strong> JSON reports <code>firmware: &quot;2.0.0-paxx12-24&quot;</code> and <code>klipper_state: &quot;ready&quot;</code>.</p>
+<p>Before first installation, <code>ace_version</code> can be <code>null</code>, and <code>managed</code> can be <code>false</code>.</p>
+<p>The current status also reports the reader mode, serial candidates, and existing ACE settings.</p>
+<ol>
+<li>Run the read-only check.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.local.json&quot;
+</code></pre>
+<p><strong>Expected:</strong> <code>compatible</code> and <code>read_only</code> are <code>true</code>.</p>
+<p>The <code>effective_settings</code> values must match your intended configuration.</p>
+<p>Before installation, <code>calibration_acknowledged</code> must also be <code>true</code>.</p>
+<p>In v0.1.1 and v0.1.2, <code>filament_detection: &quot;external&quot;</code> describes the plan; <code>previous_filament_detection</code> describes the current setting.</p>
+<ol>
+<li>Review <code>destinations</code> and <code>effective_settings</code>.</li>
+<li>Resolve every check failure before installation.</li>
+</ol>
+<p>An unknown core-file modification is a stop condition.</p>
+<p>Preserve your modified file before you arrange a compatible migration.</p>
+<p>Do not replace it merely to bypass the check.</p>
+<p>Neither <code>status</code> nor <code>check</code> changes printer files or starts an installation.</p>
+<h3 id="6-install">6. Install</h3>
+<ol>
+<li>Confirm that the printer remains idle and cold.</li>
+<li>Clear the printer movement area.</li>
+<li>Run the installation command once.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py install --settings config/settings.local.json&quot;
+</code></pre>
+<ol>
+<li>Wait for the command to finish.</li>
+</ol>
+<p><strong>Expected:</strong> the command prints a backup identifier, then JSON containing <code>installed: true</code> and <code>ready_samples: 3</code>.</p>
+<p>The backup is under <code>/userdata/ultimate-u1-ace-link/backups/</code>.</p>
+<p>The printer can briefly show Klipper disconnected while its service restarts.</p>
+<p>In v0.1.1 and v0.1.2, the result also reports <code>filament_detection: &quot;external&quot;</code>.</p>
+<p>The <code>empty_slot_metadata_initialized</code> field identifies any first-install empty-slot material reset.</p>
+<ol>
+<li>Save the reported backup identifier privately.</li>
+<li>Read the final status.</li>
+</ol>
+<pre><code>
+ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py status&quot;
+</code></pre>
+<p><strong>Expected:</strong> <code>klipper_state</code> is <code>ready</code>, <code>managed</code> is <code>true</code>, and <code>ace_version</code> matches the project&#x27;s manifest.</p>
+<p>For v0.1.1 and v0.1.2, <code>internal_rfid_enabled</code> and <code>openrfid_running</code> must be <code>false</code>.</p>
+<p>The install command also verifies ACE readiness before reporting success.</p>
+<p>It does not issue feed, retract, home, or heater commands for an installation test.</p>
+<ol>
+<li>Continue with <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md#repeat-the-acceptance-check">the single-slot acceptance check</a>.</li>
+</ol>
+<p>If SSH disconnects during installation, do not repeat the install command immediately.</p>
+<p>Reconnect with the same remote directory and read <code>status</code> first.</p>
+<p>An interrupted connection does not establish whether installation succeeded or failed.</p>
+<p>Keep the printer idle until the result is established.</p>
+<p>If installation fails, check whether automatic rollback was verified.</p>
+<p>Preserve the backup identifier and error message.</p>
+<p>Use <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/update-and-rollback.md">update and rollback</a> for recovery, including unavailable-status recovery.</p>
+<p>Use <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/troubleshooting.md">troubleshooting</a> for a refused check or connection error.</p></section></main></body></html>

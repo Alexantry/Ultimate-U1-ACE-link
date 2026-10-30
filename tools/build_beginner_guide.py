@@ -9,12 +9,24 @@ REPO = 'https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/'
 
 
 def target(url, source, image=False):
+    if url.startswith('#'):
+        return url
     if re.match(r'https?://', url):
         return url
     if 'before-you-start.zh-CN.md' in url:
-        return '#prepare'
+        return '#prepare' if '.zh-CN.' in source.name else 'START-HERE.html#prepare'
     if 'quick-start.zh-CN.md' in url or 'README.zh-CN.md' in url:
-        return '#start'
+        return '#start' if '.zh-CN.' in source.name else 'START-HERE.html#start'
+    if url == 'installation.md' or url == '../docs/installation.md':
+        return 'MANUAL-INSTALL.html'
+    sections = {'u1-preparation.md': 'firmware', 'u1-preparation.zh-CN.md': 'firmware',
+                'configuration.md': 'parameters', 'configuration.zh-CN.md': 'parameters',
+                'nfc.md': 'nfc', 'nfc.zh-CN.md': 'nfc',
+                'daily-use.md': 'daily', 'daily-use.zh-CN.md': 'daily'}
+    if url in sections:
+        if ('.zh-CN.' in url) == ('.zh-CN.' in source.name):
+            return '#' + sections[url]
+        return ('START-HERE.html' if '.zh-CN.' in url else 'START-HERE.en.html') + '#' + sections[url]
     path = posixpath.normpath(str(source.parent.relative_to(ROOT)).replace('\\', '/') + '/' + url)
     return path if image else REPO + path
 
@@ -37,7 +49,7 @@ def inline(text, source):
 
 
 def render(source):
-    result, listing, table, alert = [], None, False, None
+    result, listing, table, alert, fence = [], None, False, None, None
     def close():
         nonlocal listing, table, alert
         if listing:
@@ -47,6 +59,18 @@ def render(source):
         if alert:
             result.append('</aside>'); alert = None
     for line in source.read_text(encoding='utf8').splitlines():
+        if fence is None and re.fullmatch(r'<a id="[A-Za-z0-9_-]+"></a>', line):
+            close(); result.append(line); continue
+        if line.startswith('```'):
+            if fence is not None:
+                result.append('</code></pre>'); fence = None
+            else:
+                close(); fence = line[3:].strip()
+                result.append('<pre><code>')
+            continue
+        if fence is not None:
+            result.append(escape(line))
+            continue
         notice = re.fullmatch(r'> \[!(CAUTION|WARNING|IMPORTANT|NOTE|TIP)\]', line)
         if notice:
             close(); alert = notice[1].lower()
@@ -65,7 +89,9 @@ def render(source):
         if heading:
             close()
             level = min(len(heading[1]) + 1, 6)
-            result.append('<h%d>%s</h%d>' % (level, inline(heading[2], source), level)); continue
+            slug = re.sub(r'[^\w\s-]', '', heading[2].lower())
+            slug = re.sub(r'\s+', '-', slug)
+            result.append('<h%d id="%s">%s</h%d>' % (level, escape(slug, quote=True), inline(heading[2], source), level)); continue
         if line.startswith('|'):
             cells = [c.strip() for c in line.strip('|').split('|')]
             if all(re.fullmatch(r':?-+:?', c) for c in cells):
@@ -84,6 +110,8 @@ def render(source):
             result.append('<li>' + inline(item[2], source) + '</li>'); continue
         close(); result.append('<p>' + inline(line, source) + '</p>')
     close()
+    if fence is not None:
+        raise ValueError('Unclosed code fence: ' + str(source))
     return '\n'.join(result)
 
 
@@ -104,6 +132,8 @@ p,li,td,th{font-size:17px;line-height:1.8}li{margin:8px 0}a{color:#125dc2;text-u
 section,details{background:#fff;border:1px solid #dbe4ef;border-radius:18px;padding:28px;margin-top:24px}
 summary{cursor:pointer;font-size:23px;font-weight:bold}summary small{display:block;font-size:15px;font-weight:normal;margin-top:10px;color:#52657b}
 img{display:block;max-width:100%;height:auto;margin:20px auto}code{font-family:Consolas,monospace;background:#edf2f8;padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+pre{padding:16px;background:#edf2f8;overflow:auto;border-radius:8px;white-space:pre}pre code{padding:0;background:none;overflow-wrap:normal}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}.routes a{display:block;padding:24px;border:3px solid #125dc2;border-radius:14px;background:#fff;font-size:21px;font-weight:800;text-decoration:none}.routes a:last-child{border-color:#375143;color:#214e34;background:#effbf3}.routes small{display:block;font-size:15px;font-weight:400;margin-top:10px}
 table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding:12px;text-align:left;vertical-align:top}th{background:#edf3fa}.table{overflow:auto}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}.steps div{background:#fff;padding:22px;border-radius:14px;border:1px solid #dbe4ef}.steps b{display:block;font-size:20px;margin-bottom:12px}
 .note{background:#e9f6ef;border-left:4px solid #25814b;padding:14px 18px;margin-top:22px}.note p{margin:0}
@@ -111,11 +141,11 @@ table{border-collapse:collapse;width:100%}td,th{border:1px solid #d6e0ed;padding
 .alert-title{font-size:19px;font-weight:800;margin-bottom:10px;letter-spacing:.3px}.alert p{margin:8px 0}
 .alert.caution{color:#8c1421;background:#fff1f2;border-color:#d42b40}.alert.caution strong{font-weight:800}
 .alert.important{color:#41297a;background:#f4f0ff;border-color:#7c55c7}.alert.warning{color:#734200;background:#fff8e6;border-color:#c58100}
-footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{grid-template-columns:1fr}main{padding:14px}section,details,header{padding:20px}h1{font-size:27px}td,th{min-width:140px}}
+footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,.routes{grid-template-columns:1fr}main{padding:14px}section,details,header{padding:20px}h1{font-size:27px}td,th{min-width:140px}}
 @media print{body{background:#fff}section,details,header{break-inside:avoid}header{background:#fff;color:#15283e}details>*{display:block}}
 </style></head><body><main>
 <header><div class="tag">ULTIMATE U1-ACE LINK · 新手入口 · <a href="START-HERE.en.html">English</a></div><h1>安装不需要编程。</h1>
-<p>机器已准备好后，双击 <strong>START-HERE.cmd</strong>，选择中文或 English。这里是离线图文说明，不是安装按钮。</p>
+<p>双击 <strong>START-HERE.cmd</strong>，选择中文或 English。向导可从准备 U1 固件开始；这里是离线说明，不是安装按钮。</p>
 <p>由用户提出需求和完成实机测试，使用 <strong>OpenAI Codex</strong> 开发代码、工具及文档。使用者无需安装 Codex。</p></header>
 <div class="steps"><div><b>① 已经解压了吗？</b>如果还在压缩包里，先右键压缩文件，选择“全部解压缩”。</div>
 <div><b>② 打开这个文件夹</b>找到 START-HERE.cmd，快速点鼠标左键两次。</div>
@@ -126,7 +156,16 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <footer>说明中的链接需要网络；本页和步骤示意图可以离线阅读。图为概念示意，不是硬件接线尺寸图。</footer>
 </main></body></html>
 '''
-    page = page.replace('</header>', '</header>\n' + critical, 1)
+    routes = '<nav class="routes"><a href="#start">安装向导<small>双击 START-HERE.cmd，按提示准备和安装。</small></a><a href="MANUAL-INSTALL.html">手动安装 · 查看源码<small>完整英文命令步骤；不运行 Windows 向导。</small></a></nav>'
+    page = page.replace('</header>', '</header>\n' + routes + critical, 1)
+    extra = ''
+    for section, name, title in [('firmware', 'u1-preparation.zh-CN.md', 'U1 固件与访问设置'),
+                                 ('parameters', 'configuration.zh-CN.md', '料管长度、退料及回送参数'),
+                                 ('nfc', 'nfc.zh-CN.md', 'NFC 支持范围与密钥位置'),
+                                 ('daily', 'daily-use.zh-CN.md', '日常进退料与远程操作'),
+                                 ('licensing', 'licensing.zh-CN.md', '使用、分享和再分发许可')]:
+        extra += '<details id="%s"><summary>%s</summary>%s</details>' % (section, title, render(ROOT / 'docs' / name))
+    page = page.replace('<footer>', extra + '<footer>', 1)
     (ROOT / 'START-HERE.html').write_text(page, encoding='utf8')
     style = re.search(r'<style>(.*?)</style>', page, re.S)[1]
     english_quick = render(ROOT / 'docs/quick-start.md')
@@ -137,7 +176,7 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <title>Start here · Ultimate U1-ACE link</title><style>''' + style + '''</style></head><body><main>
 <header><div class="tag">ULTIMATE U1-ACE LINK · <a href="START-HERE.html">简体中文</a></div>
 <h1>No programming knowledge is required.</h1>
-<p>Prepare the machine. Double-click <strong>START-HERE.cmd</strong>. Select <strong>2. English</strong>.</p>
+<p>Double-click <strong>START-HERE.cmd</strong>. Select <strong>2. English</strong>. The wizard can start with U1 firmware preparation.</p>
 <p>This is the offline guide. It does not start installation when opened.</p>
 <p>Built with <strong>OpenAI Codex</strong>. Installation does not require Codex or an API key.</p></header>
 <div class="steps"><div><b>1. Extract all files</b>Right-click the downloaded ZIP. Select Extract All.</div>
@@ -147,9 +186,24 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps{
 <section id="start">''' + english_quick + '''</section>
 <footer>Source and reference links require internet access. The instructions on this page are available offline.</footer>
 </main></body></html>'''
-    english = english.replace('</header>', '</header>\n' + english_critical, 1)
+    routes_en = '<nav class="routes"><a href="#start">GUIDED INSTALLATION<small>Run START-HERE.cmd for preparation and installation prompts.</small></a><a href="MANUAL-INSTALL.html">MANUAL INSTALLATION<small>Read the source and enter the documented commands.</small></a></nav>'
+    english = english.replace('</header>', '</header>\n' + routes_en + english_critical, 1)
+    extra_en = ''
+    for section, name, title in [('firmware', 'u1-preparation.md', 'U1 firmware and access setup'),
+                                 ('parameters', 'configuration.md', 'Tube lengths and take-up settings'),
+                                 ('nfc', 'nfc.md', 'NFC support and key configuration'),
+                                 ('daily', 'daily-use.md', 'Daily use and remote controls'),
+                                 ('licensing', 'licensing.md', 'Use, sharing, and redistribution')]:
+        extra_en += '<details id="%s"><summary>%s</summary>%s</details>' % (section, title, render(ROOT / 'docs' / name))
+    english = english.replace('<footer>', extra_en + '<footer>', 1)
     (ROOT / 'START-HERE.en.html').write_text(english, encoding='utf8')
-    print('Built the Chinese and English offline guides.')
+    manual = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Manual installation / 手动安装</title><style>' + style + '</style></head><body><main>'
+    manual += '<header><h1>MANUAL INSTALLATION / 手动安装</h1><p>Read the source and enter each command. This page does not execute anything.</p><p>本页提供完整英文命令步骤，不运行 Windows 向导；仍会使用可阅读的 printer installer.py。</p><a href="START-HERE.html">中文说明</a> · <a href="START-HERE.en.html">English guide</a></header>'
+    manual += '<section>' + render(ROOT / 'docs/installation.md') + '</section></main></body></html>'
+    # Manual links refer to the appropriate online document, not absent inline sections.
+    manual = re.sub(r'href="#(?:firmware|parameters|nfc|daily)"', lambda m: 'href="' + REPO + 'docs/' + {'firmware':'u1-preparation.md','parameters':'configuration.md','nfc':'nfc.md','daily':'daily-use.md'}[m[0].split('#')[1].rstrip('"')] + '"', manual)
+    (ROOT / 'MANUAL-INSTALL.html').write_text(manual, encoding='utf8')
+    print('Built bilingual offline guides and the manual installation entry.')
 
 
 if __name__ == '__main__':

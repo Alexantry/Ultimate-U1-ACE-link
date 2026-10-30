@@ -8,7 +8,7 @@
 > **禁止把旧 SnapAce 的 `filament_feed.py` 或 `extruder.py` 覆盖到 U1 2.0。**
 > **本项目替代原 SnapAce 的软件安装步骤。** 上游只参考硬件接线部分。
 
-## 第一次使用，先准备好机器
+## 第一次使用：向导也能准备 U1 固件
 
 需要一台 Windows 10 或 Windows 11 电脑。
 电脑和 U1 要连接同一个家庭网络。
@@ -21,18 +21,22 @@
 | ACE 与连接线 | ACE Pro 第一代，USB 和四根料管已按对应槽位接好。 |
 | ACE NFC 固件 | 已验证组合为 `CV1.3.863` / OpenCubic `1.1.1`。 |
 
-没有完成这些准备时，先按[机器准备图文说明](before-you-start.zh-CN.md)操作。
-安装向导会检查已支持的 U1 版本；它不会代替你刷写未知版本的固件或制作线缆。
+还没有指定 U1 固件时，可以先启动向导，选择“准备 U1 固件”。
+向导会下载、校验原版 v24，并复制到你选定的 FAT32 U 盘。
+窗口随后引导你在 U1 屏幕确认本地更新、开启 Advanced Mode、将 Root Access 设为 Open。
+完成后在同一窗口继续安装；详细过程见[固件准备说明](u1-preparation.zh-CN.md)。
+固件更新和访问开关仍需屏幕操作，ACE 固件和线缆仍需单独准备。
+[机器准备图文说明](before-you-start.zh-CN.md)保留全部手动步骤。
 
 **后台耗材读取选项的准确名称是 External（外部）。安装向导会自动设置它。**
 你无需先寻找这个选项。
 
 ## 1. 下载
 
-1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.1.zip)。
+1. 点开[下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip)。
 2. 等待浏览器下载完成。
 3. 打开电脑的“下载”文件夹。
-4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.1` 的压缩文件。
+4. 找到名称含 `Ultimate-U1-ACE-link-v0.1.2` 的压缩文件。
 
 ## 2. 解压
 
@@ -50,6 +54,7 @@
 1. 找到 `START-HERE.cmd`。
 2. 快速点鼠标左键两次。
 3. 在第一个菜单选择 **1. 中文**，再按提示操作。
+4. 选择“已经准备好”或“准备 U1 固件”；还可以选择“手动安装”查看完整命令。
 
 需要英文时选择 **2. English**。后续向导提示会使用所选语言。
 
@@ -57,7 +62,8 @@
 `START-HERE.html` 是中文离线图文说明；`START-HERE.en.html` 是英文离线说明。
 你不需要双击 Python 文件，也不需要自行打开 PowerShell。
 
-不想运行 Windows 向导时，可以按[手动源代码安装步骤](installation.md)逐条执行。
+**不想运行 Windows 向导：直接打开 [手动源代码安装步骤](installation.md)，或压缩包里的 MANUAL-INSTALL.html。**
+完整命令说明为英文；手动入口也在向导菜单中。
 该方法仍运行开源 `installer.py`；原版安装包与说明见[安装方式和旧版保留](install-options.md)。
 
 ## 4. 按提示填写
@@ -93,10 +99,10 @@
 已测试机器使用快速送料 `1150 mm`、退料 `1250 mm`。
 这些是示例，不能代表所有人的料管长度。
 不要把卷尺量到的管长直接当作已验证的退料长度。
-如果你不知道这两个数值，先按[管路测量和首次校准说明](configuration.md#calibrate-the-ptfe-paths)准备，再继续向导。
+如果你不知道这两个数值，先按[管路测量和首次校准说明](configuration.zh-CN.md)准备，再继续向导。
 
 速度已经预填：快速送料 `200`、靠近打印头 `50`、退料 `80`。
-首次安装默认关闭退料后的回送消松；完成一次正常进退料后，再按[参数说明](configuration.md#enable-forward-take-up)启用。
+首次安装默认关闭退料后的回送消松；完成一次正常进退料后，再按[参数说明](configuration.zh-CN.md)启用。
 原有安装中的回送距离和其他参数会保留。
 
 ## 5. 等到安装完成

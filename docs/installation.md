@@ -16,11 +16,12 @@ Neither route requires AI, Codex, or an API key.
 | Manual source procedure | PowerShell, `scp`, `ssh`, and the printer's `installer.py` | This page |
 | Preserved v0.1.0 | The original manual procedure with manual External selection | [Version choices and fixed downloads](install-options.md) |
 
-The manual command sequence remains available in both v0.1.0 and v0.1.1.
+The manual command sequence remains available in every release.
+The current package includes **MANUAL-INSTALL.html** for offline reading.
 
 > [!IMPORTANT]
 > **Do not combine an installer, manifest, and payload from different versions.**
-> **v0.1.0 needs manual External selection. v0.1.1 sets External automatically.**
+> **v0.1.0 needs manual External selection. v0.1.1 and v0.1.2 set External automatically.**
 
 The computer needs Windows PowerShell and OpenSSH.
 It does not need Python or additional Python packages.
@@ -37,7 +38,7 @@ flowchart TD
     ACE --> Cable[Follow SnapAce hardware connection guide]
     Cable --> Version{Project version?}
     Version -->|v0.1.0| External[Select External manually]
-    Version -->|v0.1.1| Check[Review source and check the plan]
+    Version -->|v0.1.1 or newer| Check[Review source and check the plan]
     External --> Check
     Check --> Install[Run installer.py]
     Install --> Test[Calibrate and test one slot]
@@ -83,7 +84,7 @@ The option is named **External**.
 | Project version | Required action |
 | --- | --- |
 | v0.1.0 | Select External manually before `check` and `install`. |
-| v0.1.1 | Leave the current selection unchanged; `install` sets and verifies External automatically. |
+| v0.1.1 / v0.1.2 | Leave the current selection unchanged; `install` sets and verifies External automatically. |
 
 For v0.1.0, use these steps while the printer is idle:
 
@@ -98,7 +99,7 @@ For v0.1.0, use these steps while the printer is idle:
 The firmware applies the reader-service change through this control.
 Changing a configuration word alone does not establish the correct service state.
 
-In v0.1.1, `check` reports the planned External setting without applying it.
+In v0.1.1 and v0.1.2, `check` reports the planned External setting without applying it.
 `install` backs up the previous setting and reader-service state before changing them.
 It then verifies that the internal reader is disabled and OpenRFID is stopped.
 External prevents competing U1 reader paths; it does not limit the ACE's supported tag brands.
@@ -109,17 +110,10 @@ See the [upstream RFID design](https://snapmakeru1-extended-firmware.pages.dev/d
 ### Obtain and inspect the source
 
 Choose one complete version from [the version and download page](install-options.md).
-You can inspect [the original v0.1.0 source at its fixed commit](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/5d042a4d7263418872099f4c25d7ab67fb9ea943).
-The checksum below applies to the named project archive, not GitHub's generated source ZIP.
-
-The preserved project archive is [Ultimate-U1-ACE-link-v0.1.0.zip](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/5d042a4d7263418872099f4c25d7ab67fb9ea943/downloads/Ultimate-U1-ACE-link-v0.1.0.zip).
-Its SHA-256 is:
-
-```text
-81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e
-```
-
-For another published archive, use its matching entry in [SHA256SUMS](../downloads/SHA256SUMS).
+For this procedure, download [v0.1.2](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.2.zip) and inspect [the current source](https://github.com/Alexantry/Ultimate-U1-ACE-link).
+Use its matching entry in [SHA256SUMS](../downloads/SHA256SUMS).
+The checksum applies to the named project archive, not GitHub's generated source ZIP.
+Earlier archives, fixed checksums, and their original instructions remain on the [version page](install-options.md).
 A matching hash confirms the downloaded bytes match that published archive.
 It does not replace your decision to trust or review the source.
 
@@ -240,9 +234,9 @@ notepad .\config\settings.local.json
 6. Set transport values with [the configuration guide](configuration.md).
 7. Keep `forward_takeup_length` at `0` for initial calibration.
 
-For v0.1.1, add `"auto_detect_serial": false` if you require the explicit `serial` value.
+For v0.1.1 or v0.1.2, add `"auto_detect_serial": false` if you require the explicit `serial` value.
 Do not add that option to v0.1.0, which requires the explicit serial path.
-The v0.1.1 default can find one matching ACE automatically when no existing or custom serial choice applies.
+The current default can find one matching ACE automatically when no existing or custom serial choice applies.
 JSON entries need separating commas; the final entry has no trailing comma.
 
 8. Set `calibrated_acknowledged` to `true` only after you review the path measurements.
@@ -342,7 +336,7 @@ ssh $PrinterTarget "cd '$RemoteDir' && python3 installer.py status"
 
 **Expected:** JSON reports `firmware: "2.0.0-paxx12-24"` and `klipper_state: "ready"`.
 Before first installation, `ace_version` can be `null`, and `managed` can be `false`.
-The v0.1.1 status also reports the reader mode, serial candidates, and existing ACE settings.
+The current status also reports the reader mode, serial candidates, and existing ACE settings.
 
 2. Run the read-only check.
 
@@ -353,7 +347,7 @@ ssh $PrinterTarget "cd '$RemoteDir' && python3 installer.py check --settings con
 **Expected:** `compatible` and `read_only` are `true`.
 The `effective_settings` values must match your intended configuration.
 Before installation, `calibration_acknowledged` must also be `true`.
-In v0.1.1, `filament_detection: "external"` describes the plan; `previous_filament_detection` describes the current setting.
+In v0.1.1 and v0.1.2, `filament_detection: "external"` describes the plan; `previous_filament_detection` describes the current setting.
 
 3. Review `destinations` and `effective_settings`.
 4. Resolve every check failure before installation.
@@ -378,7 +372,7 @@ ssh $PrinterTarget "cd '$RemoteDir' && python3 installer.py install --settings c
 **Expected:** the command prints a backup identifier, then JSON containing `installed: true` and `ready_samples: 3`.
 The backup is under `/userdata/ultimate-u1-ace-link/backups/`.
 The printer can briefly show Klipper disconnected while its service restarts.
-In v0.1.1, the result also reports `filament_detection: "external"`.
+In v0.1.1 and v0.1.2, the result also reports `filament_detection: "external"`.
 The `empty_slot_metadata_initialized` field identifies any first-install empty-slot material reset.
 
 5. Save the reported backup identifier privately.
@@ -389,7 +383,7 @@ ssh $PrinterTarget "cd '$RemoteDir' && python3 installer.py status"
 ```
 
 **Expected:** `klipper_state` is `ready`, `managed` is `true`, and `ace_version` matches the project's manifest.
-For v0.1.1, `internal_rfid_enabled` and `openrfid_running` must be `false`.
+For v0.1.1 and v0.1.2, `internal_rfid_enabled` and `openrfid_running` must be `false`.
 The install command also verifies ACE readiness before reporting success.
 It does not issue feed, retract, home, or heater commands for an installation test.
 
