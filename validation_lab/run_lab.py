@@ -26,6 +26,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 LAB = Path(__file__).resolve().parent
 STATE = Path('/run/ultimate-u1-ace-link-vm-lab')
+SSH_CONFIG = STATE / 'ssh/config'
 TARGET = 'root@127.0.0.1'
 VERSION = '0.1.6'
 ARCHIVE_SHA = '2c018540275022a9e821a19bbe78df622e34df6f9b2de07f675ab88150250bd3'
@@ -73,7 +74,7 @@ def guest(*arguments):
 
 def ssh(command, *, check=True, timeout=180):
     # All remote commands target the in-VM loopback server. No LAN target exists.
-    return run(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', TARGET, command],
+    return run(['/usr/bin/ssh', '-F', SSH_CONFIG, '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', TARGET, command],
                check=check, timeout=timeout)
 
 
@@ -146,10 +147,6 @@ def configure_ssh():
                      'Host *\n  ProxyCommand /bin/false\n')
     (directory / 'config').write_text(client_config)
     (directory / 'config').chmod(0o600)
-    root_ssh = Path('/root/.ssh')
-    root_ssh.mkdir(mode=0o700, exist_ok=True)
-    require(not any(root_ssh.iterdir()), 'Refuse to conceal an existing root SSH configuration')
-    run(['mount', '--bind', directory, root_ssh])
     Path('/run/sshd').mkdir(exist_ok=True)
     variables = ('CI', 'GITHUB_ACTIONS', 'GITHUB_REPOSITORY', 'GITHUB_RUN_ID', 'U1_ACE_LAB_TOKEN')
     values = ' '.join(key + '=' + os.environ[key] for key in variables)
@@ -170,7 +167,15 @@ def configure_ssh():
     bins = STATE / 'client-bin'
     bins.mkdir()
     for name in ('ssh', 'scp'):
-        (bins / (name + '.exe')).symlink_to(shutil.which(name))
+        # Production requests Windows executable names. This lab-only adapter
+        # selects the isolated config, then execs the real OpenSSH client with
+        # every production argument unchanged. It does not simulate results.
+        executable = '/usr/bin/' + name
+        require(Path(executable).is_file(), 'Missing real OpenSSH client: ' + executable)
+        adapter = bins / (name + '.exe')
+        adapter.write_text('#!/bin/sh\nexec ' + shlex.quote(executable) + ' -F ' +
+                           shlex.quote(str(SSH_CONFIG)) + ' "$@"\n')
+        adapter.chmod(0o700)
     os.environ['PATH'] = str(bins) + ':' + os.environ['PATH']
     return path
 
@@ -226,7 +231,8 @@ def main():
     output.mkdir(parents=True)
     result = {'schema': 1, 'classification': 'virtual-machine software workflow validation',
               'release': VERSION, 'archive_sha256': ARCHIVE_SHA, 'passed': False, 'cases': [],
-              'real_components': ['Linux filesystem, bind mounts and permissions', 'OpenSSH SSH/SCP',
+              'real_components': ['Linux filesystem, bind mounts and permissions',
+                                  'OpenSSH SSH/SCP through a lab-only configuration selector',
                                   'unmodified published Install.ps1, installer.py, manifest and payload',
                                   'HTTP status requests, service subprocesses, backups and rollback',
                                   'Linux PowerShell process invocation and both prompt languages'],
@@ -274,7 +280,7 @@ def main():
                         forward_takeup_length=210)
         settings_path = STATE / 'settings.lab.json'
         settings_path.write_text(json.dumps(settings))
-        run(['scp', '-O', settings_path, TARGET + ':' + stage + '/config/settings.lab.json'])
+        run(['/usr/bin/scp', '-F', SSH_CONFIG, '-O', settings_path, TARGET + ':' + stage + '/config/settings.lab.json'])
         change = remote_json(stage, 'install --settings config/settings.lab.json')
         require(change['installed'] and change['settings']['forward_takeup_length'] == 210,
                 'Custom parameters did not install')
@@ -303,7 +309,8 @@ def main():
         before = filesystem_snapshot(bundle)
         lock_code = ("import fcntl,sys; f=open('/userdata/ultimate-u1-ace-link/installer.lock','a'); "
                      "fcntl.flock(f.fileno(),fcntl.LOCK_EX); print('LOCKED',flush=True); sys.stdin.readline()")
-        holder = subprocess.Popen(['ssh', '-o', 'BatchMode=yes', TARGET, 'python3 -c ' + shlex.quote(lock_code)],
+        holder = subprocess.Popen(['/usr/bin/ssh', '-F', str(SSH_CONFIG), '-o', 'BatchMode=yes', TARGET,
+                                   'python3 -c ' + shlex.quote(lock_code)],
                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
             require(holder.stdout.readline().strip() == 'LOCKED', 'Independent lock holder failed')

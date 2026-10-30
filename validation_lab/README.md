@@ -6,6 +6,8 @@ It does not replace physical acceptance of U1 or ACE.
 
 The lab keeps the release installer, manifest, payload, and Windows launcher unchanged.
 The Linux filesystem, SSH/SCP processes, permissions, backups, and file replacement are real.
+Lab-only executable-name adapters select an isolated SSH configuration and start real OpenSSH.
+They pass the installer's arguments unchanged. They do not simulate command results.
 The Moonraker responses, Klipper service, ACE identity, and material state are simulated.
 PowerShell runs on Linux in this lab. Windows PowerShell 5.1 remains covered by the separate offline checks.
 
