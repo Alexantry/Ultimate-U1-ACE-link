@@ -6,7 +6,24 @@ $script:BootstrapImage = @{
     Size = [long]253893376
     Sha256 = '42dcf59e06ef0f6fab20745883322f24ddd3c1a09da07449b356dd9dab943070'
 }
+# Official Snapmaker V2.0.0, the base of the extended firmware above. Snapmaker
+# publishes no checksum; this SHA-256 is the value pinned by the upstream
+# extended-firmware build (vars.mk at v2.0.0-paxx12-24).
+$script:OfficialImage = @{
+    Name = 'U1_2.0.0.205_20260914173503_upgrade.bin'
+    Url = 'https://public.resource.snapmaker.com/firmware/U1/U1_2.0.0.205_20260914173503_upgrade.bin'
+    Size = [long]216715726
+    Sha256 = 'e6269eb0f1d9e8da74173e9da6350a14b18dd2fe5c4e8f2cabc48b0cdaf2aad7'
+}
 $bootstrapMessages = @{
+    official_title = @('准备 Snapmaker 官方 U1 固件 U 盘（V2.0.0）', 'Prepare the official Snapmaker U1 firmware USB drive (V2.0.0)')
+    official_scope = @('只下载 Snapmaker 官方未修改的 V2.0.0，并核对大小和 SHA-256。Snapmaker 不公布校验值；这里用的是扩展固件上游构建时固定的值。', 'This downloads the unchanged official Snapmaker V2.0.0 and checks its size and SHA-256. Snapmaker publishes no checksum. The value used here is the one pinned by the upstream extended-firmware build.')
+    official_before = @('刷官方固件之前：先用本向导卸载本项目（恢复菜单 1）。之后本项目和扩展固件的功能都不再可用。', 'Before the official firmware: remove this project first with restore menu 1. Afterwards the functions of this project and of the extended firmware are not available.')
+    official_reset = @('建议：还在扩展固件时，在电脑打开 http://打印机地址/firmware-config/ ，用 Recovery 里的 Reset Extended to Defaults 清理扩展配置。刷官方固件不会删除它们。', 'Recommended: while the extended firmware is installed, open http://PRINTER-ADDRESS/firmware-config/ and use Reset Extended to Defaults under Recovery. The official firmware does not delete the extended configuration.')
+    official_downloading = @('正在从 Snapmaker 下载约 207 MB 的官方固件，请稍候。', 'Downloading approximately 207 MB of official firmware from Snapmaker. Please wait.')
+    official_updated_question = @('打印机是否已完成更新并自动重启？', 'Has the update completed and the printer restarted?')
+    official_after = @('完成后：Advanced Mode、Root Access 和扩展配置网页随扩展固件一起消失。打印机提示升级到 V2.1.0 时请先查看 Snapmaker 官方说明；其 wiki 记录了升级到 2.1.0 后黑屏的问题。', 'Afterwards: Advanced Mode, Root Access, and the extended configuration page are removed with the extended firmware. If the printer offers V2.1.0, read the Snapmaker instructions first. Its wiki records a black screen after the 2.1.0 update.')
+    official_unverified = @('本项目没有实机验证过这次刷回。它使用上游扩展固件文档记载的方法：下载官方 .bin，用同样的本地更新步骤安装。', 'This project has not physically tested this return. It uses the method in the upstream extended-firmware documentation: download the official .bin and install it with the same Local Update steps.')
     boot_title = @('准备 U1 稳定固件 U 盘', 'Prepare the U1 stable-firmware USB drive')
     boot_scope = @('只准备未修改的上游原版扩展固件 v24；不会刷写 ACE，也不会远程刷写打印机。', 'This prepares the unchanged upstream v24 image. It does not flash ACE or update the printer remotely.')
     boot_no_format = @('不会格式化磁盘，不会删除其他文件。请选择已格式化为 FAT32 的可移动 U 盘。', 'No disk is formatted. Other files are not deleted. Select a removable USB drive that already uses FAT32.')
@@ -133,7 +150,9 @@ function Get-BootstrapFirmware {
     try {
         Assert-BootstrapPlainPath $partial
         if (Test-Path -LiteralPath $partial) { throw (New-WizardException 'boot_conflict' @($partial)) }
-        Write-Host (Get-WizardText 'boot_downloading') -ForegroundColor Cyan
+        $downloadText = 'boot_downloading'
+        if ($script:BootstrapImage.Name -eq $script:OfficialImage.Name) { $downloadText = 'official_downloading' }
+        Write-Host (Get-WizardText $downloadText) -ForegroundColor Cyan
         Invoke-BootstrapDownload $partial
         if (-not (Test-BootstrapImageFile $partial)) { throw (New-WizardException 'boot_hash_failed') }
         Assert-BootstrapPlainPath $destination
@@ -170,6 +189,53 @@ function Copy-BootstrapFirmware {
         return $destination
     } finally {
         if (Test-Path -LiteralPath $partial) { Remove-Item -LiteralPath $partial -Force }
+    }
+}
+
+function Start-U1OfficialRestore {
+    param([string]$BundleRoot)
+    # Reuse the verified download and USB copy with the official image selected.
+    $extended = $script:BootstrapImage
+    try {
+        $script:BootstrapImage = $script:OfficialImage
+        Write-Host ''
+        Write-Host (Get-WizardText 'official_title') -ForegroundColor Cyan
+        Write-Host (Get-WizardText 'official_scope')
+        Write-Host (Get-WizardText 'official_unverified') -ForegroundColor Yellow
+        Write-Host (Get-WizardText 'official_before') -ForegroundColor Yellow
+        Write-Host (Get-WizardText 'official_reset')
+        Write-Host (Get-WizardText 'boot_no_format') -ForegroundColor Yellow
+        $drives = @(Get-BootstrapUsbCandidates)
+        if (-not $drives.Count) { throw (New-WizardException 'boot_no_drives') }
+        for ($i = 0; $i -lt $drives.Count; $i++) {
+            $drive = $drives[$i]
+            $label = [string]$drive.VolumeName -replace '[\x00-\x1f\x7f]', '?'
+            Write-Host (Get-WizardText 'boot_drive_line' @(($i + 1), $drive.DeviceID, $label, [Math]::Round($drive.Size / 1GB, 1), $drive.FileSystem))
+        }
+        while ($true) {
+            $answer = Read-Host (Get-WizardText 'boot_drive_prompt')
+            if ($answer -eq '0') { return $false }
+            $selected = 0
+            if ([int]::TryParse($answer, [ref]$selected) -and $selected -ge 1 -and $selected -le $drives.Count) { break }
+            Write-Host (Get-WizardText 'boot_drive_invalid') -ForegroundColor Yellow
+        }
+        $drive = $drives[$selected - 1]
+        Test-BootstrapUsbTarget $drive
+        Write-Host (Get-WizardText 'boot_target' @($drive.DeviceID, $drive.VolumeName)) -ForegroundColor Yellow
+        if (-not (Read-WizardChoice (Get-WizardText 'boot_target_question') (Get-WizardText 'boot_target_yes') (Get-WizardText 'boot_cancel'))) { return $false }
+        $source = Get-BootstrapFirmware
+        [void](Copy-BootstrapFirmware $source $drive)
+        Write-Host (Get-WizardText 'boot_ready') -ForegroundColor Green
+        Write-Host ''
+        Write-Host (Get-WizardText 'boot_step1') -ForegroundColor Yellow
+        Write-Host (Get-WizardText 'boot_update_path') -ForegroundColor Cyan
+        Write-Host (Get-WizardText 'boot_select_image' @($script:BootstrapImage.Name)) -ForegroundColor Red
+        if (-not (Read-WizardChoice (Get-WizardText 'official_updated_question') (Get-WizardText 'boot_done_yes') (Get-WizardText 'boot_pause_no'))) { return $false }
+        Write-Host ''
+        Write-Host (Get-WizardText 'official_after') -ForegroundColor Yellow
+        return $true
+    } finally {
+        $script:BootstrapImage = $extended
     }
 }
 

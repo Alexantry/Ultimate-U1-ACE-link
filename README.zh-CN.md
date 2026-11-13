@@ -73,6 +73,7 @@ U1 和 ACE 的固件不用自己找，安装向导会下载、校验并带你刷
 | 固件 | [U1 固件准备](docs/u1-preparation.zh-CN.md) · [ACE 固件向导](docs/ace-wizard.zh-CN.md) |
 | 日常使用和调参 | [日常使用](docs/daily-use.zh-CN.md) · [参数与校准](docs/configuration.zh-CN.md) |
 | 出问题了 | [故障排查](docs/troubleshooting.zh-CN.md) · [更新与回退](docs/update-and-rollback.zh-CN.md) |
+| 不想用了 | [卸载与恢复出厂](docs/restore.zh-CN.md) |
 | 了解测试范围 | [验证范围](docs/validation.md) · [更新记录](CHANGELOG.md) |
 
 ## 来源与许可

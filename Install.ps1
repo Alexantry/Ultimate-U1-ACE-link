@@ -110,8 +110,37 @@ $script:WizardMessages = @{
     task_usb = @('  2. 准备 U1 固件 U 盘，并查看屏幕操作指引', '  2. Prepare U1 firmware USB and follow the screen instructions')
     task_manual = @('  3. 手动安装：打开本地说明并退出', '  3. Manual installation: open the local guide and exit')
     task_ace = @('  4. ACE 固件检查、更新或查看上次更新结果', '  4. Check or update ACE firmware; inspect the last update')
-    task_prompt = @('请输入 1、2、3 或 4', 'Enter 1, 2, 3, or 4')
-    task_invalid = @('请输入列表中的数字 1、2、3 或 4。', 'Enter 1, 2, 3, or 4 from the list.')
+    task_restore = @('  5. 恢复：卸载本项目，或把 ACE、U1 刷回官方固件', '  5. Restore: remove this project, or return ACE or U1 to vendor firmware')
+    task_prompt = @('请输入 1、2、3、4 或 5', 'Enter 1, 2, 3, 4, or 5')
+    task_invalid = @('请输入列表中的数字 1、2、3、4 或 5。', 'Enter 1, 2, 3, 4, or 5 from the list.')
+    restore_title = @('恢复：三项互相独立，按需要选择', 'Restore: three independent tasks')
+    restore_order = @('要全部恢复时，按 2、1、3 的顺序各运行一次：先 ACE，再卸载本项目，最后刷 U1 官方固件。', 'For a complete return, run 2, then 1, then 3: ACE first, then remove this project, then the official U1 firmware.')
+    restore_remove = @('  1. 从 U1 卸载本项目，恢复扩展固件自带的原始文件', '  1. Remove this project from U1 and restore the files shipped in the extended firmware')
+    restore_ace = @('  2. 把 ACE 刷回官方 V1.3.863（未经实机验证，高级选项）', '  2. Return ACE to vendor V1.3.863 (NOT physically tested; advanced)')
+    restore_u1 = @('  3. 准备 Snapmaker 官方 U1 固件 U 盘', '  3. Prepare a USB drive with the official Snapmaker U1 firmware')
+    restore_exit = @('  4. 退出，暂不改动', '  4. Exit without a change')
+    restore_prompt = @('请输入 1、2、3 或 4', 'Enter 1, 2, 3, or 4')
+    restore_invalid = @('请输入列表中的数字 1、2、3 或 4。', 'Enter 1, 2, 3, or 4 from the list.')
+    restore_ace_unfinished = @('上一次 ACE 固件操作没有安全结束。请先用菜单 4 查看并处理，再做恢复。', 'The last ACE firmware operation did not end safely. Use menu 4 to inspect it before a restore task.')
+    restore_ace_done = @('ACE 固件流程已结束。U1 上的本项目文件没有改动。', 'The ACE firmware workflow is complete. The project files on U1 were not changed.')
+    stage_remove_check = @('卸载前的只读检查', 'Read-only checks before removal')
+    stage_remove = @('卸载与验证', 'Removal and verification')
+    step_remove_check = @('[2/3] 正在做只读检查。此时尚未改动打印机。', '[2/3] Running read-only checks. Printer files have not changed.')
+    remove_nothing = @('U1 上没有本项目的文件需要卸载；固件自带的文件已经在用。', 'U1 has no project files to remove. The firmware files are already active.')
+    remove_restore_title = @('将从固件自带的原件恢复这些文件：', 'These files will be restored from the firmware image:')
+    remove_delete_title = @('将删除这些由本项目添加的文件：', 'These files, added by this project, will be deleted:')
+    remove_item = @('  {0}', '  {0}')
+    remove_detection = @('耗材识别方式：{0} → {1}', 'Filament detection: {0} -> {1}')
+    remove_notice = @('卸载前会先备份。四个打印头必须无料。不会改动 ACE 固件和 U1 固件版本。卸载后 ACE 将不能再通过 U1 进退料。', 'A backup is made first. All four print heads must be empty. ACE firmware and the U1 firmware version do not change. After removal, U1 cannot load or unload through ACE.')
+    remove_question = @('是否卸载本项目并恢复固件原始文件？', 'Remove this project and restore the firmware files?')
+    remove_yes = @('确认，卸载', 'Confirm removal')
+    remove_no = @('取消，暂不改动', 'Cancel without a change')
+    step_remove = @('[3/3] 正在卸载并验证。请勿断电或关闭窗口。', '[3/3] Removing and verifying. Do not switch off power or close this window.')
+    remove_incomplete = @('卸载结果不完整。请勿重复操作，保留诊断文件。', 'The removal result is incomplete. Do not repeat it. Keep the diagnostic file.')
+    remove_done = @('卸载完成：U1 已恢复为扩展固件自带的文件，Klipper 已就绪。', 'Removal is complete. U1 uses the files shipped in the extended firmware, and Klipper is ready.')
+    remove_next = @('备份保留在打印机上。之后要重新安装，重新打开向导并选择菜单 1。', 'The backup stays on the printer. To install again, open the wizard and select menu 1.')
+    uncertain_remove = @('卸载可能已经开始。不要重复运行或断电；先按图文手册的恢复说明检查状态。', 'Removal might have started. Do not repeat it or switch off power. Follow the recovery instructions in the guide first.')
+    hint_unload = @('卸载要求四个打印头均无耗材。先在 U1 屏幕上对每一路正常退料，再重新运行。', 'Removal needs four empty print heads. Use normal Unload on the U1 screen for each channel, then run this again.')
     manual_opened = @('已在浏览器打开手动安装说明；向导不会连接打印机。', 'The manual installation guide is open in your browser. The wizard will not contact the printer.')
     manual_missing = @('本地手动说明缺失。请重新下载并完整解压项目 ZIP，再选菜单 3。', 'The local manual is missing. Download and extract the complete project ZIP. Then select menu 3 again.')
     ace_maintenance_done = @('ACE 固件流程已结束。本次没有安装或更改 U1 适配。需要安装适配时，重新打开向导并选择菜单 1。', 'The ACE firmware workflow is complete. U1 integration was not installed or changed. To install the integration, open the wizard again and select menu 1.')
@@ -159,11 +188,23 @@ function Select-WizardLanguage {
 function Select-WizardTask {
     Write-Host ''
     Write-Host (Get-WizardText 'task_title') -ForegroundColor Cyan
-    foreach ($id in @('task_ready', 'task_usb', 'task_manual', 'task_ace')) { Write-Host (Get-WizardText $id) }
+    foreach ($id in @('task_ready', 'task_usb', 'task_manual', 'task_ace', 'task_restore')) { Write-Host (Get-WizardText $id) }
     while ($true) {
         $choice = Read-Host (Get-WizardText 'task_prompt')
-        if ($choice -in @('1', '2', '3', '4')) { return $choice }
+        if ($choice -in @('1', '2', '3', '4', '5')) { return $choice }
         Write-Host (Get-WizardText 'task_invalid') -ForegroundColor Yellow
+    }
+}
+
+function Select-WizardRestore {
+    Write-Host ''
+    Write-Host (Get-WizardText 'restore_title') -ForegroundColor Cyan
+    Write-Host (Get-WizardText 'restore_order')
+    foreach ($id in @('restore_remove', 'restore_ace', 'restore_u1', 'restore_exit')) { Write-Host (Get-WizardText $id) }
+    while ($true) {
+        $choice = Read-Host (Get-WizardText 'restore_prompt')
+        if ($choice -in @('1', '2', '3', '4')) { return $choice }
+        Write-Host (Get-WizardText 'restore_invalid') -ForegroundColor Yellow
     }
 }
 
@@ -190,6 +231,25 @@ function Invoke-WizardBootstrap {
     }
     . $bootstrapPath
     return (Start-U1Bootstrap -BundleRoot $BundleRoot)
+}
+
+function Invoke-WizardOfficialRestore {
+    param([string]$BundleRoot)
+    $bootstrapPath = Join-Path $BundleRoot 'Bootstrap.ps1'
+    $bootstrapFile = Get-Item -LiteralPath $bootstrapPath -Force
+    if ($bootstrapFile.PSIsContainer -or ($bootstrapFile.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+        throw (New-WizardException 'bundle_regular')
+    }
+    . $bootstrapPath
+    return (Start-U1OfficialRestore -BundleRoot $BundleRoot)
+}
+
+function Invoke-WizardAceStock {
+    param([string]$BundleRoot, [string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile)
+    $source = Get-Item -LiteralPath (Join-Path $BundleRoot 'AceFirmware.ps1') -Force
+    if ($source.PSIsContainer -or ($source.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw (New-WizardException 'bundle_regular') }
+    . $source.FullName
+    return (Start-AceStockRestore $Ssh $Target $RemoteDir $LogFile)
 }
 
 function Invoke-WizardAceGate {
@@ -338,6 +398,7 @@ function Read-WizardLength {
 function Get-WizardErrorHint {
     param([string]$Detail)
     switch -Regex ($Detail) {
+        'Unload all four' { return (Get-WizardText 'hint_unload') }
         'firmware|version|Firmware|hash mismatch|Unknown modified core' { return (Get-WizardText 'hint_firmware') }
         'idle|active|Heater|NFC synchronization' { return (Get-WizardText 'hint_idle') }
         'pyserial|serial.*module|dependency' { return (Get-WizardText 'hint_dependency') }
@@ -349,10 +410,10 @@ function Get-WizardErrorHint {
 }
 
 function Get-RemoteWizardCommand {
-    param([string]$RemoteDir, [ValidateSet('status', 'check', 'install')][string]$Action)
+    param([string]$RemoteDir, [ValidateSet('status', 'check', 'install', 'remove-check', 'remove')][string]$Action)
     if ($RemoteDir -notmatch '^/userdata/ultimate-u1-ace-stage-[0-9]{8}-[0-9]{6}-[a-f0-9]{8}$') { throw (New-WizardException 'unsafe_directory') }
     $command = "cd '$RemoteDir' || exit 1; python3 installer.py $Action"
-    if ($Action -ne 'status') { $command += ' --settings config/settings.local.json' }
+    if ($Action -in @('check', 'install')) { $command += ' --settings config/settings.local.json' }
     # Keep installer diagnostics in its stage directory. Never hide SSH prompts.
     $command += ' 2> wizard-' + $Action + '.err; result=$?; if [ "$result" -ne 0 ]; then cat wizard-' + $Action + '.err; fi; exit "$result"'
     return $command
@@ -385,6 +446,8 @@ function Start-U1Wizard {
     $remoteDir = $null
     $logFile = $null
     $installStarted = $false
+    $removeStarted = $false
+    $restore = ''
     $stage = (Get-WizardText 'stage_prepare')
     try {
         Select-WizardLanguage
@@ -400,6 +463,16 @@ function Start-U1Wizard {
         Write-Host ''
         $task = Select-WizardTask
         if ($task -eq '3') { Open-WizardManual $BundleRoot; return 2 }
+        if ($task -eq '5') {
+            $restore = Select-WizardRestore
+            if ($restore -eq '4') { return 2 }
+            if ($restore -eq '3') {
+                # Preparing a USB drive needs no printer connection.
+                $stage = Get-WizardText 'stage_bootstrap'
+                if (-not (Invoke-WizardOfficialRestore -BundleRoot $BundleRoot)) { return 2 }
+                return 0
+            }
+        }
         if ($task -eq '2') {
             $stage = Get-WizardText 'stage_bootstrap'
             if (-not (Invoke-WizardBootstrap -BundleRoot $BundleRoot)) { return 2 }
@@ -456,6 +529,48 @@ function Start-U1Wizard {
         $stage = Get-WizardText 'stage_ace'
         $aceGate = Invoke-WizardAceGate $BundleRoot $ssh $target $remoteDir $logFile ($task -eq '4')
         if (-not $aceGate.Continue) { return 2 }
+        if ($task -eq '5') {
+            # Restore tasks never start the OpenCubic preparation.
+            if ($aceGate.ForcePrepare) { throw (New-WizardException 'restore_ace_unfinished') }
+            if ($restore -eq '2') {
+                if (-not (Invoke-WizardAceStock $BundleRoot $ssh $target $remoteDir $logFile)) { return 2 }
+                Write-Host (Get-WizardText 'restore_ace_done') -ForegroundColor Green
+                Write-Host (Get-WizardText 'log_local' @($logFile))
+                return 0
+            }
+            $stage = Get-WizardText 'stage_remove_check'
+            Write-Host ''
+            Write-Host (Get-WizardText 'step_remove_check') -ForegroundColor Cyan
+            $plan = Invoke-WizardRemoteJson $ssh $target $remoteDir 'remove-check' $logFile
+            if ($plan.read_only -ne $true -or $plan.removable -isnot [bool]) { throw (New-WizardException 'installer_mismatch') }
+            if (-not $plan.removable) {
+                Write-Host (Get-WizardText 'remove_nothing') -ForegroundColor Green
+                return 0
+            }
+            if (@($plan.restore_from_firmware).Count) {
+                Write-Host (Get-WizardText 'remove_restore_title') -ForegroundColor Cyan
+                foreach ($name in @($plan.restore_from_firmware)) { Write-Host (Get-WizardText 'remove_item' @([string]$name)) }
+            }
+            if (@($plan.delete).Count) {
+                Write-Host (Get-WizardText 'remove_delete_title') -ForegroundColor Cyan
+                foreach ($name in @($plan.delete)) { Write-Host (Get-WizardText 'remove_item' @([string]$name)) }
+            }
+            Write-Host (Get-WizardText 'remove_detection' @([string]$plan.previous_filament_detection, [string]$plan.filament_detection))
+            Write-Host (Get-WizardText 'remove_notice') -ForegroundColor Yellow
+            if (-not (Read-WizardChoice (Get-WizardText 'remove_question') (Get-WizardText 'remove_yes') (Get-WizardText 'remove_no'))) { return 2 }
+            $stage = Get-WizardText 'stage_remove'
+            $removeStarted = $true
+            Write-Host ''
+            Write-Host (Get-WizardText 'step_remove') -ForegroundColor Cyan
+            $result = Invoke-WizardRemoteJson $ssh $target $remoteDir 'remove' $logFile
+            if ($result.removed -ne $true -or $result.ready_samples -lt 3) { throw (New-WizardException 'remove_incomplete') }
+            Write-Host ''
+            Write-Host (Get-WizardText 'remove_done') -ForegroundColor Green
+            Write-Host (Get-WizardText 'backup_id' @($result.backup))
+            Write-Host (Get-WizardText 'remove_next')
+            Write-Host (Get-WizardText 'log_local' @($logFile))
+            return 0
+        }
         $aceSetupDone = $false
         if ($aceGate.ForcePrepare) {
             if (-not (Invoke-WizardAceSetup $BundleRoot $ssh $target $remoteDir $logFile $true)) { return 2 }
@@ -536,6 +651,10 @@ function Start-U1Wizard {
         Write-Host (Get-WizardExceptionSummary $_.Exception) -ForegroundColor Yellow
         if ($installStarted) {
             Write-Host (Get-WizardText 'uncertain_install') -ForegroundColor Red
+            Write-Host (Get-WizardText 'backups_location')
+        }
+        if ($removeStarted) {
+            Write-Host (Get-WizardText 'uncertain_remove') -ForegroundColor Red
             Write-Host (Get-WizardText 'backups_location')
         }
         if ($remoteDir) { Write-Host (Get-WizardText 'remote_location' @($remoteDir)) }

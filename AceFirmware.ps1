@@ -1,6 +1,18 @@
 ﻿# SPDX-License-Identifier: GPL-3.0-only
 # Developed with OpenAI Codex. Loaded by Install.ps1; import performs no device action.
 $aceMessages = @{
+    stock_title = @('ACE 第一代：刷回官方 V1.3.863（未经实机验证）', 'ACE Gen 1: return to vendor V1.3.863 (NOT physically tested)')
+    stock_scope = @('只支持从指定 OpenCubic（CV1.3.863 / boot V1.0.1）刷回官方 V1.3.863。其他版本会停止。', 'Only the pinned OpenCubic build (CV1.3.863 / boot V1.0.1) to vendor V1.3.863 is accepted. Other versions stop.')
+    stock_untested = @('警告：本项目从未在任何 ACE 上实际执行过这次写入。失败时 ACE 可能无法使用，本项目没有经过验证的救砖方法。', 'WARNING: this project has never performed this write on any ACE. A failure can leave the ACE unusable. The project has no tested recovery method.')
+    stock_effect = @('刷回后，多品牌 NFC 识别（OpenCubic 提供）将不再可用。官方文件由社区托管，只核对了大小和 SHA-256，没有厂商签名。', 'After the write, multi-brand NFC recognition from OpenCubic is no longer available. The vendor file is community-hosted. Only its size and SHA-256 are checked. It has no vendor signature.')
+    stock_risk_question = @('是否了解这是未经验证的操作，并自行承担 ACE 损坏的风险？', 'Do you understand that this is an untested operation, and accept the risk of damage to the ACE?')
+    stock_risk_yes = @('了解并接受风险，继续检查', 'I understand and accept the risk; continue to checks')
+    stock_risk_no = @('不接受，退出', 'I do not accept; exit')
+    stock_versions = @('检测到：应用 {0}，boot {1}；目标：官方 V1.3.863。', 'Detected: application {0}, boot {1}. Target: vendor V1.3.863.')
+    stock_already = @('这台 ACE 已经显示官方 V1.3.863，不需要写入。', 'This ACE already reports vendor V1.3.863. No write is needed.')
+    stock_final_question = @('最后确认：保持供电、USB 和 U1 运行，执行这一次未经验证的 ACE 固件写入？', 'Final confirmation: keep power, USB, and U1 running. Start this one untested ACE firmware write?')
+    stock_final_yes = @('确认，写入一次官方 V1.3.863', 'Confirm one write of vendor V1.3.863')
+    stock_verified = @('ACE 现在报告官方 V1.3.863，Klipper 已恢复。请在正常使用前逐槽检查进退料。', 'The ACE now reports vendor V1.3.863 and Klipper is restored. Check loading and unloading for each slot before normal use.')
     ace_title = @('ACE 第一代固件：检查、准备与更新', 'ACE Gen 1 firmware: check, prepare, and update')
     ace_scope = @('只支持已验证的 V1.3.856 / boot V1.0.1 → OpenCubic CFW 1.1.1。不会强制刷写未知版本。', 'Only V1.3.856 / boot V1.0.1 to OpenCubic CFW 1.1.1 is validated. Unknown versions cannot be forced.')
     ace_menu_check = @('  1. 自动检查 ACE，并从上游下载、校验所需固件', '  1. Check ACE; download and verify the required upstream files')
@@ -69,7 +81,8 @@ function Get-AceSafeDisplay {
 
 function Get-AceRemoteCommand {
     param([string]$RemoteDir, [ValidateSet('prepare', 'start', 'result', 'recover')][string]$Action,
-          [string]$Operation = '', [int]$WaitSeconds = 0)
+          [string]$Operation = '', [int]$WaitSeconds = 0,
+          [ValidateSet('opencubic', 'stock')][string]$Route = 'opencubic')
     if ($RemoteDir -notmatch '^/userdata/ultimate-u1-ace-stage-[0-9]{8}-[0-9]{6}-[a-f0-9]{8}$') { throw (New-WizardException 'unsafe_directory') }
     if ($Operation -and $Operation -notmatch '^[a-f0-9]{32}$') { throw (New-WizardException 'ace_invalid_result') }
     if ($WaitSeconds -notin @(0, 30) -or ($WaitSeconds -and $Action -ne 'result')) { throw (New-WizardException 'ace_invalid_result') }
@@ -77,6 +90,9 @@ function Get-AceRemoteCommand {
     $command = "cd '$RemoteDir' || exit 1; python3 tools/ace_usb/wizard_backend.py $Action"
     if ($Operation) { $command += ' --operation ' + $Operation }
     if ($Action -eq 'start') { $command += ' --confirm-flash --accept-untested-rollback' }
+    # The vendor route is never selected by default.
+    if ($Route -eq 'stock' -and $Action -eq 'prepare') { $command += ' --route stock' }
+    if ($Route -eq 'stock' -and $Action -eq 'start') { $command += ' --accept-untested-stock-route' }
     if ($WaitSeconds) { $command += ' --wait-seconds 30' }
     $command += ' 2> wizard-ace-' + $Action + '.err'
     return $command
@@ -109,8 +125,8 @@ function Get-AceErrorHint {
 
 function Invoke-AceRemoteJson {
     param([string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$Action,
-          [string]$LogFile, [string]$Operation = '', [int]$WaitSeconds = 0)
-    $command = Get-AceRemoteCommand $RemoteDir $Action $Operation $WaitSeconds
+          [string]$LogFile, [string]$Operation = '', [int]$WaitSeconds = 0, [string]$Route = 'opencubic')
+    $command = Get-AceRemoteCommand $RemoteDir $Action $Operation $WaitSeconds $Route
     try { $native = Invoke-WizardNative $Ssh @('-o', 'ConnectTimeout=15', '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=3', $Target, $command) }
     catch { throw (New-WizardException 'ace_query_failed') }
     Add-Content -LiteralPath $LogFile -Encoding UTF8 -Value ("`r`nACE action: $Action; exit: " + $native.ExitCode + "`r`n" + $native.Output)
@@ -209,6 +225,46 @@ function Get-AceFirmwareGate {
         Write-Host (Get-WizardText $message) -ForegroundColor Green
     }
     return [pscustomobject]@{ Continue = $true; CompletedNow = ($active -and $result.state -eq 'SUCCEEDED'); RequiresSetup = ($result.state -eq 'UNSUPPORTED' -or ($result.state -eq 'SUCCEEDED' -and -not $active)); ForcePrepare = $false }
+}
+
+function Start-AceStockRestore {
+    param([string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile)
+    Write-Host ''
+    Write-Host (Get-WizardText 'stock_title') -ForegroundColor Red
+    Write-Host (Get-WizardText 'stock_scope')
+    Write-Host (Get-WizardText 'stock_untested') -ForegroundColor Red
+    Write-Host (Get-WizardText 'stock_effect') -ForegroundColor Yellow
+    if (-not (Read-WizardChoice (Get-WizardText 'stock_risk_question') (Get-WizardText 'stock_risk_yes') (Get-WizardText 'stock_risk_no'))) { return $false }
+    Write-Host (Get-WizardText 'ace_prepare_notice') -ForegroundColor Yellow
+    if (-not (Read-WizardChoice (Get-WizardText 'ace_maintenance_question') (Get-WizardText 'ace_maintenance_yes') (Get-WizardText 'ace_maintenance_no'))) { return $false }
+    Write-Host (Get-WizardText 'ace_prepare_start') -ForegroundColor Cyan
+    $prepared = Invoke-AceRemoteJson $Ssh $Target $RemoteDir 'prepare' $LogFile '' 0 'stock'
+    $prepared = Wait-AceFirmwareResult $Ssh $Target $RemoteDir $LogFile $prepared
+    Write-Host (Get-WizardText 'ace_operation' @($prepared.operation))
+    Assert-AceRestoredResult $prepared
+    # Refuse a result that does not belong to the vendor route.
+    if ($prepared.PSObject.Properties.Name -notcontains 'route' -or $prepared.route -ne 'stock' -or $prepared.target_firmware -ne 'V1.3.863') {
+        throw (New-WizardException 'ace_invalid_result')
+    }
+    if ($prepared.state -notin @('PREPARED', 'ALREADY_TARGET')) { throw (New-WizardException 'ace_unsupported') }
+    Write-Host (Get-WizardText 'stock_versions' @((Get-AceSafeDisplay $prepared.source_firmware), (Get-AceSafeDisplay $prepared.boot_firmware)))
+    if (-not (Confirm-AceMaterialChanges $prepared)) { return $false }
+    if ($prepared.state -eq 'ALREADY_TARGET') {
+        if ($prepared.source_firmware -ne 'V1.3.863') { throw (New-WizardException 'ace_unsupported') }
+        Write-Host (Get-WizardText 'stock_already') -ForegroundColor Green
+        return $true
+    }
+    if ($prepared.source_firmware -ne 'CV1.3.863' -or $prepared.boot_firmware -ne 'V1.0.1') { throw (New-WizardException 'ace_unsupported') }
+    Write-Host (Get-WizardText 'ace_downloads_verified')
+    Write-Host (Get-WizardText 'stock_untested') -ForegroundColor Red
+    if (-not (Read-WizardChoice (Get-WizardText 'stock_final_question') (Get-WizardText 'stock_final_yes') (Get-WizardText 'ace_final_no'))) { return $false }
+    Write-Host (Get-WizardText 'ace_starting') -ForegroundColor Red
+    $started = Invoke-AceRemoteJson $Ssh $Target $RemoteDir 'start' $LogFile $prepared.operation 0 'stock'
+    $finished = Wait-AceFirmwareResult $Ssh $Target $RemoteDir $LogFile $started
+    if ($finished.state -ne 'SUCCEEDED') { throw (New-WizardException 'ace_attention') }
+    Assert-AceRestoredResult $finished
+    Write-Host (Get-WizardText 'stock_verified') -ForegroundColor Green
+    return (Confirm-AceMaterialChanges $finished)
 }
 
 function Start-AceFirmwareSetup {

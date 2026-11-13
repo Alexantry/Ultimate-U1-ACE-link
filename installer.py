@@ -39,6 +39,8 @@ RFID_SERVICES = {
 STATE_ROOT = '/userdata/ultimate-u1-ace-link'
 RECEIPT = STATE_ROOT + '/install-state.json'
 DEBUG = '/oem/.debug'
+# The firmware image is the read-only lower layer of the root overlay.
+FIRMWARE_LOWER = '/overlay'
 DESTINATIONS = {
     'ace.py': '/home/lava/klipper/klippy/extras/ace.py',
     'filament_feed.py': '/home/lava/klipper/klippy/extras/filament_feed.py',
@@ -142,22 +144,27 @@ def filament_detection(data):
 
 
 def external_config(data):
+    return rfid_config(data, 'external')
+
+
+def rfid_config(data, mode):
     """Change only [components] rfid, preserving other settings and key files."""
+    require(mode in ('external', 'snapmaker'), 'Unsupported filament detection target')
     filament_detection(data)  # Reject malformed/duplicate configuration first.
     text = data.decode('utf-8') if data else ''
     headers = list(re.finditer(r'(?m)^\s*\[([^\]\r\n]+)\][ \t]*(?:[#;].*)?\r?$', text))
     section = next((m for m in headers if m[1] == 'components'), None)
     if section is None:
-        return (text.rstrip('\r\n') + '\n\n[components]\nrfid: external\n').encode('utf-8')
+        return (text.rstrip('\r\n') + '\n\n[components]\nrfid: ' + mode + '\n').encode('utf-8')
     start = section.end()
     end = next((m.start() for m in headers if m.start() > start), len(text))
     body, count = re.subn(r'(?mi)^([ \t]*rfid[ \t]*[:=][ \t]*)[^\r\n]*(\r?)$',
-                          lambda m: m[1] + 'external' + m[2], text[start:end])
+                          lambda m: m[1] + mode + m[2], text[start:end])
     require(count <= 1, 'Duplicate filament detection setting')
     if not count:
-        body = body.rstrip('\r\n') + '\nrfid: external\n\n'
+        body = body.rstrip('\r\n') + '\nrfid: ' + mode + '\n\n'
     result = (text[:start] + body + text[end:]).encode('utf-8')
-    require(filament_detection(result) == 'external', 'External setting verification failed')
+    require(filament_detection(result) == mode, 'Filament detection setting verification failed')
     return result
 
 
@@ -362,6 +369,30 @@ class Host:
         require(filament_detection(self.read(EXTENDED_CONFIG)) == 'external'
                 and link.is_symlink() and os.readlink(link) == str(self.path(RFID_TWEAK))
                 and not self.rfid_running(), 'External filament detection is not fully active')
+
+    def stock(self, path):
+        """Return the file shipped in the firmware image, or None if it ships none."""
+        if self.root == Path('/'):
+            mounts = Path('/proc/mounts').read_text()
+            require(re.search(r'(?m)^overlay / overlay \S*\blowerdir=' + FIRMWARE_LOWER + r'[,\s]', mounts),
+                    'Firmware image layer was not found; this U1 system layout is not supported')
+        return self.read(FIRMWARE_LOWER + path)
+
+    def apply_rfid_default(self):
+        subprocess.run(['/etc/init.d/S59rfid-support', 'restart'], check=True, timeout=30,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        self.internal_ready()
+
+    def internal_ready(self):
+        link = self.path(RFID_LINK)
+        require(filament_detection(self.read(EXTENDED_CONFIG)) == 'snapmaker'
+                and not link.exists() and not link.is_symlink() and not self.rfid_running(),
+                'Firmware default filament detection is not fully active')
+
+    def delete(self, path):
+        p = self.path(path)
+        if p.is_symlink() or p.exists():
+            p.unlink()
 
     def restore_rfid_link(self, target):
         require(target == str(self.path(RFID_TWEAK)), 'Unexpected backed-up RFID link')
@@ -768,6 +799,160 @@ class Installer:
         else:
             self.host.write(RECEIPT, json_bytes(previous), {'mode': 0o600, 'uid': 0, 'gid': 0})
 
+    def removal(self):
+        """Plan the return to the files shipped in the installed U1 firmware."""
+        self.firmware()
+        before = self.host.state(); self.host.idle(before); self.host.persistence()
+        require(('ace' in before) == ('ace' in before['configfile']['settings']),
+                'ACE object and loaded configuration disagree; resolve printer state before removal')
+        require(not any(sensors(before)),
+                'Unload all four U1 heads before removal; the firmware feeder cannot unload ACE filament')
+        self.host.rfid_files()
+        rfid_before = {'mode': filament_detection(self.host.read(EXTENDED_CONFIG)),
+                       'running': self.host.rfid_running()}
+        entries = self.manifest['files']
+        require(len(entries) == 4 and {x['id'] for x in entries} == set(DESTINATIONS), 'Payload scope is not exactly four modules')
+        receipt = self.receipt()
+        known = receipt.get('installed_hashes', {}) if receipt else {}
+        changes = {}
+        for item in entries:
+            dest = DESTINATIONS[item['id']]
+            require(item['destination'] == dest, 'Wrong module destination')
+            current = self.host.read(dest); current_hash = digest(current) if current is not None else None
+            allowed = list(item['accepted_source_sha256']) + [item['sha256']]
+            if dest in known:
+                allowed.append(known[dest])
+            require(current_hash in allowed, 'Unknown modified core; back up and review manually: ' + item['id'])
+            original = self.host.stock(dest)
+            original_hash = digest(original) if original is not None else None
+            require(original_hash in item['accepted_source_sha256'],
+                    'Firmware original is not a reviewed file: ' + item['id'])
+            if current_hash != original_hash:
+                changes[dest] = original
+        files = self.config_files(before['_config_file'])
+        ace_sections = [name for name, text in files if re.search(r'(?mi)^\s*\[ace\]\s*$', text)]
+        require(not ace_sections or ace_sections == [ACE_CONFIG], 'Existing [ace] is in an unexpected or duplicate config')
+        ace_cfg = self.host.read(ACE_CONFIG)
+        variable_path = CONFIG_ROOT + '/ace_vars.cfg'
+        if ace_cfg is not None:
+            changes[ACE_CONFIG] = None
+            # Remove the variable store only when this ACE file declares it.
+            if (re.search(r'(?mi)^\s*\[save_variables\]\s*$', ace_cfg.decode('utf-8'))
+                    and variable_path in ace_cfg.decode('utf-8')
+                    and self.host.read(variable_path) is not None):
+                changes[variable_path] = None
+        if rfid_before['mode'] == 'external':
+            # External was set for the ACE. Other modes are the owner's choice.
+            changes[EXTENDED_CONFIG] = rfid_config(self.host.read(EXTENDED_CONFIG), 'snapmaker')
+            link = self.host.path(RFID_LINK)
+            if link.is_symlink() or link.exists():
+                require(self.host.read(RFID_LINK) == self.host.read(RFID_TWEAK),
+                        'Custom disable-rfid-reader.cfg requires manual review')
+                changes[RFID_LINK] = None
+        protected = {}
+        for path in self.host.path(CONFIG_ROOT).rglob('*.cfg'):
+            if path.is_symlink():
+                continue
+            name = '/' + path.relative_to(self.host.root).as_posix()
+            if name not in changes:
+                protected[name] = digest(path.read_bytes())
+        expected = {name: (digest(data) if data is not None else None) for name, data in changes.items()}
+        return {'changes': changes, 'expected': expected, 'protected': protected,
+                'before': before, 'rfid_before': rfid_before,
+                'filament_detection': 'snapmaker' if EXTENDED_CONFIG in changes else rfid_before['mode']}
+
+    def removed_ready(self, plan, timeout=110):
+        deadline, stable, error = time.monotonic() + timeout, 0, ''
+        while time.monotonic() < deadline:
+            try:
+                s = self.host.state(); self.host.idle(s)
+                require('ace' not in s and 'ace' not in s['configfile']['settings'],
+                        'ACE integration is still loaded')
+                require(sensors(s) == sensors(plan['before']), 'Head sensor changed')
+                if EXTENDED_CONFIG in plan['changes']:
+                    self.host.internal_ready()
+                    require(s['configfile']['settings'].get('fm175xx_reader', {}).get('enabled') is not False,
+                            'Klipper internal RFID reader is still disabled')
+                stable += 1
+                if stable >= 3:
+                    return s
+            except Exception as exc:
+                error = str(exc); stable = 0
+            time.sleep(1)
+        raise RuntimeError('Ready verification failed: ' + error)
+
+    def remove(self):
+        self.ace_maintenance_clear()
+        plan = self.removal()
+        require(plan['changes'], 'Nothing to remove; the firmware files are already active')
+        ident = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+        backup = STATE_ROOT + '/backups/' + ident
+        self.host.path(backup).mkdir(parents=True, mode=0o700, exist_ok=False)
+        metadata = {'schema': 1, 'id': ident, 'target_firmware': TARGET, 'files': [],
+                    'protected': plan['protected'], 'before': plan['before'],
+                    'previous_receipt': self.receipt(), 'installed_hashes': plan['expected'],
+                    'rfid_before': plan['rfid_before'], 'operation': 'remove'}
+        for i, name in enumerate(plan['changes']):
+            old = self.host.read(name); p = self.host.path(name)
+            entry = {'path': name, 'existed': old is not None, 'backup': str(i),
+                     'before_sha256': digest(old) if old is not None else None}
+            if old is not None:
+                st = p.stat(); entry.update(mode=stat.S_IMODE(st.st_mode), uid=st.st_uid, gid=st.st_gid)
+                if p.is_symlink():
+                    require(name == RFID_LINK, 'Unexpected managed symlink')
+                    entry['symlink_target'] = os.readlink(p)
+                self.host.write(backup + '/' + str(i), old, {'mode': 0o600, 'uid': 0, 'gid': 0})
+            metadata['files'].append(entry)
+        self.host.write(backup + '/backup.json', json_bytes(metadata), {'mode': 0o600, 'uid': 0, 'gid': 0})
+        print('Backup ID: ' + ident + '\nBackup directory: ' + backup,
+              file=sys.stderr, flush=True)
+        stopped = False
+        try:
+            latest = self.host.state(); self.host.idle(latest)
+            require(sensors(latest) == sensors(plan['before']), 'State changed before removal')
+            for entry in metadata['files']:
+                old = self.host.read(entry['path'])
+                require((digest(old) if old is not None else None) == entry['before_sha256'], 'File changed during preflight')
+            self.protected_ok(plan['protected'])
+            require(self.host.rfid_running() == plan['rfid_before']['running'], 'OpenRFID service changed during preflight')
+            stopped = True; self.host.service('stop')
+            if EXTENDED_CONFIG in plan['changes']:
+                self.host.rfid_service('stop')
+            for name, data in plan['changes'].items():
+                if data is None:
+                    self.host.delete(name)
+                else:
+                    self.host.write(name, data)
+            if EXTENDED_CONFIG in plan['changes']:
+                self.host.apply_rfid_default()
+            self.host.service('start')
+            self.removed_ready(plan)
+            self.protected_ok(plan['protected'])
+            for name, expected in plan['expected'].items():
+                data = self.host.read(name)
+                require((digest(data) if data is not None else None) == expected, 'Removal verification failed: ' + name)
+            self.host.delete(RECEIPT)
+            return {'removed': True, 'backup': ident, 'ready_samples': 3,
+                    'restored_or_deleted': list(plan['changes']),
+                    'filament_detection': plan['filament_detection'],
+                    'ace_firmware_changed': False, 'u1_firmware_changed': False}
+        except BaseException as original:
+            if stopped:
+                try:
+                    self.restore(metadata, backup, verify=True)
+                except BaseException as recovery:
+                    message = ('Removal failed: %s: %s; automatic rollback FAILED: %s: %s; '
+                               'Backup ID: %s' % (type(original).__name__, original,
+                                                 type(recovery).__name__, recovery, ident))
+                    print(message, file=sys.stderr, flush=True)
+                    raise RuntimeError(message) from original
+                print('Automatic rollback VERIFIED. Backup ID: %s. Original removal error: %s: %s'
+                      % (ident, type(original).__name__, original), file=sys.stderr, flush=True)
+            else:
+                print('Removal stopped before service/file changes. Backup ID: %s. Original error: %s: %s'
+                      % (ident, type(original).__name__, original), file=sys.stderr, flush=True)
+            raise
+
     def rollback(self, ident=None, offline_recovery=False, confirm_idle_and_cold=False):
         self.ace_maintenance_clear()
         self.firmware()
@@ -804,14 +989,15 @@ class Installer:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('check', 'status', 'install', 'rollback'))
+    parser.add_argument('command', choices=('check', 'status', 'install', 'rollback',
+                                            'remove-check', 'remove'))
     parser.add_argument('--settings', type=Path, help='Local JSON settings; required for check/install')
     parser.add_argument('--backup', help='Latest backup ID; optional for rollback')
     parser.add_argument('--offline-recovery', action='store_true', help='Recover when the API cannot become ready')
     parser.add_argument('--confirm-idle-and-cold', action='store_true', help='Confirm a local physical idle/cold check for offline recovery')
     args = parser.parse_args()
     installer = Installer(Path(__file__).resolve().parent)
-    if args.command in ('install', 'rollback'):
+    if args.command in ('install', 'rollback', 'remove'):
         require(hasattr(os, 'geteuid') and os.geteuid() == 0, 'Run on the U1 as root')
         import fcntl
         lock_dir = installer.host.path(STATE_ROOT)
@@ -834,6 +1020,16 @@ def main():
                   'openrfid_running': installer.host.rfid_running()}
     elif args.command == 'rollback':
         result = installer.rollback(args.backup, args.offline_recovery, args.confirm_idle_and_cold)
+    elif args.command == 'remove':
+        result = installer.remove()
+    elif args.command == 'remove-check':
+        plan = installer.removal()
+        result = {'removable': bool(plan['changes']), 'read_only': True,
+                  'restore_from_firmware': [n for n, d in plan['changes'].items() if d is not None],
+                  'delete': [n for n, d in plan['changes'].items() if d is None],
+                  'filament_detection': plan['filament_detection'],
+                  'previous_filament_detection': plan['rfid_before']['mode'],
+                  'ace_firmware_changed': False, 'u1_firmware_changed': False}
     else:
         require(args.settings is not None, '--settings is required')
         settings = json.loads(args.settings.read_text(encoding='utf-8-sig'))

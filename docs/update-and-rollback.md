@@ -6,6 +6,7 @@ Run these commands in **Windows PowerShell**. The earlier window does not need t
 
 - **ACE firmware maintenance and U1 host integration installation are separate transactions.**
 - A host backup cannot roll back ACE or U1 firmware.
+- To remove this project, or to return the ACE or the U1 to vendor firmware, see [remove and restore](restore.md).
 - Unknown result: keep the devices idle. Do not print. Do not resend an install or flash command.
 
 <a id="read-installation-status"></a>

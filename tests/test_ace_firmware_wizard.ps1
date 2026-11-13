@@ -328,6 +328,65 @@ try {
         Assert-True ($safe -notmatch '[\x00-\x1f\x7f-\x9f]') 'Terminal controls retained'
         Assert-True ((Get-AceSafeDisplay ('x'*500)).Length-eq183) 'Unbounded device display'
     }
+    function New-Stock { param([string]$State, [hashtable]$Extra=@{})
+        $base = @{ route='stock'; source_firmware='CV1.3.863'; target_firmware='V1.3.863' }
+        foreach ($key in $Extra.Keys) { $base[$key]=$Extra[$key] }
+        return (New-Result $State $base)
+    }
+    function Run-Stock { return (Start-AceStockRestore 'ssh.exe' 'root@192.0.2.1' $remote $log) }
+    Test-Case 'vendor_route_flags_are_added_only_when_requested' {
+        Assert-True ((Get-AceRemoteCommand $remote 'prepare') -notmatch '--route') 'Default preparation selected a route'
+        Assert-True ((Get-AceRemoteCommand $remote 'start' $script:operation) -notmatch 'stock') 'Default start accepted the vendor route'
+        Assert-True ((Get-AceRemoteCommand $remote 'prepare' '' 0 'stock').Contains(' --route stock')) 'Vendor preparation flag missing'
+        $start = Get-AceRemoteCommand $remote 'start' $script:operation 0 'stock'
+        Assert-True ($start.Contains('--confirm-flash --accept-untested-rollback') -and $start.Contains('--accept-untested-stock-route')) 'Vendor start flags missing'
+        Assert-True ((Get-AceRemoteCommand $remote 'result' $script:operation 0 'stock') -notmatch 'stock') 'Result query carried a route'
+        Assert-Throws { Get-AceRemoteCommand $remote 'prepare' '' 0 'factory' }
+    }
+    Test-Case 'vendor_restore_needs_three_confirmations_and_writes_once' {
+        foreach ($language in @('en', 'zh')) {
+            Reset-Fakes @('1', '1', '1') $language
+            Queue-Result (New-Stock 'PREPARED'); Queue-Result (New-Stock 'SUCCEEDED')
+            Assert-True (Run-Stock) 'Vendor restore did not complete'
+            Assert-True ((Count-Starts) -eq 1 -and $script:calls[0].Contains('prepare --route stock')) 'Wrong vendor commands'
+            $warnings = @($script:colors | Where-Object { $_.Text -eq (Get-WizardText 'stock_untested') -and $_.Color -eq 'Red' })
+            Assert-True ($warnings.Count -eq 2) 'Untested warning must appear before the checks and before the write'
+            Assert-True ($script:messages -contains (Get-WizardText 'stock_verified')) 'Vendor result missing'
+            if ($language -eq 'en') { Assert-English }
+        }
+    }
+    Test-Case 'vendor_restore_declined_at_any_question_never_writes' {
+        Reset-Fakes @('2'); Assert-True (-not (Run-Stock)) 'Risk refusal continued'
+        Assert-True ($script:calls.Count -eq 0) 'Risk refusal contacted the printer'
+        Reset-Fakes @('1', '2'); Assert-True (-not (Run-Stock)) 'Maintenance refusal continued'
+        Assert-True ($script:calls.Count -eq 0) 'Maintenance refusal contacted the printer'
+        Reset-Fakes @('1', '1', '2'); Queue-Result (New-Stock 'PREPARED')
+        Assert-True (-not (Run-Stock) -and (Count-Starts) -eq 0) 'Final refusal still wrote'
+    }
+    Test-Case 'vendor_restore_refuses_other_sources_and_mismatched_results' {
+        Reset-Fakes @('1', '1'); Queue-Result (New-Stock 'UNSUPPORTED' @{ source_firmware='V1.3.856' })
+        Assert-Throws { Run-Stock } 'ace_unsupported'
+        Reset-Fakes @('1', '1'); Queue-Result (New-Stock 'PREPARED' @{ source_firmware='V1.3.856' })
+        Assert-Throws { Run-Stock } 'ace_unsupported'
+        Reset-Fakes @('1', '1'); Queue-Result (New-Stock 'PREPARED' @{ boot_firmware='V1.0.2' })
+        Assert-Throws { Run-Stock } 'ace_unsupported'
+        # A backend that ignored the route must not be trusted with this write.
+        Reset-Fakes @('1', '1'); Queue-Result (New-Result 'PREPARED')
+        Assert-Throws { Run-Stock } 'ace_invalid_result'
+        Reset-Fakes @('1', '1'); Queue-Result (New-Stock 'PREPARED' @{ target_firmware='CV1.3.863' })
+        Assert-Throws { Run-Stock } 'ace_invalid_result'
+        Assert-True ((Count-Starts) -eq 0) 'A refused vendor restore wrote firmware'
+    }
+    Test-Case 'vendor_firmware_already_present_is_not_written_again' {
+        Reset-Fakes @('1', '1'); Queue-Result (New-Stock 'ALREADY_TARGET' @{ source_firmware='V1.3.863' })
+        Assert-True (Run-Stock) 'Existing vendor firmware not accepted'
+        Assert-True ((Count-Starts) -eq 0 -and ($script:messages -contains (Get-WizardText 'stock_already'))) 'Existing vendor firmware was rewritten'
+    }
+    Test-Case 'vendor_write_without_verified_result_needs_attention' {
+        Reset-Fakes @('1', '1', '1'); Queue-Result (New-Stock 'PREPARED'); Queue-Result (New-Stock 'NEEDS_ATTENTION' @{ flash_attempted=$true })
+        Assert-Throws { Run-Stock } 'ace_attention'
+        Assert-True ((Count-Starts) -eq 1) 'Uncertain vendor write was repeated'
+    }
 } finally {
     $resolved=[IO.Path]::GetFullPath($testRoot)
     $parent=[IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')+'\'

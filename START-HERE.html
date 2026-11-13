@@ -322,7 +322,7 @@ Get-FileHash -Algorithm SHA256 -LiteralPath ((Read-Host &quot;Paste the file pat
 <tr><td>原厂参考文件</td><td><code>ACE_V1.3.863_20250518.bin</code>，105652 字节，<a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin">固定的社区托管文件</a></td><td><code>3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63</code></td></tr>
 </tbody></table></div>
 <p>向导下载这些文件，检查大小、SHA-256 和固件格式，通过前不能开始写入。安装包本身不含固件二进制。</p>
-<p>原厂文件只是参考，不是从你自己的 ACE 备份出来的固件。<strong>原厂回退还没有经过实机验证，向导不会自动执行回退。</strong></p>
+<p>原厂文件只是参考，不是从你自己的 ACE 备份出来的固件。<strong>原厂回退还没有经过实机验证，向导不会自动执行回退。</strong>想自己执行这个未验证的高级选项，见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/restore.zh-CN.md">卸载与恢复出厂</a>。</p>
 <h3 id="支持的起始版本">支持的起始版本</h3>
 <div class="table"><table><thead><tr><th>实际检测结果</th><th>向导的处理</th></tr></thead><tbody>
 <tr><td>第一代，应用版本 <code>V1.3.856</code>，引导程序 <code>V1.0.1</code></td><td>通过全部检查后，可以更新到指定目标。</td></tr>
@@ -690,6 +690,7 @@ AUTO_FEEDING EXTRUDER=0 UNLOAD=1
 <ul>
 <li><strong>ACE 固件维护和 U1 主机适配安装是两个独立的事务。</strong></li>
 <li>主机备份不能回退 ACE 或 U1 固件。</li>
+<li>要卸载本项目，或把 ACE、U1 刷回官方固件，见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/restore.zh-CN.md">卸载与恢复出厂</a>。</li>
 <li>结果未知时：保持设备空闲，不打印，不重发安装或刷写命令。</li>
 </ul>
 <a id="read-installation-status"></a>

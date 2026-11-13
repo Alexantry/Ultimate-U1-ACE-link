@@ -23,6 +23,13 @@ Test-Case 'pinned_upstream_release_metadata' {
     $bytes = [IO.File]::ReadAllBytes((Join-Path $repo 'Bootstrap.ps1'))
     Assert-True ($bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191) 'Missing UTF-8 BOM'
 }
+Test-Case 'pinned_official_snapmaker_metadata' {
+    Assert-True ($script:OfficialImage.Name -eq 'U1_2.0.0.205_20260914173503_upgrade.bin') 'Wrong official name'
+    Assert-True ($script:OfficialImage.Size -eq 216715726) 'Wrong official size'
+    Assert-True ($script:OfficialImage.Sha256 -eq 'e6269eb0f1d9e8da74173e9da6350a14b18dd2fe5c4e8f2cabc48b0cdaf2aad7') 'Wrong official hash'
+    Assert-True ($script:OfficialImage.Url -eq 'https://public.resource.snapmaker.com/firmware/U1/U1_2.0.0.205_20260914173503_upgrade.bin') 'Official file must come from Snapmaker'
+    Assert-True ($script:OfficialImage.Name -ne $script:BootstrapImage.Name -and $script:OfficialImage.Sha256 -ne $script:BootstrapImage.Sha256) 'Official and extended images are not distinct'
+}
 
 $script:testRoot = Join-Path ([IO.Path]::GetTempPath()) ('U1BootstrapTests-' + [guid]::NewGuid().ToString('N'))
 [void](New-Item -ItemType Directory -Path $script:testRoot)
@@ -186,6 +193,44 @@ try {
         foreach ($answer in @('1', '1', '2')) { $script:answers.Enqueue($answer) }
         Assert-True (-not (Start-U1Bootstrap $repo)) 'Screen cancellation ignored'
         Assert-True (Test-BootstrapImageFile (Join-Path $script:usbRoot $script:BootstrapImage.Name)) 'Prepared file lost on cancellation'
+    }
+    # The synthetic payload stands in for the official file as well.
+    $script:OfficialImage.Size = $script:BootstrapImage.Size
+    $script:OfficialImage.Sha256 = $script:BootstrapImage.Sha256
+    Test-Case 'official_usb_uses_the_official_name_and_restores_the_selection' {
+        foreach ($language in @('en', 'zh')) {
+            $script:usbRoot = New-TestFolder
+            $script:WizardLanguage = $language; $script:messages.Clear(); $script:prepareCount = 0
+            $extendedName = $script:BootstrapImage.Name
+            foreach ($answer in @('1', '1', '1')) { $script:answers.Enqueue($answer) }
+            Assert-True (Start-U1OfficialRestore $repo) 'Official USB preparation failed'
+            Assert-True ($script:prepareCount -eq 1 -and $script:answers.Count -eq 0) 'Wrong number of official prompts'
+            Assert-True ($script:BootstrapImage.Name -eq $extendedName) 'Extended image selection was not restored'
+            $names = @(Get-ChildItem -LiteralPath $script:usbRoot -Force | ForEach-Object { $_.Name })
+            Assert-True ($names.Count -eq 1 -and $names[0] -eq $script:OfficialImage.Name) 'USB does not hold exactly the official file'
+            foreach ($id in @('official_unverified', 'official_before', 'official_reset', 'official_after')) {
+                Assert-True ($script:messages -contains (Get-WizardText $id)) ('Official notice missing: ' + $id)
+            }
+            Assert-True (-not ($script:messages -contains (Get-WizardText 'boot_step2'))) 'Official flow asked for extended-firmware access settings'
+            if ($language -eq 'en') { Assert-True (($script:messages -join ' ') -notmatch '[\u4e00-\u9fff]') 'English official flow contains Chinese' }
+        }
+        $script:WizardLanguage = 'en'
+    }
+    Test-Case 'official_usb_cancel_or_failure_restores_the_selection_and_writes_nothing' {
+        $extendedName = $script:BootstrapImage.Name
+        $script:usbRoot = New-TestFolder; $script:prepareCount = 0
+        $script:answers.Enqueue('0')
+        Assert-True (-not (Start-U1OfficialRestore $repo)) 'Official cancel ignored'
+        foreach ($answer in @('1', '2')) { $script:answers.Enqueue($answer) }
+        Assert-True (-not (Start-U1OfficialRestore $repo)) 'Official target cancellation ignored'
+        Assert-True ($script:prepareCount -eq 0 -and @(Get-ChildItem -LiteralPath $script:usbRoot -Force).Count -eq 0) 'Cancelled official preparation wrote files'
+        $goodHash = $script:OfficialImage.Sha256
+        $script:OfficialImage.Sha256 = '0' * 64
+        foreach ($answer in @('1', '1')) { $script:answers.Enqueue($answer) }
+        Assert-Throws { Start-U1OfficialRestore $repo } 'boot_hash_failed'
+        $script:OfficialImage.Sha256 = $goodHash
+        Assert-True (@(Get-ChildItem -LiteralPath $script:usbRoot -Force).Count -eq 0) 'Unverified official file reached the USB drive'
+        Assert-True ($script:BootstrapImage.Name -eq $extendedName) 'Selection not restored after a failure'
     }
     Set-Item -Path Function:Get-BootstrapFirmware -Value $originalGetFirmware
 } finally {

@@ -18,7 +18,7 @@ The U1 downloads the firmware and runs the tools, so the U1 needs internet acces
 | Stock reference | `ACE_V1.3.863_20250518.bin`, 105652 bytes, [pinned community-hosted file](https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin) | `3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63` |
 
 The wizard downloads these files and checks size, SHA-256, and firmware format before a write can start. The package itself contains no firmware binary.
-The stock file is a reference, not a backup of your ACE. **Physical stock rollback has not been tested. The wizard does not automatically attempt it.**
+The stock file is a reference, not a backup of your ACE. **Physical stock rollback has not been tested. The wizard does not automatically attempt it.** You can start it yourself as an untested advanced option: see [remove and restore](restore.md).
 
 ## Supported starting versions
 

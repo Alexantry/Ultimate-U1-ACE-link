@@ -202,7 +202,7 @@ Get-FileHash -Algorithm SHA256 -LiteralPath ((Read-Host &quot;Paste the file pat
 <tr><td>Stock reference</td><td><code>ACE_V1.3.863_20250518.bin</code>, 105652 bytes, <a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin">pinned community-hosted file</a></td><td><code>3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63</code></td></tr>
 </tbody></table></div>
 <p>The wizard downloads these files and checks size, SHA-256, and firmware format before a write can start. The package itself contains no firmware binary.</p>
-<p>The stock file is a reference, not a backup of your ACE. <strong>Physical stock rollback has not been tested. The wizard does not automatically attempt it.</strong></p>
+<p>The stock file is a reference, not a backup of your ACE. <strong>Physical stock rollback has not been tested. The wizard does not automatically attempt it.</strong> You can start it yourself as an untested advanced option: see <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/restore.md">remove and restore</a>.</p>
 <h3 id="supported-starting-versions">Supported starting versions</h3>
 <div class="table"><table><thead><tr><th>Detected ACE state</th><th>Wizard action</th></tr></thead><tbody>
 <tr><td>Gen 1, application <code>V1.3.856</code>, bootloader <code>V1.0.1</code></td><td>Permit preparation for the exact target after all checks pass.</td></tr>
@@ -570,6 +570,7 @@ AUTO_FEEDING EXTRUDER=0 UNLOAD=1
 <ul>
 <li><strong>ACE firmware maintenance and U1 host integration installation are separate transactions.</strong></li>
 <li>A host backup cannot roll back ACE or U1 firmware.</li>
+<li>To remove this project, or to return the ACE or the U1 to vendor firmware, see <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/restore.md">remove and restore</a>.</li>
 <li>Unknown result: keep the devices idle. Do not print. Do not resend an install or flash command.</li>
 </ul>
 <a id="read-installation-status"></a>

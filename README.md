@@ -73,6 +73,7 @@ For spools without a supported tag, enter the material on the U1. See the [NFC n
 | Firmware | [U1 firmware preparation](docs/u1-preparation.md) · [ACE firmware wizard](docs/ace-wizard.md) |
 | Daily use and tuning | [Daily use](docs/daily-use.md) · [Settings and calibration](docs/configuration.md) |
 | Problems | [Troubleshooting](docs/troubleshooting.md) · [Update and rollback](docs/update-and-rollback.md) |
+| Removal | [Remove and restore](docs/restore.md) |
 | Test scope | [Validation](docs/validation.md) · [Changes](CHANGELOG.md) · [Glossary](docs/glossary.md) |
 
 ## Sources and license

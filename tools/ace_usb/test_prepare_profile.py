@@ -95,5 +95,40 @@ class PrepareProfileTests(unittest.TestCase):
         self.assertFalse(json.loads(output.read_text())['write_enabled'])
 
 
+class StockRouteDraftTests(unittest.TestCase):
+    """The untested return to vendor V1.3.863 starts only from the pinned OpenCubic build."""
+
+    def setUp(self):
+        PrepareProfileTests.setUp(self)
+        self.probe['snapshot']['info']['firmware'] = 'CV1.3.863'
+
+    save = PrepareProfileTests.save
+
+    def test_draft_stays_locked_and_binds_exact_probe(self):
+        draft = prepare.build_draft(self.save(), self.now, route='stock')
+        self.assertFalse(draft['write_enabled'])
+        self.assertTrue(all(value is False for value in draft['checks'].values()))
+        self.assertEqual(draft['route'], 'stock')
+        self.assertEqual(draft['image_sha256'], prepare.STOCK_SHA256)
+        self.assertNotEqual(prepare.STOCK_SHA256, prepare.TARGET_SHA256)
+        self.assertTrue(draft['pending'][0].startswith('UNTESTED ROUTE'))
+
+    def test_other_source_or_boot_cannot_be_drafted(self):
+        for key, value in (('firmware', 'V1.3.856'), ('firmware', 'V1.3.863'),
+                           ('boot_firmware', 'V1.0.2')):
+            with self.subTest(key=key, value=value):
+                original = self.probe['snapshot']['info'][key]
+                self.probe['snapshot']['info'][key] = value
+                with self.assertRaisesRegex(ValueError, 'stock route starts only'):
+                    prepare.build_draft(self.save(), self.now, route='stock')
+                self.probe['snapshot']['info'][key] = original
+
+    def test_opencubic_draft_refuses_the_stock_source_and_unknown_routes(self):
+        with self.assertRaisesRegex(ValueError, 'Only the tested'):
+            prepare.build_draft(self.save(), self.now)
+        with self.assertRaisesRegex(ValueError, 'Unknown firmware route'):
+            prepare.build_draft(self.save(), self.now, route='other')
+
+
 if __name__ == '__main__':
     unittest.main()

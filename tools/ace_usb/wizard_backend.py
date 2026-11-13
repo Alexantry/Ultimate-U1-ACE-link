@@ -41,6 +41,8 @@ PUBLIC = ('schema', 'operation', 'state', 'code', 'progress', 'ready',
           'service_restored', 'flash_attempted', 'needs_material_review', 'material_changes',
           'source_firmware', 'boot_firmware', 'target_firmware', 'diagnostic_path')
 PUBLIC += ('verified_installation_receipt',)
+PUBLIC += ('route',)
+ROUTES = prepare_profile.ROUTES
 
 
 class WizardError(RuntimeError):
@@ -179,7 +181,7 @@ class Store:
         record['updated_at_utc'] = iap.utc_now()
         write_json(self.directory(record['operation']) / 'state.json', record)
 
-    def new(self):
+    def new(self, route='opencubic'):
         self.initialize()
         token = uuid.uuid4().hex
         directory = self.directory(token)
@@ -188,7 +190,8 @@ class Store:
                       ready=False, service_restored=False, flash_attempted=False,
                       needs_material_review=False, material_changes=[], stopped=False,
                       verified_installation_receipt=False,
-                      target_firmware=TARGET, worker_pid=None, worker_stamp=None,
+                      route=route, target_firmware=ROUTES[route]['runtime'],
+                      worker_pid=None, worker_stamp=None,
                       diagnostic_path=str(directory), created_at_utc=iap.utc_now())
         self.save(record)
         write_json(self.root / 'last.json', {'operation': token})
@@ -267,11 +270,12 @@ class Engine:
         record['worker_stamp'] = process_stamp(process.pid)
         self.store.save(record)
 
-    def prepare(self):
+    def prepare(self, route='opencubic'):
+        require(route in ROUTES, 'UNKNOWN_ROUTE')
         with self.store.lock():
             previous = self.store.load()
             require(previous is None or previous['state'] in SAFE, 'ACTIVE_OPERATION')
-            record = self.store.new()
+            record = self.store.new(route)
             try:
                 record['stage'] = self.stage()
                 self.store.save(record)
@@ -281,10 +285,13 @@ class Engine:
                 self.store.save(record)
             return self.public(record)
 
-    def start(self, token, confirmed=False, rollback_ack=False):
+    def start(self, token, confirmed=False, rollback_ack=False, untested_route_ack=False):
         require(confirmed and rollback_ack, 'CONFIRMATION_REQUIRED')
         with self.store.lock():
             record = self.store.load(token)
+            # An untested route needs its own explicit acknowledgement.
+            require(ROUTES[record.get('route', 'opencubic')]['tested'] or untested_route_ack,
+                    'UNTESTED_ROUTE_NOT_ACCEPTED')
             require(self.store.load()['operation'] == token, 'NOT_LATEST_OPERATION')
             require(record['state'] == 'PREPARED' and not record['flash_attempted']
                     and record['ready'] and record['service_restored'], 'FLASH_NOT_PREPARED')
@@ -439,14 +446,15 @@ class Engine:
         for image, (_, digest, size) in fetch_firmware.PINNED.items():
             data, item = iap.verify_image(directory / 'images.json', image)
             require(item['sha256'] == digest and len(data) == size, 'IMAGE_CHANGED')
-        return iap.verify_image(directory / 'images.json', 'opencubic-gen1')
+        return iap.verify_image(directory / 'images.json',
+                                ROUTES[record.get('route', 'opencubic')]['image'])
 
-    def receipt_matches(self, probe):
+    def receipt_matches(self, probe, route='opencubic'):
         path = plain(self.store.root / 'last-success.json')
         if not path.exists(): return False
         receipt = read_json(path, 65536)
         age = (dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(receipt['captured_at_utc'])).total_seconds()
-        return (0 <= age <= 86400 and receipt.get('image_sha256') == prepare_profile.TARGET_SHA256
+        return (0 <= age <= 86400 and receipt.get('image_sha256') == ROUTES[route]['sha256']
                 and receipt.get('usb_identity') == probe['usb_identity']
                 and receipt.get('info') == probe['snapshot']['info'])
 
@@ -468,12 +476,13 @@ class Engine:
                       inlet_status=slot_gates(probe['snapshot']['status']), probe_safe=True)
         self.store.save(record)
         self.restore(record, before)
-        if info['firmware'] == TARGET:
+        route = record.get('route', 'opencubic')
+        if info['firmware'] == ROUTES[route]['runtime']:
             state, code = 'ALREADY_TARGET', 'EXISTING_TARGET_UNVERIFIED'
-            record['verified_installation_receipt'] = self.receipt_matches(probe)
+            record['verified_installation_receipt'] = self.receipt_matches(probe, route)
             if record['verified_installation_receipt']: code = 'EXISTING_TARGET_MATCHES_RECEIPT'
-        elif (info['firmware'], info['boot_firmware']) == (prepare_profile.SOURCE_FIRMWARE, prepare_profile.BOOT_FIRMWARE):
-            prepare_profile.build_draft(self.store.directory(record['operation']) / 'probe.json')
+        elif (info['firmware'], info['boot_firmware']) == ROUTES[route]['source']:
+            prepare_profile.build_draft(self.store.directory(record['operation']) / 'probe.json', route=route)
             state, code = 'PREPARED', 'READY_TO_FLASH'
         else:
             state, code = 'UNSUPPORTED', 'UNSUPPORTED_SOURCE'
@@ -504,7 +513,8 @@ class Engine:
         require(gates == record['inlet_status'], 'ACE_GATE_CHANGED')
         record['probe_safe'] = True
         self.store.save(record)
-        profile = prepare_profile.build_draft(directory / 'flash-probe.json')
+        profile = prepare_profile.build_draft(directory / 'flash-probe.json',
+                                              route=record.get('route', 'opencubic'))
         # Every gate has evidence above, or an explicit acknowledgement passed by
         # the UI to start(). No unmeasured maintenance fact is silently approved.
         profile['checks'] = dict(idle_state_verified=True, heaters_and_dryer_off_verified=True,
@@ -612,6 +622,9 @@ def main(argv=None):
     parser.add_argument('--wait-seconds', type=int, default=0)
     parser.add_argument('--confirm-flash', action='store_true')
     parser.add_argument('--accept-untested-rollback', action='store_true')
+    parser.add_argument('--route', choices=tuple(ROUTES), default='opencubic',
+                        help='opencubic (tested) or stock (vendor V1.3.863; NOT physically tested)')
+    parser.add_argument('--accept-untested-stock-route', action='store_true')
     parser.add_argument('--action', choices=('prepare', 'flash', 'recover'))
     args = parser.parse_args(argv)
     engine = Engine()
@@ -620,8 +633,10 @@ def main(argv=None):
                 'U1_ROOT_REQUIRED')
         os.umask(0o077)
         if args.command == 'result': result = engine.result(args.operation, args.wait_seconds)
-        elif args.command == 'prepare': result = engine.prepare()
-        elif args.command == 'start': result = engine.start(args.operation, args.confirm_flash, args.accept_untested_rollback)
+        elif args.command == 'prepare': result = engine.prepare(args.route)
+        elif args.command == 'start':
+            result = engine.start(args.operation, args.confirm_flash, args.accept_untested_rollback,
+                                  args.accept_untested_stock_route)
         elif args.command == 'recover': result = engine.recover(args.operation)
         else:
             require(args.action is not None, 'INVALID_OPERATION')

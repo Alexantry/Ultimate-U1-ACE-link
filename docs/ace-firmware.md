@@ -243,8 +243,9 @@ python3 -c 'import json, sys; result=json.load(open(sys.argv[1])); assert result
 - Keep the evidence private and leave printer control stopped. Inspect the actual state before choosing a recovery action.
 - Do not blindly rerun the command. Do not power-cycle during an active write.
 - This updater requires the normal application state. It cannot generally rescue a device stuck in its bootloader.
-- Stock rollback has not been physically tested. This guide does not authorize an untested rollback route.
-- The updater accepts `--image-id stock-gen1-863` only with a matching reviewed profile. The draft generator deliberately does not create that profile.
+- Stock rollback has not been physically tested. The steps on this page do not use it.
+- The guided backend has a separate, explicitly untested route from `CV1.3.863` / boot `V1.0.1` to the stock image. It needs the extra flag `--accept-untested-stock-route`. See [remove and restore](restore.md).
+- The low-level updater accepts `--image-id stock-gen1-863` only with a matching reviewed profile.
 - Do not bypass that boundary by changing source versions or copying another device's profile.
 
 ## Offline tests

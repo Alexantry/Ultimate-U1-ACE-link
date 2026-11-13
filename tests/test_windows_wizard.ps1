@@ -170,6 +170,17 @@ function Invoke-WizardAceSetup {
     if ($script:scenario -eq 'ace-setup-failed') { throw (New-WizardException 'invalid_result') }
     return ($script:scenario -notin @('ace-setup-cancel', 'ace-forced-cancel'))
 }
+function Invoke-WizardOfficialRestore {
+    param([string]$BundleRoot)
+    $script:events.Add('official-usb')
+    return ($script:scenario -ne 'official-cancelled')
+}
+function Invoke-WizardAceStock {
+    param([string]$BundleRoot, [string]$Ssh, [string]$Target, [string]$RemoteDir, [string]$LogFile)
+    $script:events.Add('ace-stock')
+    if ($script:scenario -eq 'ace-stock-failed') { throw (New-WizardException 'invalid_result') }
+    return ($script:scenario -ne 'ace-stock-cancel')
+}
 function Read-Host {
     param([string]$Prompt)
     if ($script:answers.Count -eq 0) { throw ('Unexpected prompt: ' + $Prompt) }
@@ -220,6 +231,19 @@ function Invoke-WizardNative {
     } elseif ($command -match 'installer.py install') {
         if ($script:scenario -eq 'install-lost') { return [pscustomobject]@{ ExitCode = 255; Output = '' } }
         $data = @{ installed = $true; backup = 'synthetic-backup'; ready_samples = 3 }
+    } elseif ($command -match 'installer.py remove-check') {
+        Assert-True ($command -notmatch '--settings') 'Removal check sent installation settings'
+        $script:events.Add('remove-check')
+        if ($script:scenario -eq 'remove-loaded') { return [pscustomobject]@{ ExitCode = 1; Output = 'ERROR: Unload all four U1 heads before removal; the firmware feeder cannot unload ACE filament' } }
+        $data = @{ removable = ($script:scenario -ne 'remove-nothing'); read_only = $true
+                   restore_from_firmware = @('/home/lava/klipper/klippy/extras/filament_feed.py')
+                   delete = @('/home/lava/klipper/klippy/extras/ace.py')
+                   filament_detection = 'snapmaker'; previous_filament_detection = 'external' }
+    } elseif ($command -match 'installer.py remove ') {
+        Assert-True ($command -notmatch '--settings') 'Removal sent installation settings'
+        $script:events.Add('remove')
+        if ($script:scenario -eq 'remove-lost') { return [pscustomobject]@{ ExitCode = 255; Output = '' } }
+        $data = @{ removed = $true; backup = 'synthetic-backup'; ready_samples = 3 }
     } else { throw 'Unexpected remote command' }
     return [pscustomobject]@{ ExitCode = 0; Output = ($data | ConvertTo-Json -Depth 8) }
 }
@@ -468,6 +492,77 @@ try {
         Assert-True ($code -eq 0 -and $script:aceSetupCalls -eq 1 -and $script:events[1] -eq 'ace-setup' -and $script:events[2] -eq 'host-status') 'Required preparation was blocked by or skipped for host status'
         $code = Invoke-FakeWizard 'ace-forced-cancel' @('1', '1', '192.0.2.1') 'en'
         Assert-True ($code -eq 2 -and -not ($script:events -contains 'host-status')) 'Forced preparation cancellation reached host status'
+    }
+    Test-Case 'restore_menu_lists_three_tasks_and_exit_contacts_nothing' {
+        foreach ($language in @('zh', 'en')) {
+            $code = Invoke-FakeWizard 'existing' @('4') $language '5'
+            Assert-True ($code -eq 2 -and $script:calls.Count -eq 0 -and $script:events.Count -eq 0) 'Restore exit touched a device'
+            foreach ($id in @('restore_remove', 'restore_ace', 'restore_u1', 'restore_order')) {
+                Assert-True ($script:messages -contains (Get-WizardText $id)) ('Restore menu line missing: ' + $id)
+            }
+            if ($language -eq 'en') { Assert-EnglishOutput }
+        }
+    }
+    Test-Case 'restore_remove_runs_check_then_one_confirmed_removal' {
+        foreach ($language in @('zh', 'en')) {
+            $code = Invoke-FakeWizard 'existing' @('1', '1', '1', '192.0.2.1', '1') $language '5'
+            Assert-True ($code -eq 0) 'Removal flow failed'
+            Assert-True (($script:events -join ',') -eq 'ace-gate,remove-check,remove') 'Wrong removal order'
+            Assert-True ((Count-InstallCalls) -eq 0 -and $script:aceSetupCalls -eq 0) 'Removal started installation or ACE setup'
+            Assert-True ($script:messages -contains (Get-WizardText 'remove_done')) 'Removal success not reported'
+            Assert-True ($script:messages -contains (Get-WizardText 'remove_notice')) 'Removal notice missing'
+            if ($language -eq 'en') { Assert-EnglishOutput }
+        }
+    }
+    Test-Case 'restore_remove_declined_or_nothing_to_remove_changes_nothing' {
+        $code = Invoke-FakeWizard 'existing' @('1', '1', '1', '192.0.2.1', '2') 'en' '5'
+        Assert-True ($code -eq 2 -and -not ($script:events -contains 'remove')) 'Declined removal still ran'
+        $code = Invoke-FakeWizard 'remove-nothing' @('1', '1', '1', '192.0.2.1') 'en' '5'
+        Assert-True ($code -eq 0 -and -not ($script:events -contains 'remove')) 'Empty removal still ran'
+        Assert-True ($script:messages -contains (Get-WizardText 'remove_nothing')) 'Nothing-to-remove not explained'
+    }
+    Test-Case 'restore_remove_with_loaded_heads_explains_unload' {
+        $code = Invoke-FakeWizard 'remove-loaded' @('1', '1', '1', '192.0.2.1') 'en' '5'
+        Assert-True ($code -eq 1 -and -not ($script:events -contains 'remove')) 'Loaded heads did not stop removal'
+        Assert-True (($script:messages -join "`n").Contains((Get-WizardText 'hint_unload'))) 'Unload hint missing'
+    }
+    Test-Case 'restore_remove_lost_result_warns_not_to_repeat' {
+        $code = Invoke-FakeWizard 'remove-lost' @('1', '1', '1', '192.0.2.1', '1') 'en' '5'
+        Assert-True ($code -eq 1) 'Lost removal result was reported as success'
+        $warning = @($script:coloredMessages | Where-Object { $_.Text -eq (Get-WizardText 'uncertain_remove') })
+        Assert-True ($warning.Count -eq 1 -and $warning[0].Color -eq 'Red') 'Uncertain removal warning missing'
+        Assert-True (-not ($script:messages -contains (Get-WizardText 'uncertain_install'))) 'Wrong uncertainty warning shown'
+    }
+    Test-Case 'restore_ace_runs_only_the_vendor_route_and_never_touches_host_files' {
+        $code = Invoke-FakeWizard 'existing' @('2', '1', '1', '192.0.2.1') 'en' '5'
+        Assert-True ($code -eq 0 -and ($script:events -join ',') -eq 'ace-gate,ace-stock') 'Vendor ACE flow wrong'
+        Assert-True ((Count-InstallCalls) -eq 0 -and $script:aceSetupCalls -eq 0) 'Vendor ACE flow started other work'
+        Assert-True ($script:messages -contains (Get-WizardText 'restore_ace_done')) 'ACE restore result missing'
+        foreach ($scenario in @('ace-stock-cancel', 'ace-stock-failed')) {
+            $code = Invoke-FakeWizard $scenario @('2', '1', '1', '192.0.2.1') 'en' '5'
+            Assert-True ($code -ne 0 -and -not ($script:messages -contains (Get-WizardText 'restore_ace_done'))) 'Failed vendor flow reported success'
+        }
+    }
+    Test-Case 'restore_never_starts_opencubic_preparation_after_unsafe_ace_state' {
+        foreach ($choice in @('1', '2')) {
+            $code = Invoke-FakeWizard 'ace-forced-retry' @($choice, '1', '1', '192.0.2.1') 'en' '5'
+            Assert-True ($code -eq 1 -and $script:aceSetupCalls -eq 0) 'Restore started OpenCubic preparation'
+            Assert-True (($script:events -join ',') -eq 'ace-gate') 'Restore continued after unsafe ACE state'
+        }
+    }
+    Test-Case 'restore_official_usb_needs_no_printer_connection' {
+        $code = Invoke-FakeWizard 'existing' @('3') 'en' '5'
+        Assert-True ($code -eq 0 -and $script:calls.Count -eq 0 -and ($script:events -join ',') -eq 'official-usb') 'Official USB flow contacted the printer'
+        $code = Invoke-FakeWizard 'official-cancelled' @('3') 'en' '5'
+        Assert-True ($code -eq 2 -and $script:calls.Count -eq 0) 'Cancelled official USB flow reported success'
+    }
+    Test-Case 'remote_removal_commands_take_no_settings_and_keep_stage_rules' {
+        $dir = '/userdata/ultimate-u1-ace-stage-20260101-010101-0123abcd'
+        Assert-True ((Get-RemoteWizardCommand $dir 'remove-check') -match "python3 installer.py remove-check 2> wizard-remove-check.err") 'Wrong removal check command'
+        Assert-True ((Get-RemoteWizardCommand $dir 'remove') -notmatch '--settings') 'Removal command carries settings'
+        Assert-True ((Get-RemoteWizardCommand $dir 'install') -match '--settings config/settings.local.json') 'Install lost its settings'
+        Assert-Throws { Get-RemoteWizardCommand '/tmp/x' 'remove' }
+        Assert-Throws { Get-RemoteWizardCommand $dir 'uninstall' }
     }
 } finally {
     $resolved = [IO.Path]::GetFullPath($testTemp)

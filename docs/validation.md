@@ -30,7 +30,9 @@
 | U1 firmware preparation on USB | No end-to-end physical U1 update test. |
 | Guided ACE firmware orchestration (new in v0.1.3) | Offline checks only. |
 | Fresh installation with the generic installer | No separate physical acceptance test. |
-| Stock ACE firmware rollback, internal calibration readback | Not established. |
+| Stock ACE firmware rollback, internal calibration readback | Not established. The rollback is offered as an untested option. |
+| Removal of this project from the U1 (`installer.py remove`) | Offline checks only. On the tested U1, the firmware originals exist and match the reviewed hashes. Removal itself was not run. |
+| Return of the U1 to official Snapmaker firmware | Not tested. The official file's size and SHA-256 were checked against the pinned values. |
 
 The installer, host integration, USB tool, and Windows tools also have automated offline tests. Those tests use simulated devices and do not prove physical behavior.
 

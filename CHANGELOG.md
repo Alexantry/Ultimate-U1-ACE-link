@@ -26,6 +26,16 @@ the AFC stub (`extended/klipper/afc.cfg`). The link must point into
 `/usr/local/share/firmware-config`. The installer does not write these files.
 Before this change, the installer stopped with `Unexpected symlink` on such printers.
 
+Remove and restore (new; see `docs/restore.md`):
+
+- `installer.py remove-check` and `remove` return the U1 to the files shipped in the extended firmware.
+  The originals come from the read-only firmware layer and must match reviewed hashes.
+  Removal makes a backup first and restores the previous state if it fails.
+- The ACE backend has a second route, `--route stock`, from the pinned OpenCubic build to vendor `V1.3.863`.
+  It needs the extra flag `--accept-untested-stock-route`. This write has never been done on a device.
+- The wizard has menu 5, Restore: remove this project, return the ACE to vendor firmware,
+  or prepare a USB drive with official Snapmaker `V2.0.0`.
+
 Optional settings go in the `[ace]` section of `ace.cfg`. All have defaults.
 
 

@@ -60,6 +60,11 @@ class FakeHost(I.Host):
         self.rfid_actions.append('apply')
         self.external_ready()
 
+    def apply_rfid_default(self):
+        # The firmware service removes the link when the mode is snapmaker.
+        self.rfid_actions.append('apply-default')
+        self.internal_ready()
+
     def external_ready(self):
         I.require(I.filament_detection(self.read(I.EXTENDED_CONFIG)) == 'external'
                   and self.read(I.RFID_LINK) == self.read(I.RFID_TWEAK)
@@ -126,7 +131,10 @@ class Fixture:
             new = ACE if name == 'ace.py' else ('# reviewed ' + name + '\n').encode()
             old = None if name == 'ace.py' else ('# original ' + name + '\n').encode()
             (self.bundle / 'payload' / name).write_bytes(new)
-            if old is not None: self.put(destination, old)
+            if old is not None:
+                self.put(destination, old)
+                # The firmware image keeps the shipped file below the overlay.
+                self.put(I.FIRMWARE_LOWER + destination, old)
             self.manifest['files'].append({'id': name, 'payload': 'payload/' + name,
                 'destination': destination, 'sha256': I.digest(new),
                 'accepted_source_sha256': [I.digest(old) if old is not None else None]})
@@ -143,6 +151,10 @@ class Fixture:
     def bytes(self):
         return {str(p.relative_to(self.host.root)): p.read_bytes()
                 for p in self.host.root.rglob('*') if p.is_file() and 'ultimate-u1-ace-link' not in str(p)}
+
+    def remove(self):
+        with patch.object(I.time, 'sleep', return_value=None):
+            return self.installer.remove()
 
     def install(self):
         with patch.object(I.time, 'sleep', return_value=None):
@@ -419,6 +431,101 @@ class InstallerTests(unittest.TestCase):
         link.symlink_to(outside)
         with self.assertRaisesRegex(RuntimeError, 'Unexpected symlink'):
             self.f.installer.prepare(self.f.settings)
+
+    def without_debug_marker(self, files):
+        # Installation enables persistence; removal leaves that system flag alone.
+        return {name: data for name, data in files.items() if not name.endswith('.debug')}
+
+    def test_remove_returns_every_managed_file_to_the_firmware_state(self):
+        before = self.f.bytes(); self.f.install()
+        del self.f.host.actions[:], self.f.host.rfid_actions[:]
+        outcome = self.f.remove()
+        self.assertTrue(outcome['removed'])
+        self.assertFalse(outcome['ace_firmware_changed'] or outcome['u1_firmware_changed'])
+        self.assertEqual(outcome['filament_detection'], 'snapmaker')
+        self.assertEqual(self.f.host.actions, ['stop', 'start'])
+        self.assertEqual(self.f.host.rfid_actions, ['stop', 'apply-default'])
+        self.assertEqual(self.without_debug_marker(self.f.bytes()), before)
+        for name in ('filament_feed.py', 'filament_detect.py', 'extruder.py'):
+            self.assertEqual(self.f.host.read(I.DESTINATIONS[name]),
+                             self.f.host.read(I.FIRMWARE_LOWER + I.DESTINATIONS[name]))
+        for name in (I.DESTINATIONS['ace.py'], I.ACE_CONFIG, I.CONFIG_ROOT + '/ace_vars.cfg',
+                     I.RFID_LINK, I.RECEIPT):
+            self.assertIsNone(self.f.host.read(name))
+        self.assertNotIn('ace', self.f.host.snapshot())
+
+    def test_remove_check_is_read_only(self):
+        self.f.install(); installed = self.f.bytes()
+        del self.f.host.actions[:]
+        plan = self.f.installer.removal()
+        self.assertEqual(self.f.bytes(), installed)
+        self.assertEqual(self.f.host.actions, [])
+        self.assertEqual({n for n, d in plan['changes'].items() if d is None},
+                         {I.DESTINATIONS['ace.py'], I.ACE_CONFIG, I.CONFIG_ROOT + '/ace_vars.cfg', I.RFID_LINK})
+
+    def test_remove_works_for_an_installation_without_a_receipt(self):
+        before = self.f.bytes(); self.f.install()
+        self.f.host.path(I.RECEIPT).unlink()
+        self.assertTrue(self.f.remove()['removed'])
+        self.assertEqual(self.without_debug_marker(self.f.bytes()), before)
+
+    def test_remove_refuses_loaded_heads_and_busy_printer_before_any_change(self):
+        self.f.install(); installed = self.f.bytes()
+        for change in (lambda s: s['filament_motion_sensor e2_filament'].update(filament_detected=True),
+                       lambda s: s['print_stats'].update(state='printing'),
+                       lambda s: s['extruder1'].update(temperature=80)):
+            del self.f.host.actions[:]
+            self.f.host.snapshot_override = change
+            with self.assertRaises(RuntimeError): self.f.remove()
+            self.assertEqual(self.f.host.actions, [])
+            self.assertEqual(self.f.bytes(), installed)
+
+    def test_remove_refuses_unknown_core_and_unreviewed_firmware_original(self):
+        self.f.install()
+        target = I.DESTINATIONS['filament_feed.py']
+        good = self.f.host.read(target)
+        self.f.put(target, b'# edited by hand\n')
+        with self.assertRaisesRegex(RuntimeError, 'Unknown modified core'): self.f.remove()
+        self.f.put(target, good)
+        self.f.put(I.FIRMWARE_LOWER + target, b'# not the reviewed firmware file\n')
+        with self.assertRaisesRegex(RuntimeError, 'Firmware original is not a reviewed file'): self.f.remove()
+        self.assertEqual(self.f.host.actions, ['stop', 'start'])  # only the installation
+
+    def test_remove_keeps_a_filament_detection_mode_the_owner_selected(self):
+        self.f.install()
+        self.f.put(I.EXTENDED_CONFIG, self.f.host.read(I.EXTENDED_CONFIG).replace(b'rfid: external', b'rfid: openrfid'))
+        chosen = self.f.host.read(I.EXTENDED_CONFIG)
+        del self.f.host.rfid_actions[:]
+        outcome = self.f.remove()
+        self.assertEqual(outcome['filament_detection'], 'openrfid')
+        self.assertEqual(self.f.host.read(I.EXTENDED_CONFIG), chosen)
+        self.assertIsNotNone(self.f.host.read(I.RFID_LINK))
+        self.assertEqual(self.f.host.rfid_actions, [])
+
+    def test_failed_removal_restores_the_installed_integration(self):
+        self.f.install(); installed = self.f.bytes(); receipt = self.f.host.read(I.RECEIPT)
+        def leftover(s):
+            # Klipper still reports the ACE object after the files were removed.
+            if self.f.host.read(I.ACE_CONFIG) is None:
+                s['ace'] = {}; s['configfile']['settings']['ace'] = {}
+        self.f.host.snapshot_override = leftover
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr), patch.object(I.time, 'monotonic', side_effect=itertools.count()):
+            with self.assertRaisesRegex(RuntimeError, 'Ready verification failed'): self.f.remove()
+        self.assertIn('Automatic rollback VERIFIED', stderr.getvalue())
+        self.assertEqual(self.f.bytes(), installed)
+        self.assertEqual(self.f.host.read(I.RECEIPT), receipt)
+
+    def test_remove_with_nothing_installed_changes_nothing(self):
+        before = self.f.bytes()
+        with self.assertRaisesRegex(RuntimeError, 'Nothing to remove'): self.f.remove()
+        self.assertEqual(self.f.bytes(), before)
+        self.assertEqual(self.f.host.actions, [])
+
+    def test_remove_is_blocked_by_an_unfinished_ace_firmware_operation(self):
+        self.f.install()
+        self.ace_transaction('RUNNING', ready=False, service_restored=False, stopped=True)
+        with self.assertRaisesRegex(RuntimeError, 'ACE firmware operation'): self.f.remove()
 
     def test_offline_recovery_requires_local_ack_and_recovers_without_receipt(self):
         before = self.f.bytes(); result = self.f.install()

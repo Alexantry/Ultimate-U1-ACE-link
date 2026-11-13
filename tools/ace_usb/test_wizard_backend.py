@@ -551,5 +551,85 @@ class BackendTests(unittest.TestCase):
             fcntl.flock(other, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
 
+class StockRouteTests(unittest.TestCase):
+    """Return to vendor V1.3.863. No physical test exists; every gate must hold."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
+        self.f = Fixture(Path(self.temp.name))
+        port = patch.object(W.iap, 'require_unused_device'); port.start(); self.addCleanup(port.stop)
+        self.f.host.info['firmware'] = 'CV1.3.863'
+        self.f.engine.images = Mock(return_value=(b'synthetic stock image', {
+            'sha256': W.prepare_profile.STOCK_SHA256, 'expected_runtime_version': 'V1.3.863',
+            'announced_version': '1.3.863'}))
+
+    def prepare(self):
+        token = self.f.engine.prepare('stock')['operation']
+        self.f.engine.work(token, 'prepare')
+        return self.f.store.load(token)
+
+    def code(self, fn, *args):
+        with self.assertRaises(W.WizardError) as caught: fn(*args)
+        return caught.exception.code
+
+    def test_pinned_opencubic_build_is_the_only_start_point(self):
+        record = self.prepare()
+        self.assertEqual((record['state'], record['route'], record['target_firmware']),
+                         ('PREPARED', 'stock', 'V1.3.863'))
+        self.assertEqual(self.f.engine.public(record)['route'], 'stock')
+        for firmware, boot, expected in (('V1.3.856', 'V1.0.1', 'UNSUPPORTED'),
+                                         ('CV1.3.863', 'V1.0.2', 'UNSUPPORTED'),
+                                         ('V1.3.863', 'V1.0.1', 'ALREADY_TARGET')):
+            self.f.host.info.update(firmware=firmware, boot_firmware=boot)
+            self.assertEqual(self.prepare()['state'], expected)
+
+    def test_start_needs_the_separate_untested_route_acknowledgement(self):
+        record = self.prepare()
+        self.assertEqual(self.code(self.f.engine.start, record['operation'], True, True),
+                         'UNTESTED_ROUTE_NOT_ACCEPTED')
+        self.assertEqual(self.code(self.f.engine.start, record['operation'], True, False, True),
+                         'CONFIRMATION_REQUIRED')
+        after = self.f.store.load(record['operation'])
+        self.assertEqual(after['state'], 'PREPARED')
+        self.assertFalse(after['flash_attempted'])
+        self.assertNotIn('flash', self.f.spawns)
+
+    def test_unknown_route_is_refused_before_any_record_exists(self):
+        self.assertEqual(self.code(self.f.engine.prepare, 'factory-856'), 'UNKNOWN_ROUTE')
+        self.assertIsNone(self.f.store.load())
+
+    def test_accepted_stock_write_authorizes_only_the_stock_image(self):
+        record = self.prepare()
+        seen = {}
+        def flash_once(session, data, image, profile, audit):
+            seen.update(profile=copy.deepcopy(profile), image=image)
+            session.rpc('iap_upgrade', {})
+            self.f.host.info['firmware'] = 'V1.3.863'
+            return {'outcome': 'VERSION_CHANGED_AND_READY', 'info': copy.deepcopy(self.f.host.info),
+                    'status': copy.deepcopy(self.f.host.ace_status), 'flash_readback_verified': False}
+        self.f.engine.start(record['operation'], True, True, True)
+        with patch.object(W.iap, 'flash_once', side_effect=flash_once):
+            self.f.engine.work(record['operation'], 'flash')
+        done = self.f.store.load(record['operation'])
+        self.assertEqual((done['state'], done['code']), ('SUCCEEDED', 'FLASH_VERIFIED'))
+        self.assertEqual(seen['profile']['image_sha256'], W.prepare_profile.STOCK_SHA256)
+        self.assertEqual(seen['profile']['source_firmware'], 'CV1.3.863')
+        self.assertEqual(seen['profile']['route'], 'stock')
+        # A later OpenCubic preparation must not treat the stock receipt as its own.
+        self.assertFalse(self.f.engine.receipt_matches(
+            {'usb_identity': self.f.host.usb, 'snapshot': {'info': self.f.host.info}}))
+
+    def test_opencubic_image_is_never_written_on_the_stock_route(self):
+        record = self.prepare()
+        self.f.engine.images = Mock(return_value=(b'synthetic image', {
+            'sha256': W.prepare_profile.TARGET_SHA256, 'expected_runtime_version': W.TARGET,
+            'announced_version': '1.3.863'}))
+        self.f.engine.start(record['operation'], True, True, True)
+        with patch.object(W.iap, 'flash_once') as writer:
+            self.f.engine.work(record['operation'], 'flash')
+        writer.assert_not_called()
+        self.assertFalse(self.f.store.load(record['operation'])['flash_attempted'])
+
+
 if __name__ == '__main__':
     unittest.main()
