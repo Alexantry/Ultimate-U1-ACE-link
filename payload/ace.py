@@ -38,7 +38,7 @@ class BunnyAce:
     REQUEST_TIMEOUT = 5.0
     STATUS_TIMEOUT = 5.0
     READY_TIMEOUT = 30.0
-    PORT_VERSION = 'u1-2.0.0-snapace-34a06e87-port7-forward-takeup'
+    PORT_VERSION = 'u1-2.0.0-snapace-34a06e87-port8-runout-continue'
     PRELOAD_WAIT_TIMEOUT = 180.0
     FAST_LOAD_LENGTH = 1150
     FAST_LOAD_SPEED = 200
@@ -115,6 +115,13 @@ class BunnyAce:
         if self.forward_takeup_length >= min(self.retract_length, self.FAST_LOAD_LENGTH):
             raise config.error('forward_takeup_length must be less than retract_length and fast-load length')
         self.max_dryer_temperature = config.getint('max_dryer_temperature', 55)
+        # Runout continuation: the U1 head sensor, not the ACE slot sensor,
+        # decides when a print pauses for an empty spool.
+        self.runout_flush_length = config.getint('runout_flush_length', 50, minval=0, maxval=200)
+        self.runout_flush_speed = config.getint('runout_flush_speed', 150, minval=30, maxval=600)
+        self.runout_heaters_off = config.getint('runout_heaters_off', 1, minval=0, maxval=1) == 1
+        self.runout_auto_resume = config.getint('runout_auto_resume', 1, minval=0, maxval=1) == 1
+        self.runout_resume_settle = config.getint('runout_resume_settle', 8, minval=1, maxval=120)
 
         self._callback_map = {}
         self._feed_assist_index = -1
@@ -1017,6 +1024,25 @@ class BunnyAce:
         self._command({"method": "drying_stop"}, ready=False)
         self.gcode.respond_info('Stopped ACE drying')
 
+    @staticmethod
+    def _is_empty_rejection(exc):
+        text = str(exc).strip().lower()
+        return (isinstance(exc, AceException) and text.startswith('ace rejected command:')
+                and 'empty' in text[len('ace rejected command:'):])
+
+    def refill_ready(self, index):
+        # A refilled slot may be loaded once the native bite/NFC pass has ended.
+        self._validate_index(index)
+        if (not self._connected or self.gate_status[index] != GATE_AVAILABLE
+                or not self.is_ace_ready() or self._control_inflight):
+            return False
+        slots = self._info.get('slots') or []
+        slot = slots[index] if index < len(slots) and isinstance(slots[index], dict) else {}
+        if slot.get('status', 'ready') != 'ready' or slot.get('rfid') == 3:
+            return False
+        state = self._rfid_sync[index]
+        return state is None or not state['pending']
+
     def _enable_feed_assist(self, index):
         self._validate_index(index)
         owner = getattr(self, '_u1_load_owner', None)
@@ -1029,6 +1055,13 @@ class BunnyAce:
             self.log_always('ACE assist deferred until U1 sensor load finishes INDEX=%d' % index)
             return
         self._require_connected()
+        if self.gate_status[index] == GATE_EMPTY:
+            # The spool tail has left the ACE but is still feeding the U1 head.
+            # Nothing can be assisted; the U1 head sensor reports the runout.
+            if self._feed_assist_index != -1:
+                self._stop_feed_assist_only()
+            self.log_always('ACE slot empty INDEX=%d; feed assist skipped until U1 head runout' % index)
+            return False
         connected_at = self._connected_at
         def require_same_connection():
             if not self._connected or self._connected_at != connected_at:
@@ -1056,6 +1089,11 @@ class BunnyAce:
         except Exception as exc:
             if not acknowledged and isinstance(exc, AceException) and not exc.command_sent:
                 raise
+            if not acknowledged and self._is_empty_rejection(exc):
+                # The slot emptied after the last status report. A rejected
+                # start leaves no assist running, so there is nothing to stop.
+                self.log_always('ACE slot empty INDEX=%d; feed assist skipped until U1 head runout' % index)
+                return False
             # A missing ACK can still mean the device accepted the start.
             # An obsolete attempt cannot stop or overwrite a new connection.
             if self._connected and self._connected_at == connected_at:
@@ -1090,10 +1128,24 @@ class BunnyAce:
         if rt_index == -1:
             return
         self._validate_index(rt_index)
-        self._command({"method": "stop_feed_assist", "params": {"index": rt_index}}, ready=False)
+        try:
+            self._command({"method": "stop_feed_assist", "params": {"index": rt_index}}, ready=False)
+        except AceException as exc:
+            if not self._is_empty_rejection(exc):
+                raise
+            self.log_always('ACE slot empty INDEX=%d; no feed assist to stop' % rt_index)
         self._feed_assist_index = -1
         self.gcode.respond_info('Disabled ACE feed assist')
-        self._retract(rt_index, 5, 10)
+        if self.gate_status[rt_index] == GATE_EMPTY:
+            # The tail is beyond the ACE drive; there is nothing to unwind.
+            return
+        try:
+            self._retract(rt_index, 5, 10)
+        except AceException as exc:
+            if not self._is_empty_rejection(exc):
+                raise
+            self.log_always('ACE slot empty INDEX=%d; toolchange unwind skipped' % rt_index)
+            return
         self.dwell(0.3)
 
     def _stop_feed_assist_only(self):
@@ -1106,7 +1158,12 @@ class BunnyAce:
             return
         self._validate_index(index)
         connected_at = self._connected_at
-        self._command({'method': 'stop_feed_assist', 'params': {'index': index}}, ready=False)
+        try:
+            self._command({'method': 'stop_feed_assist', 'params': {'index': index}}, ready=False)
+        except AceException as exc:
+            if not self._is_empty_rejection(exc):
+                raise
+            self.log_always('ACE slot empty INDEX=%d; no feed assist to stop' % index)
         if not self._connected or self._connected_at != connected_at:
             raise AceException('ACE connection changed while stopping assist; result unknown')
         self.wait_ace_ready()
@@ -1435,6 +1492,9 @@ class BunnyAce:
                                      for origin in self._fast_origins],
             'forward_takeup_length': self.forward_takeup_length,
             'forward_takeup_speed': self.forward_takeup_speed,
+            'runout_flush_length': self.runout_flush_length,
+            'runout_heaters_off': self.runout_heaters_off,
+            'runout_auto_resume': self.runout_auto_resume,
             'preload_queue': [{'index': job['index'], 'phase': job['phase'],
                 'sent': job['sent']} for job in self._preload_jobs.values()],
             'rfid_sync': [None if state is None else {

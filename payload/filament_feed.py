@@ -3,6 +3,7 @@ from . import pulse_counter
 
 
 FEED_CHANNEL_NUMS                                   = 2
+FEED_ACE_REFILL_READY_TIMEOUT                       = 180
 FEED_CHANNEL_1                                      = 0
 FEED_CHANNEL_2                                      = 1
 
@@ -385,6 +386,7 @@ class FilamentFeed:
         self.reactor = self.printer.get_reactor()
         self.gcode = self.printer.lookup_object('gcode')
         self.ace = None
+        self._ace_runout_wait = {}
         self.module_name = config.get_name().split()[1]
 
         self.channel_active = None
@@ -540,6 +542,9 @@ class FilamentFeed:
         self.gcode.register_mux_command("FEED_RUNOUT_EVENT_HANDLE", "MODULE",
                         self.module_name,
                         self.cmd_FEED_RUNOUT_EVENT_HANDLE)
+        self.gcode.register_mux_command("FEED_RUNOUT_REFILL_RESUME", "MODULE",
+                        self.module_name,
+                        self.cmd_FEED_RUNOUT_REFILL_RESUME)
 
         self.printer.register_event_handler("klippy:ready", self._ready)
         self.printer.register_event_handler("ace:gate_changed", self._ace_gate_changed)
@@ -575,6 +580,8 @@ class FilamentFeed:
         if self.ace is None or index not in self.filament_ch:
             return
         ch = self.filament_ch.index(index)
+        if present:
+            self._ace_runout_refill(ch)
         if (self.channel_active is not None or not self.module_exist[ch]
                 or not self.config['auto_mode'][ch]
                 or self.channel_state[ch] not in (
@@ -586,6 +593,172 @@ class FilamentFeed:
         if sensor is None or sensor.get_status(self.reactor.monotonic())['filament_detected']:
             return
         self._set_channel_state(ch, FEED_STA_PRELOAD_FINISH if present else FEED_STA_WAIT_INSERT, True)
+
+    # --- Runout continuation -------------------------------------------------
+    # The U1 head sensor pauses the print. This module then empties the nozzle,
+    # switches the nozzle heaters off and resumes after the same ACE slot is
+    # refilled. The stock pause/resume macros keep ownership of all motion.
+
+    def _ace_runout_paused_for(self, extruder_index):
+        print_stats = self.printer.lookup_object('print_stats', None)
+        macro = self.printer.lookup_object('gcode_macro INNER_RESUME', None)
+        if print_stats is None or macro is None or print_stats.state != 'paused':
+            return False
+        variables = getattr(macro, 'variables', {})
+        try:
+            return (int(variables.get('is_runout', 0)) == 1
+                    and int(variables.get('last_extruder_index', -1)) == extruder_index)
+        except (TypeError, ValueError):
+            return False
+
+    def _ace_runout_still_waiting(self, ch, wait):
+        if self._ace_runout_wait.get(ch) is not wait:
+            return False
+        if not self._ace_runout_paused_for(wait['extruder']):
+            # Resumed, replenished from another head, or cancelled elsewhere.
+            self._ace_runout_wait.pop(ch, None)
+            return False
+        return True
+
+    def _ace_runout_flush(self, ch, extruder_index):
+        ace = self.ace
+        length = getattr(ace, 'runout_flush_length', 0)
+        if length <= 0:
+            return
+        macro = self.printer.lookup_object('gcode_macro INNER_RESUME', None)
+        try:
+            temp = float(getattr(macro, 'variables', {}).get('last_extruder_temp', 0))
+        except (TypeError, ValueError):
+            temp = 0.
+        active = self.toolhead.get_extruder()
+        homed = self.toolhead.get_status(self.reactor.monotonic())['homed_axes']
+        if (temp < 170 or getattr(active, 'extruder_index', None) != extruder_index
+                or not all(axis in homed for axis in 'xyz')):
+            self.gcode.respond_info('Runout flush skipped: nozzle e%d is not ready' % extruder_index)
+            return
+        speed = getattr(ace, 'runout_flush_speed', 150)
+        lines = ['M109 S%d T%d A0' % (int(temp), extruder_index), 'M83']
+        remaining = float(length)
+        while remaining > 0:
+            step = min(10., remaining)
+            lines.append('G1 E%.2f F%d' % (step, speed))
+            remaining -= step
+        lines.append('M400')
+        entangle = self.printer.lookup_object(
+                'filament_entangle_detect e%d_filament' % extruder_index, None)
+        try:
+            if entangle is not None:
+                entangle.skip_entangle_check(True)
+            self.gcode.run_script_from_command('\n'.join(lines))
+        finally:
+            if entangle is not None:
+                entangle.skip_entangle_check(False)
+
+    def _ace_runout_begin(self, ch):
+        ace = self.ace
+        extruder_index = self.filament_ch[ch]
+        self._ace_runout_wait.pop(ch, None)
+        if not self._ace_runout_paused_for(extruder_index):
+            return
+        try:
+            ace._stop_feed_assist_only()
+        except Exception as exc:
+            ace.log_error('ACE runout assist cleanup failed: %s' % (exc,))
+        try:
+            self._ace_runout_flush(ch, extruder_index)
+        except Exception as exc:
+            logging.exception('[feed] runout flush failed')
+            ace.log_error('Runout flush failed: %s' % (exc,))
+        wait = {'extruder': extruder_index, 'worker': False}
+        self._ace_runout_wait[ch] = wait
+        if ace.gate_status[extruder_index] == 1:
+            # Already refilled behind the old tail: keep the nozzle hot.
+            self.gcode.respond_info(
+                'Filament ran out at U1 head e%d; ACE slot %d already holds new filament'
+                % (extruder_index, extruder_index))
+            self._ace_runout_refill(ch)
+            return
+        if getattr(ace, 'runout_heaters_off', True):
+            for i in range(4):
+                name = 'extruder' if i == 0 else 'extruder%d' % i
+                if self.printer.lookup_object(name, None) is not None:
+                    self.gcode.run_script_from_command('M104 S0 T%d A0' % i)
+        self.gcode.respond_info(
+            'Filament ran out at U1 head e%d; nozzle heaters are off. '
+            'Insert new filament into ACE slot %d to continue'
+            % (extruder_index, extruder_index))
+
+    def _ace_runout_refill(self, ch):
+        wait = self._ace_runout_wait.get(ch)
+        if (wait is None or wait['worker'] or self.ace is None
+                or not getattr(self.ace, 'runout_auto_resume', True)):
+            return
+        wait['worker'] = True
+        self.reactor.register_async_callback(
+            (lambda et, c=self._ace_runout_refill_worker, ch=ch, wait=wait: c(ch, wait)))
+
+    def _ace_runout_refill_worker(self, ch, wait):
+        ace = self.ace
+        index = wait['extruder']
+        try:
+            start = self.reactor.monotonic()
+            settle = getattr(ace, 'runout_resume_settle', 8)
+            deadline = start + settle + FEED_ACE_REFILL_READY_TIMEOUT
+            while True:
+                if not self._ace_runout_still_waiting(ch, wait):
+                    return
+                if ace.gate_status[index] != 1:
+                    # Pulled out again; the next insertion starts a new attempt.
+                    return
+                now = self.reactor.monotonic()
+                if (now - start >= settle and self.channel_active is None
+                        and ace.refill_ready(index)):
+                    break
+                if now >= deadline:
+                    ace.log_error('ACE slot %d is not ready after refill; select Resume on the U1' % index)
+                    return
+                self.reactor.pause(now + 0.5)
+            wait['ready'] = True
+            self.gcode.run_script('FEED_RUNOUT_REFILL_RESUME MODULE=%s CHANNEL=%d'
+                                  % (self.module_name, ch))
+        except Exception:
+            logging.exception('[feed] channel[%d]: runout refill resume error', ch)
+        finally:
+            wait['worker'] = False
+            wait.pop('ready', None)
+
+    def _ace_runout_material_changed(self, extruder_index):
+        config = self.printer.lookup_object('print_task_config', None)
+        try:
+            before = config.filament_info_backup['filament_type'][extruder_index]
+            after = config.print_task_config['filament_type'][extruder_index]
+        except Exception:
+            return None
+        if before in ('', 'NONE') or after in ('', 'NONE') or before == after:
+            return None
+        return (before, after)
+
+    def cmd_FEED_RUNOUT_REFILL_RESUME(self, gcmd):
+        channel = gcmd.get_int('CHANNEL')
+        if channel < 0 or channel >= FEED_CHANNEL_NUMS:
+            raise gcmd.error('[feed] channel[%d] is out of range[0,%d]\n' % (channel, FEED_CHANNEL_NUMS - 1))
+        # Runs under the G-code mutex, so a stock resume cannot overlap it.
+        wait = self._ace_runout_wait.get(channel)
+        if (self.ace is None or wait is None or not wait.get('ready')
+                or not self._ace_runout_still_waiting(channel, wait)):
+            return
+        index = wait['extruder']
+        if self.ace.gate_status[index] != 1:
+            return
+        self._ace_runout_wait.pop(channel, None)
+        changed = self._ace_runout_material_changed(index)
+        if changed is not None:
+            gcmd.respond_info(
+                'ACE slot %d now holds %s instead of %s; print stays paused. '
+                'Select Resume on the U1 to continue with it' % (index, changed[1], changed[0]))
+            return
+        gcmd.respond_info('ACE slot %d refilled; loading and resuming the print' % index)
+        self.gcode.run_script_from_command('RESUME')
 
     def _ace_head_present(self, ch):
         sensor = self.runout_sensor[ch]
@@ -2364,6 +2537,8 @@ class FilamentFeed:
             self._do_feed(channel, FEED_ACT_FILAMENT_RUNOUT)
         except:
             logging.error("[feed] channel[%d]: runout event handle error!", channel)
+        if self.ace is not None:
+            self._ace_runout_begin(channel)
 
 def load_config_prefix(config):
     return FilamentFeed(config)

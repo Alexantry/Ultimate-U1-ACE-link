@@ -18,7 +18,8 @@ def production_methods():
     cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'FilamentFeed')
     wanted = {'_ace_head_present', '_ace_check_load', '_ace_wait_load_ready',
               '_ace_claim_load', '_ace_feed_to_sensor', '_ace_gate_changed', '_do_feed',
-              'cmd_FEED_AUTO', '_is_keep_raw_error_info'}
+              'cmd_FEED_AUTO', '_is_keep_raw_error_info',
+              'cmd_FEED_RUNOUT_EVENT_HANDLE', 'cmd_FEED_RUNOUT_REFILL_RESUME'}
     methods = [n for n in cls.body if isinstance(n, ast.FunctionDef)
                and (n.name in wanted or n.name.startswith('_ace_'))]
     ns = {'logging': logging}
@@ -133,6 +134,7 @@ class Rig:
         obj.channel_state = [C['FEED_STA_PRELOAD_FINISH']] * 2
         obj.channel_error_state = [C['FEED_STA_NONE']] * 2
         obj.channel_active = None
+        obj._ace_runout_wait = {}
         obj.manual_feeding = [False, False]
         obj.module_exist = [True, True]
         obj.config = {'auto_mode': [True, True], 'load_finish': [False, False]}

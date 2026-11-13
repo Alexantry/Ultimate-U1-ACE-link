@@ -397,6 +397,29 @@ class InstallerTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'Unexpected symlink'):
             self.f.host.read(I.CONFIG_ROOT + '/printer.cfg')
 
+    def test_firmware_owned_tweak_links_are_read_but_other_links_are_refused(self):
+        # The firmware's optional AFC stub adds extended/klipper/afc.cfg as a link.
+        tweak = self.f.host.root / 'usr/local/share/firmware-config/tweaks/klipper/afc.cfg'
+        tweak.parent.mkdir(parents=True, exist_ok=True)
+        tweak.write_bytes(b'[AFC]\nenabled: True\n')
+        link = self.f.host.path(I.CONFIG_ROOT + '/extended/klipper') / 'afc.cfg'
+        link.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            link.symlink_to(tweak)
+        except OSError as exc:
+            self.skipTest('Platform does not permit test symlinks: ' + str(exc))
+        before = tweak.read_bytes()
+        self.f.installer.prepare(self.f.settings)
+        self.f.install()
+        self.assertTrue(link.is_symlink())
+        self.assertEqual(tweak.read_bytes(), before)
+        link.unlink()
+        outside = self.f.host.root / 'tmp/afc.cfg'
+        outside.parent.mkdir(parents=True, exist_ok=True); outside.write_bytes(before)
+        link.symlink_to(outside)
+        with self.assertRaisesRegex(RuntimeError, 'Unexpected symlink'):
+            self.f.installer.prepare(self.f.settings)
+
     def test_offline_recovery_requires_local_ack_and_recovers_without_receipt(self):
         before = self.f.bytes(); result = self.f.install()
         self.f.host.path(I.RECEIPT).unlink()

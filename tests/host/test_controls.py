@@ -120,7 +120,7 @@ class ControlChecks(unittest.TestCase):
         ace = new()
         status = ace.get_status()
         self.assertTrue(status['connected']); self.assertTrue(status['status_fresh'])
-        self.assertEqual(status['port_version'], 'u1-2.0.0-snapace-34a06e87-port7-forward-takeup')
+        self.assertEqual(status['port_version'], 'u1-2.0.0-snapace-34a06e87-port8-runout-continue')
         self.assertEqual(status['load_policy'], 'u1_sensor')
         self.assertEqual(ace._serial.sent, [])
 

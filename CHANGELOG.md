@@ -1,5 +1,34 @@
 # Changes
 
+## Unreleased — runout continuation (`port8-runout-continue`)
+
+This revision changes what happens when a spool becomes empty during a print.
+It has offline checks only. It has not received a physical test.
+
+Cause of the fault: when the end of the filament left the ACE, the ACE refused
+to start feed assist at the next tool change (`empty`). The host treated this as
+an error and paused the print, although filament remained in the tube.
+
+- Continue the print when an ACE slot is empty. Feed assist is skipped for that slot.
+- Let the U1 head sensor pause the print when the filament end reaches the head.
+- At the discard position, push out the filament that remains below the head sensor
+  (`runout_flush_length`, default 50 mm; `runout_flush_speed`, default 150 mm/min).
+- Set all nozzle heaters to off while the printer waits (`runout_heaters_off`, default 1).
+  The bed temperature does not change.
+- Load and resume automatically when the same ACE slot receives new filament
+  (`runout_auto_resume`, default 1). The host waits `runout_resume_settle` seconds
+  (default 8) and until the ACE is ready, so that the ACE can grip the filament and read its tag.
+- Keep the print paused when the new tag reports a different material type.
+- Keep the material data of a slot during a print while its filament end still feeds the head.
+
+Installer: read configuration links that the firmware adds for its own options, such as
+the AFC stub (`extended/klipper/afc.cfg`). The link must point into
+`/usr/local/share/firmware-config`. The installer does not write these files.
+Before this change, the installer stopped with `Unexpected symlink` on such printers.
+
+Optional settings go in the `[ace]` section of `ace.cfg`. All have defaults.
+
+
 ## 0.1.6 — 2026-10-30
 
 This revision checks the full beginner workflow in both languages.

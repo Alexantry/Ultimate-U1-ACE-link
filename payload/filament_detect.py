@@ -84,8 +84,25 @@ class FilamentDetector:
             else:
                 self.request_clear_filament_info(channel)
 
+    def _ace_head_holds_filament(self, channel):
+        sensor = self.printer.lookup_object('filament_motion_sensor e%d_filament' % (channel), None)
+        if sensor is None:
+            return False
+        status = sensor.get_status(0)
+        return bool(status['enabled'] and status['filament_detected'])
+
+    def _ace_print_active(self):
+        print_stats = self.printer.lookup_object('print_stats', None)
+        return print_stats is not None and print_stats.state in ('printing', 'paused')
+
     def _runout_evt_handle(self, extruder, present):
-        if self.printer.lookup_object('ace', None) is not None:
+        ace = self.printer.lookup_object('ace', None)
+        if ace is not None:
+            # A spool tail that already left the ACE kept its material data
+            # while it fed the head. Outside a print, an empty head ends that.
+            if (not present and type(extruder) is int and 0 <= extruder < self._channel_nums
+                    and not self._ace_print_active()):
+                self._ace_clear_material(extruder, ace)
             return
         filament_feed_infos = {}
         for obj_name, obj in self.filament_feed_objects:
@@ -126,6 +143,13 @@ class FilamentDetector:
         if present:
             self._ace_clear_stamps[channel] = None
             return
+        if self._ace_print_active() and self._ace_head_holds_filament(channel):
+            # The tail is still feeding the U1 head: the print continues with
+            # this material, and a runout resume needs its data.
+            return
+        self._ace_clear_material(channel, ace)
+
+    def _ace_clear_material(self, channel, ace):
         stamp = (ace._connected_at, ace._gate_epochs[channel])
         if (self._ace_clear_stamps[channel] == stamp
                 or not self._ace_clear_current(channel, ace, stamp)):

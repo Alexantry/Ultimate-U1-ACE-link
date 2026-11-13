@@ -29,6 +29,8 @@ ACE_CONFIG = CONFIG_ROOT + '/extended/klipper/ace.cfg'
 EXTENDED_CONFIG = CONFIG_ROOT + '/extended/extended2.cfg'
 RFID_LINK = CONFIG_ROOT + '/extended/klipper/disable-rfid-reader.cfg'
 RFID_TWEAK = '/usr/local/share/firmware-config/tweaks/klipper/disable-rfid-reader.cfg'
+TWEAK_LINK_DIR = CONFIG_ROOT + '/extended/klipper'
+FIRMWARE_CONFIG_SHARE = '/usr/local/share/firmware-config'
 RFID_SERVICES = {
     '/etc/init.d/S59rfid-support': '60214bc1e0188774004e32fc2a1ae860c39d7a2c89c49da8b09a119a2b94eafd',
     '/etc/init.d/S99openrfid': '4eaf41a2c6e2c0cd72232c3f08723d3b2a3a058ae81a49d3738bdcb2b689f512',
@@ -183,12 +185,27 @@ class Host:
                 elif current in (self.root / RFID_LINK.lstrip('/'),
                                  self.root / 'oem/printer_data/config/extended/klipper/disable-rfid-reader.cfg'):
                     expected = self.path(RFID_TWEAK)
+                elif (current.suffix == '.cfg' and current.parent in (
+                        self.root / TWEAK_LINK_DIR.lstrip('/'),
+                        self.root / ('oem' + TWEAK_LINK_DIR[len('/home/lava'):]))):
+                    # Other firmware-config options (for example the AFC stub)
+                    # add read-only links to firmware-owned files. This
+                    # installer reads them as configuration and never writes them.
+                    expected = self.firmware_tweak(os.readlink(current), absolute)
                 else:
                     raise RuntimeError('Unexpected symlink: ' + absolute)
                 require(os.readlink(current) == str(expected)
                         and current.resolve() == expected,
                         'Unexpected symlink: ' + absolute)
         return p
+
+    def firmware_tweak(self, target, absolute):
+        base = self.root / FIRMWARE_CONFIG_SHARE.lstrip('/')
+        try:
+            relative = Path(target).relative_to(base)
+        except ValueError:
+            raise RuntimeError('Unexpected symlink: %s -> %s' % (absolute, target))
+        return self.path(FIRMWARE_CONFIG_SHARE + '/' + relative.as_posix())
 
     def read(self, path):
         p = self.path(path)
