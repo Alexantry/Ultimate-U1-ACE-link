@@ -1,142 +1,91 @@
 # Ultimate U1-ACE link
 
-让 **Anycubic ACE Pro 第一代**连接 **Snapmaker U1**。
-自动读取受支持的耗材 NFC 标签，同步品牌、材质和颜色；通过 U1 屏幕或远程控制进退料。
-退料时保留材料信息，并可通过校准后的回送消松收紧松圈。
+[English](README.md)
 
-**本项目使用 OpenAI Codex 完成开发和文档整理。安装者不需要会编程，也不需要安装 Codex。**
+把 **Anycubic ACE Pro 第一代**接到 **Snapmaker U1** 上，当作四路自动供料器使用。
 
-## [安装向导入口：下载、双击、跟着提示操作](docs/quick-start.zh-CN.md)
+- 在 U1 屏幕或网页上点进料、退料，ACE 自动送料和收料。
+- ACE 读取耗材 NFC 标签，品牌、材质、颜色自动同步到 U1。
+- 退料后材料留在 ACE 里，信息保留，下次直接进料。
 
-**[下载 v0.1.6 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip)** → 全部解压 → 双击 **START-HERE.cmd** → 选择中文或 English。
-尚未安装 U1 扩展固件时，在同一向导选择“准备 U1 固件”，自动下载、校验并复制到 U 盘。
+![系统示意图](docs/images/system.svg)
 
-## [手动安装入口：中文步骤，逐条复制命令](docs/installation.zh-CN.md)
+## 需要什么
 
-**不想运行 Windows 安装向导，直接点这里。** 完整手动步骤与向导并行保留，不需要封闭 EXE。
-手动方式仍会运行可阅读的开源 `installer.py`。
-[English manual](docs/installation.md) · 离线中文手册：**MANUAL-INSTALL.zh-CN.html**。
-[安装方式比较、旧版固定下载及校验值](docs/install-options.md)。
+| 项目 | 要求 |
+| --- | --- |
+| 打印机 | Snapmaker U1，扩展固件 `2.0.0-paxx12-24` |
+| 供料器 | Anycubic ACE Pro **第一代**（不支持 ACE 2 Pro） |
+| ACE 固件 | `CV1.3.863` / OpenCubic `1.1.1` |
+| 电脑 | Windows 10 或 11，和打印机在同一网络 |
+| 硬件 | 一根 ACE 连接线和四路料管，按 [SnapAce 硬件指南](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring)接线 |
+
+U1 和 ACE 的固件不用自己找，安装向导会下载、校验并带你刷好。
+
+## 安装
+
+1. **接线。** 打印机空闲、冷却、断电后，接好连接线和四路料管，再开机。
+2. **下载。** [下载 v0.1.6 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip)，右键“全部解压缩”。
+3. **运行。** 双击 **START-HERE.cmd**，选中文，跟着提示走。
+
+向导会依次完成：准备 U1 固件 → 准备 ACE 固件 → 安装本项目 → 检查连接。
+你只需要输入打印机地址和密码，并在打印机屏幕上确认几次。
 
 > [!CAUTION]
-> **禁止把旧 SnapAce 的 `filament_feed.py` 或 `extruder.py` 覆盖到 U1 2.0。**
->
-> **本项目替代原 SnapAce 的软件安装步骤。** 上游项目只需参考**硬件接线部分**。
+> **不要把旧 SnapAce 的 `filament_feed.py` 或 `extruder.py` 复制到 U1 2.0 固件上。**
+> 本项目已经替代 SnapAce 的软件安装步骤，上游只需要参考硬件接线部分。
 
-## 第一次使用：从准备固件到安装，在同一流程完成
+第一次安装看[图文快速开始](docs/quick-start.zh-CN.md)。
+不想运行向导，可以按[手动安装](docs/installation.zh-CN.md)逐条执行命令。
 
-1. 结束打印。首次安装先正常退料，再清空四个打印头和四个 ACE 入口。关闭加热和烘干并等待冷却；断电后按 [SnapAce 硬件指南](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring)准备第一代 ACE 连接线和四路料管，接好后再开机。详见[准备步骤](docs/quick-start.zh-CN.md#1-更新或安装之前先准备设备)。
-2. 下载上面的安装包，右键选择“全部解压缩”。
-3. 打开解压后的文件夹，双击 **START-HERE.cmd**，选择 **中文** 或 **English**。
-4. 还没有指定 U1 固件时，选择准备流程；向导负责下载、校验及复制到 FAT32 U 盘。
-5. 按窗口指引在 U1 屏幕确认本地更新，开启 Advanced Mode，再将 Root Access 设为 Open。
-6. 回到同一向导，输入打印机地址和密码，按提示完成 ACE 固件准备。
-7. 填写已审查的初始管路参数，核对摘要并安装。先检查一槽；通过后逐槽验证其余三槽，再用于正常打印。
+## 装好以后怎么用
 
-向导路径**不需要自己输入命令或修改配置文件**。接线、物理测量和打印机屏幕确认仍需亲手完成。
-不熟悉下载、解压和双击操作，请看[逐步图文指南](docs/quick-start.zh-CN.md)。
-安装包里的 **START-HERE.html**（中文）、**START-HERE.en.html**（英文）及两种语言的手动手册都可以双击打开，离线阅读。
-
-**v0.1.0 至 v0.1.5 的原安装包均保留，文件未被新版覆盖。**
-
-> [!IMPORTANT]
-> **首次更新固件和开启访问权限，仍需在打印机屏幕操作。** 向导会准备文件并逐步引导，不能在尚未开放访问时替你完成屏幕授权。
-> **ACE 固件准备也已纳入双语向导。** 正常支持的路径不需另看命令说明，见[ACE 向导及支持范围](docs/ace-wizard.zh-CN.md)。
-> **仅开放已验证的源版本组合，不对未知固件强刷。**
-
-![下载、解压、启动示意图](docs/images/first-steps.svg)
-
-## 安装向导会帮你做好什么？
-
-- 自动下载指定 U1 扩展固件、核对 SHA-256、复制到选定的 FAT32 U 盘。
-- 在同一双语向导中提示屏幕升级、Advanced Mode 和 Root Access 步骤。
-- 从上游下载并校验 ACE 固件，检测设备及源版本，通过确认后执行一次更新，并保存可查询的结果。
-- 自动传本项目文件、检查版本、保存备份。
-- 自动寻找 ACE 接口；已有接口和参数会保留。
-- 自动把后台 **Filament Detection** 设置为 **External（外部）**，并处理内置读卡服务。
-- 自动设置必要的持久化、ACE 配置和模块。
-- 自动重启相关软件服务，核对连接、设置和材料信息。
-
-后台选项的准确名称是 **External**；`extended` 是扩展固件和配置文件的名称。
-你不用再手动找这个选项。
-
-你需要输入打印机地址和密码。首次安装还需确认适合自己管路的长度；已有安装默认保留原参数。
-速度等通用值已经预填。回送消松在首次安装时默认关闭，测试后再启用。
-
-## 需要什么设备？
-
-> [!IMPORTANT]
-> **向导包含 U1 固件准备环节；以下条件完成后才开始安装适配模块。**
-> **当前验证的是 ACE Pro 第一代和下表中的准确 U1 固件版本，不包含 ACE 2 Pro。**
-
-| 项目 | 已验证的要求 |
+| 你做什么 | 会发生什么 |
 | --- | --- |
-| 电脑 | Windows 10 或 Windows 11，与打印机在同一网络。 |
-| U1 | 扩展固件 `2.0.0-paxx12-24`；Advanced Mode 开启，Root Access 为 Open。 |
-| ACE | ACE Pro 第一代，正确的 USB 连接和四路料管。 |
-| ACE NFC 固件 | `CV1.3.863` / OpenCubic `1.1.1`。 |
+| 把耗材插进 ACE 空槽 | ACE 咬住耗材并读取 NFC，然后停住等待。 |
+| 在 U1 上点进料 | ACE 把耗材送到打印头，感应到料后自动停，U1 完成上料。 |
+| 在 U1 上点退料 | U1 退出热端，ACE 把耗材收回并留在入口，材料信息保留。 |
+| 把耗材完全拔出 ACE | 该槽的材料信息清除。 |
 
-向导可更新已测的 `V1.3.856` / 引导 `V1.0.1` 组合。
-其他源版本会停下，已有目标固件不会被悄悄重刷；断线后可从向导只读查看上次结果。
+![进料和退料流程](docs/images/feed-cycle.zh-CN.svg)
 
-U1 使用上游原版固定固件，不重新打包成未经验证的新固件，也不悄悄刷写已有系统。
-U 盘准备不会格式化磁盘，不覆盖内容不同的同名文件。
-具体步骤、校验值和手动替代方法见[整合固件准备说明](docs/u1-preparation.zh-CN.md)。
+送料长度和你的料管长度有关，安装后需要校准一次：[参数与校准](docs/configuration.zh-CN.md)。
 
-## 这些功能已整合
+## NFC 支持
 
-| 你做什么 | ACE 和 U1 怎么响应 | 应看到什么 |
-| --- | --- | --- |
-| 向空槽插入耗材 | 短咬料、预进料并尝试读取 NFC。 | 动作结束后停在 ACE 附近，不自动长送至挤出头。无芯片材料可手动填写。 |
-| 在 U1 屏幕或远程点进料 | 先快速送一段，再慢速接近头端。 | 头端传感器到料后停止 ACE 输送阶段，U1 完成原生热端上料流程。 |
-| 点退料 | U1 完成热端退料，再由 ACE 按设定长度回抽。 | 材料仍留在 ACE 及后方管路里，材料信息保留。 |
-| 已启用退料后回送 | ACE 朝 U1 方向回送一段已校准的距离。 | 吸收料盘附近松圈；不是滚筒独立驱动，也没有张力检测停止。 |
-| 不拔出材料，再点进料 | 下一次快段会扣除已经成功回送的距离。 | 可以再次快速送至头端，无需因为正常退料重新读卡。 |
-| 完全移出 ACE 入口 | 确认该入口无料。 | 此时才清除对应材料信息。 |
+标签由 ACE 读取和解码，解码能力来自 [OpenCubic](https://github.com/Jupsi/OpenCubic)，不需要自己找 NFC 密钥。
 
-![插料、进料、退料和回送流程](docs/images/feed-cycle.zh-CN.svg)
-
-远程可通过已启用的远程屏幕或网页控制台操作，具体入口见[日常使用](docs/daily-use.zh-CN.md)。
-安装器不会自动开启可选的远程屏幕或 AFC 面板。
-
-实测示例为快段 `1150/200`、头端接近速度 `50`、退料 `1250/80`，回送 `300/50`。
-**这些长度仅适用于对应管路，不是所有机器的通用值。新装默认关闭回送，校准后才启用。**
-请看[如何测量料管、填写参数并验证](docs/configuration.zh-CN.md)。
-
-## NFC 支持范围
-
-本项目已实测成功：**拓竹品牌、耗材类型和耗材颜色的识别与同步**。
-固定 OpenCubic 固件的支持范围如下；上游支持和本项目实测分别列明。
-**以下多品牌 NFC 解码支持来自 [OpenCubic 项目](https://github.com/Jupsi/OpenCubic)。本项目负责把 ACE 已识别的材料信息同步到 U1。**
-
-| 品牌或标签格式 | 验证状态 |
+| 品牌或格式 | 状态 |
 | --- | --- |
-| Bambu Lab／拓竹 | 上游确认；本项目已实测品牌、耗材类型和颜色。 |
-| Anycubic 第一代／第二代标签、TigerTag、OpenSpool | 上游确认；本项目尚未实测。 |
-| Elegoo／智能派、OpenPrintTag（含 Prusa 格式） | 上游已实现解析，尚未实测；本项目也未实测。 |
-| Creality／创想三维、QIDI／起迪 | **当前固定固件不支持。** |
+| Bambu Lab／拓竹 | 已实测：品牌、材质、颜色 |
+| Anycubic、TigerTag、OpenSpool | 上游支持，本项目未实测 |
+| Elegoo／智能派、OpenPrintTag（含 Prusa） | 上游已实现，未实测 |
+| Creality／创想三维、QIDI／起迪 | 不支持 |
 
-**读取和解码 NFC 标签由 ACE 完成。** U1 上的适配程序通过 USB 查询 ACE 已识别的材料信息，整理品牌名称、材料类型和颜色格式后写入 U1。
-本项目不会把原始 NFC 标签交给 U1 的 OpenRFID 服务解码。
+没有标签或不支持的耗材，可以在 U1 上手动填写材料信息。详见 [NFC 说明](docs/nfc.zh-CN.md)。
 
-**使用固定 OpenCubic 固件支持的标签，不需要用户自行寻找或填写 NFC 密钥。**
-安装器自动设置 **External**，无需配置 U1 内置 OpenRFID。无法识别的耗材可手动填写材料信息。
-详见 [NFC 支持表和识别流程](docs/nfc.zh-CN.md)。
+## 文档
 
-## 项目是谁做的？
+| 想做什么 | 看这里 |
+| --- | --- |
+| 第一次安装 | [快速开始](docs/quick-start.zh-CN.md) · [安装前准备](docs/before-you-start.zh-CN.md) |
+| 手动安装 | [手动安装步骤](docs/installation.zh-CN.md) · [安装方式比较和旧版下载](docs/install-options.md) |
+| 固件 | [U1 固件准备](docs/u1-preparation.zh-CN.md) · [ACE 固件向导](docs/ace-wizard.zh-CN.md) |
+| 日常使用和调参 | [日常使用](docs/daily-use.zh-CN.md) · [参数与校准](docs/configuration.zh-CN.md) |
+| 出问题了 | [故障排查](docs/troubleshooting.zh-CN.md) · [更新与回退](docs/update-and-rollback.zh-CN.md) |
+| 了解测试范围 | [验证范围](docs/validation.md) · [更新记录](CHANGELOG.md) |
 
-用户提出需求、观察设备并完成实机测试；**OpenAI Codex 编写和整合代码、安装工具及文档**。
-本项目基于 [SnapAce](https://github.com/BlackFrogKok/SnapAce)、[U1 扩展固件](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware)、[Snapmaker U1 Klipper](https://github.com/Snapmaker/u1-klipper)、[OpenCubic](https://github.com/Jupsi/OpenCubic) 等项目。
-[项目来源与许可](THIRD_PARTY.md)列明上游作者、贡献和改进范围。
+## 来源与许可
 
-安装不需要 Codex、ChatGPT 订阅或 API 密钥，也没有 NFC 密钥填写步骤。
-英文说明按 ASD-STE100 简洁写作原则编写，不宣称正式认证。
+本项目基于这些项目：
+[SnapAce](https://github.com/BlackFrogKok/SnapAce)、
+[U1 扩展固件](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware)、
+[Snapmaker U1 Klipper](https://github.com/Snapmaker/u1-klipper)、
+[OpenCubic](https://github.com/Jupsi/OpenCubic)。
+各项目的作者和贡献见[项目来源](THIRD_PARTY.md)。
 
-## 可以使用、修改和分享吗？
+代码、安装工具和文档由 OpenAI Codex 编写，用户提出需求并完成实机测试。
+安装和使用不需要 Codex，也不需要会编程。
 
-**本项目源码包按 GPLv3 发布，可以在遵守许可证条件的前提下使用、修改和分享。**
-再分发时保留作者署名、许可证、修改声明和对应源码。
-单独下载的 U1／ACE 固件不因此获得本项目的 GPL 授权。
-重新打包固件或商业分发前，请看 **[许可核查与分享要求](docs/licensing.zh-CN.md)**。
-
-[参数说明](docs/configuration.zh-CN.md) · [NFC 说明](docs/nfc.zh-CN.md) · [回退与更新](docs/update-and-rollback.zh-CN.md) · [故障排查](docs/troubleshooting.zh-CN.md) · [验证范围](docs/validation.md) · [English](README.md)
+源码按 **GPLv3** 发布，可以使用、修改和分享，再分发时保留署名、许可证和源码。
+单独下载的 U1 和 ACE 固件不在本项目的授权范围内，详见[许可说明](docs/licensing.zh-CN.md)。
