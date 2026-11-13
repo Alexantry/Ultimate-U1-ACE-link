@@ -1,45 +1,43 @@
-# 手动安装：逐块复制命令
+# 手动安装
 
 [English](installation.md) · [双语安装向导](quick-start.zh-CN.md) · [故障与恢复](update-and-rollback.zh-CN.md)
 
-此方法不运行 Windows 安装向导，但会在 U1 上运行可阅读的 `installer.py` 和 ACE 维护程序。
-你不需要编程、电脑端 Python、AI 助手或 NFC 密钥。需要会复制整块文字、按提示输入数字，并核对设备屏幕。
-如果不想复制命令，请使用 `START-HERE.cmd`。
+每次复制一整块命令，粘贴到 Windows PowerShell。此方法不运行 Windows 安装向导，但仍会在 U1 上运行可阅读的 `installer.py` 和 ACE 维护程序。
+不需要编程、电脑端 Python、AI 助手或 NFC 密钥。不想复制命令，请使用 `START-HERE.cmd`。
 
 > [!CAUTION]
 > **不要把旧 SnapAce 的 `filament_feed.py` 或 `extruder.py` 覆盖到 U1 2.0。**
 > **只使用 SnapAce 的硬件接线说明。不要混用不同版本的安装器、manifest 和 payload。**
 
-本文针对当前完整安装包。旧包请使用[其对应版本说明](install-options.md)，不要照本文混装。
-中文离线手册是 `MANUAL-INSTALL.zh-CN.html`，英文版是 `MANUAL-INSTALL.html`。
+本文针对当前完整安装包。旧包请使用[其对应版本说明](install-options.md)。
+离线手册是 `MANUAL-INSTALL.zh-CN.html` 和 `MANUAL-INSTALL.html`。
 
-## 1. 先准备机器，再打开命令窗口
+## 1. 准备机器
 
-1. 结束打印和所有进退料动作。关闭加热、烘干，等喷头和热床实际温度均低于 **50 °C**。
-2. 首次安装时，按设备正常操作把四路耗材从打印头及 ACE 入口取出。退料可能重新加热；结束后再次关闭加热、烘干，等待实际温度低于 50 °C。已有本项目的用户更新时保留现有料位，不要求全部退空。
+1. 结束打印和所有进退料动作。关闭加热、烘干，等每个喷头和热床低于 **50 °C**。
+2. 首次安装：按设备正常操作把四路耗材从打印头和 ACE 入口取出。退料可能重新加热，结束后再次关闭加热、烘干，等温度低于 50 °C。更新已有集成：保留现有料位。
 3. 按 [U1 固件和访问设置](u1-preparation.zh-CN.md)安装 **`2.0.0-paxx12-24`**，开启 **Advanced Mode**，将 **Root Access** 设为 **Open**。
-4. **关闭 ACE 和 U1，并断开两台设备的电源。** 按 [SnapAce 硬件指南](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring)完成 **ACE Pro 第一代**的连接线及四根对应槽位的 PTFE 管。
-5. 接线完成后开启设备，恢复同一局域网连接，记录 U1 Wi-Fi 页的当前 IP。
-6. 保持电源和 USB 稳定。后文先上传公共程序，再由 U1 检查 ACE 固件；**不需要预先完成另一套 ACE 刷机教程**。
+4. **关闭 ACE 和 U1，并断开两台设备的电源。** 按 [SnapAce 硬件指南](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring)接好 **ACE Pro 第一代**的连接线和四根对应槽位的 PTFE 管。
+5. 开机。让 U1 和电脑在同一局域网，记录 U1 Wi-Fi 页显示的地址。
+6. 保持电源和 USB 稳定。**不要预先完成另一套 ACE 刷机教程。** 下面第 5 步会检查 ACE 固件。
 
-U1 版本、访问开关、ACE 代际或接线不符合要求时，先停止。本文不支持 ACE 2 Pro。
-安装器会自动设置 **External**、保存原文件并核对服务状态。无需先手改读卡设置，也无需设置 U1 OpenRFID 密钥。
-受支持的 NFC 格式由 [OpenCubic](https://github.com/Jupsi/OpenCubic)提供；本项目负责同步到 U1，详见 [支持表](nfc.zh-CN.md)。
+U1 版本、访问设置、ACE 代际或接线不符合要求时，停止。不支持 ACE 2 Pro。
+安装器会设置 **External**、保存原文件并核对服务。不用手动选择读卡器，也不用设置 U1 OpenRFID 密钥。
+受支持的 NFC 解码由 [OpenCubic](https://github.com/Jupsi/OpenCubic) 提供。本项目把数据同步到 U1，见[支持表](nfc.zh-CN.md)。
 
 <a id="prepare-windows-powershell"></a>
 ## 2. 下载、解压并打开 PowerShell
 
 1. 从[当前安装包入口](../README.zh-CN.md)下载完整 ZIP。不要下载单个 `.py` 文件。
-2. 右键 ZIP，选择“全部解压缩”。打开包含 `installer.py` 的 `Ultimate-U1-ACE-link` 文件夹。
-3. 在文件资源管理器地址栏单击，复制该文件夹的完整路径，稍后粘贴。
-4. 点击 Windows“开始”，搜索 **Windows PowerShell**，打开普通窗口；不需要“以管理员身份运行”。
-5. 以下代码块全部粘贴到这个 **Windows PowerShell** 窗口。每次复制一整块，按回车，等完成再继续。不要复制三条反引号。
-6. 如果出现红色 `STOP` 或报错，**停止后面的步骤**。读对应说明；不要因为没有成功就重发刷写或安装命令。
+2. 右键 ZIP，选择“全部解压缩”。打开包含 `installer.py` 的 `Ultimate-U1-ACE-link` 文件夹，在文件资源管理器地址栏复制它的完整路径。
+3. 点击“开始”，搜索 **Windows PowerShell**，打开普通窗口。不需要管理员模式。
+4. 下面所有代码块都粘贴到这个窗口。每次复制一整块（不含三个反引号），按回车，等它完成。
+5. 出现红色 `STOP` 或报错时，**停止后面的步骤**，阅读对应说明。不要因为没显示成功就重复写入操作。
 
-建议核对 ZIP：在 PowerShell 输入 `Get-FileHash -LiteralPath '你的ZIP完整路径' -Algorithm SHA256`，与 [SHA256SUMS](../downloads/SHA256SUMS)中同名 ZIP 的值对比。路径外的单引号保留；如果不一致，停止并重新下载完整包。
-你可以用记事本查看源码；无需修改它们。将私人备份放在项目文件夹之外。
+核对 ZIP：运行 `Get-FileHash -LiteralPath '你的ZIP完整路径' -Algorithm SHA256`（保留单引号），把结果与 [SHA256SUMS](../downloads/SHA256SUMS) 中同名 ZIP 的值对比。不一致时停止，重新下载完整包。
+可以用记事本查看源码，不要修改。私人备份放在项目文件夹之外。
 
-复制下面整块。窗口询问路径时粘贴刚才复制的文件夹路径，再按回车：
+复制下面整块。窗口询问路径时，粘贴解压后的文件夹路径：
 ```powershell
 $ErrorActionPreference = 'Stop'
 $ProjectDir = (Read-Host '粘贴解压后包含 installer.py 的文件夹完整路径').Trim().Trim('"')
@@ -63,15 +61,16 @@ foreach ($Entry in $Manifest.files) {
 Write-Host ('Package version: ' + $Manifest.release)
 ```
 
-**完成标准：** 显示当前包版本，没有 `STOP`。四个核心文件的校验值已与 manifest 比较。
+**完成标准：** 显示安装包版本，没有 `STOP`。四个 payload 的校验值与 manifest 一致。
 
 <a id="set-connection-variables"></a>
 <a id="confirm-the-connection"></a>
-## 3. 建立连接
+## 3. 连接 U1
 
-电脑需要 Windows 自带的 **OpenSSH 客户端**。若下面提示找不到 `ssh.exe` 或 `scp.exe`，打开 Windows“可选功能”→“查看功能/添加功能”→搜索 OpenSSH →安装 **OpenSSH 客户端**，然后重新打开 PowerShell，从第 2 步开始。不要安装 OpenSSH 服务器。
+Windows 需要 **OpenSSH 客户端**。不要安装 OpenSSH 服务器。
+找不到 `ssh.exe` 或 `scp.exe` 时，打开 Windows“可选功能”→“查看功能/添加功能”→搜索 OpenSSH →安装 **OpenSSH 客户端**。然后重新打开 PowerShell，从第 2 步开始。
 
-复制下面整块。只输入屏幕上的数字 IP，例如 `192.0.2.10`，不要加 `http://`、端口或网页路径。示例不是你的打印机地址。
+复制下面整块。只输入 U1 屏幕上的数字地址，例如 `192.0.2.10`。示例不是你的打印机地址。不要加 `http://`、端口或网页路径。
 ```powershell
 $ErrorActionPreference = 'Stop'
 Get-Command ssh.exe, scp.exe -CommandType Application | Out-Host
@@ -86,14 +85,15 @@ if ($LASTEXITCODE -ne 0) { throw 'STOP: SSH connection failed' }
 ```
 
 **完成标准：** 输出包含 `uid=0(root)`。
-第一次连接可能显示 `Are you sure you want to continue connecting`。这是首次信任该设备，不代表本步骤已独立校验指纹。仅在可信本地网络上，并确认 IP 与 U1 屏幕一致后输入 `yes`，按回车。
-若显示原有主机密钥发生变化，停止并核对设备身份，不要删除提示来绕过检查。
-密码输入时不显示字符或星号，这是正常现象。原厂 root 密码见 [上游 SSH 说明](https://snapmakeru1-extended-firmware.pages.dev/ssh_access)；修改过密码则用自己的密码。不要把密码写进命令或配置文件。
+
+- **首次连接。** SSH 可能询问 `Are you sure you want to continue connecting`。本步骤没有独立校验指纹。只在可信的本地网络上、确认地址与 U1 屏幕一致后，输入 `yes` 并按回车。
+- **主机密钥变化。** 以前记录的主机密钥意外变化时，停止。不要删除该警告来绕过身份检查。
+- **密码。** 输入时不显示字符或星号。改过密码就用自己的密码，否则见[上游原厂 SSH 凭据](https://snapmakeru1-extended-firmware.pages.dev/ssh_access)。不要把密码写进命令或配置文件。
 
 <a id="4-transfer-the-project"></a>
-## 4. 只上传需要的公共文件
+## 4. 上传需要的文件
 
-以下代码从本包复制固定文件到临时文件夹，再上传到 U1 的唯一新目录。不会把整个工作文件夹里的备份或 `.git` 目录上传。
+这一块把固定的文件清单上传到 U1 上一个唯一的目录。它不会上传工作文件夹里无关的备份或 `.git` 目录。
 ```powershell
 $TransferDir = Join-Path ([IO.Path]::GetTempPath()) ('UltimateU1Manual-' + [guid]::NewGuid().ToString('N'))
 $PublicFiles = @('installer.py','manifest.json','LICENSE','THIRD_PARTY.md','SOURCES.json',
@@ -119,18 +119,19 @@ ssh.exe $PrinterTarget "ls '$RemoteDir/installer.py' '$RemoteDir/manifest.json' 
 if ($LASTEXITCODE -ne 0) { throw 'STOP: Uploaded files are missing' }
 ```
 
-**完成标准：** 打印三个远程文件路径，没有报错。
-把显示的 **Printer** 和 **RemoteDir** 两行复制到你自己的私人笔记。断线或关窗后恢复需要它们。
-**保持这个 PowerShell 窗口打开。** 后续命令使用本窗口的变量。若已经关窗，先按[独立恢复入口](update-and-rollback.zh-CN.md#read-installation-status)查询原结果，不要重新上传后猜测上次是否成功。
+**完成标准：** 显示三个远程文件路径，没有报错。
+
+- 把显示的 **Printer** 和 **RemoteDir** 两行复制到私人笔记。关窗后的恢复需要它们。
+- **保持这个 PowerShell 窗口打开。** 后面的代码块使用它的变量。如果已经关窗，先按[独立状态查询步骤](update-and-rollback.zh-CN.md#read-installation-status)操作，再开始新的上传或写入。
 
 <a id="ace-firmware"></a>
 ## 5. 检查或准备 ACE 固件
 
-本节使用与双语向导相同的受控后台，**不需要编辑设备 profile、NFC 密钥或刷机 JSON**。
-ACE 固件文件由 U1 从固定上游下载并校验；U1 必须能访问 GitHub。安装包不包含固件二进制。
-检查会暂时停止并恢复 Klipper。程序不发送进退料命令，但设备初始化可能触发自身动作，手要离开滚筒。
+- **不要编辑设备 profile、NFC 密钥文件或固件 JSON。**
+- U1 下载并校验固定的上游固件，因此 U1 必须能访问 GitHub。安装包不包含固件二进制。
+- 检查会暂时停止并恢复 Klipper。它不发送进退料命令，但初始化可能触发 ACE 动作。手离开滚筒。
 
-先复制下面整块。这只定义后续操作并查询上次 ACE 事务；正在运行的事务只继续查询，不重复刷写：
+先复制下面整块。它定义后续操作，并读取上次 ACE 事务。如果该事务仍在运行，它只读取结果，不重复刷写：
 ```powershell
 function Read-U1Json([string]$Command) {
     $Raw = & ssh.exe -o ConnectTimeout=15 $PrinterTarget "cd '$RemoteDir' && $Command"
@@ -166,18 +167,19 @@ Confirm-AceMaterial $AceResult
 
 | 显示的 `state` | 怎么做 |
 | --- | --- |
-| `NONE` | 没有历史事务，按下面 A 或 B 选择。 |
-| `SUCCEEDED`、`PREPARED`、`ALREADY_TARGET`、`CANCELLED_SAFE` | 仍按 A 或 B 核对当前固件；旧成功记录不能单独证明当前 ACE 身份。 |
-| `FAILED_SAFE` | 检查网络、冷却和设备状态；选择 B 重新准备，不跳过检查。 |
-| `UNSUPPORTED` | 来源版本不受支持，停止；不要改检测记录或强刷。 |
-| `NEEDS_ATTENTION`、`ERROR`，或查询失败 | 停止安装，按[ACE 中断处理](update-and-rollback.zh-CN.md#ace-interruption)。 |
+| `NONE` | 没有历史事务。在下面选 A 或 B。 |
+| `SUCCEEDED`、`PREPARED`、`ALREADY_TARGET`、`CANCELLED_SAFE` | 仍要为当前设备选 A 或 B。旧的成功记录不能证明当前 ACE 的身份。 |
+| `FAILED_SAFE` | 解决网络、冷却或设备问题。选 B 重新准备。不要跳过检查。 |
+| `UNSUPPORTED` | 来源版本不受支持。停止。不要改检测记录，也不要强刷。 |
+| `NEEDS_ATTENTION`、`ERROR`，或查询失败 | 停止安装，按 [ACE 中断处理](update-and-rollback.zh-CN.md#ace-interruption)操作。 |
 
-若显示材料变化，`field` 是项目名，`before` 是变化前，`after` 是变化后。字段尾号 `_0`、`_1`、`_2`、`_3` 对应第 1、2、3、4 槽；四项数组也按此槽位顺序。只在新数据与实际料卷一致时输入 `YES`。无材料变化时不会要求此确认。
+如果显示材料变化，`field` 是项目名，`before` 是旧值，`after` 是新值。后缀 `_0`、`_1`、`_2`、`_3` 对应第 1、2、3、4 槽。四项数组使用相同的槽位顺序。
+只有新数据与实际料卷一致时才输入 `YES`。没有变化就不会要求确认。
 
-### A. 已知安装了指定固件，而且 NFC 已正常工作
+### A. 已安装指定固件，而且 NFC 正常
 
-仅当你能确认这台 ACE 运行 **OpenCubic CFW 1.1.1 / `CV1.3.863`** 时，运行下面一块，然后转到第 6 步。
-只看见 `CV1.3.863` 字符串不够；不同社区修改版可能显示相同版本。不确定时选 B。
+只有确知这台 ACE 运行 **OpenCubic CFW 1.1.1 / `CV1.3.863`** 时才运行这一块，然后转到第 6 步。
+只看到 `CV1.3.863` 字符串不够，不同社区版本可能显示相同版本。不确定时选 B。
 ```powershell
 if ($AceResult.state -notin @('NONE','ALREADY_TARGET','CANCELLED_SAFE','SUCCEEDED')) {
     throw 'STOP: Use fresh preparation for this ACE state; do not keep unverified firmware'
@@ -189,10 +191,10 @@ if ((Read-Host '只有已知指定 OpenCubic CFW 1.1.1 且 NFC 正常时输入 K
 $AceFirmwareAccepted = $true
 ```
 
-### B. 不知道当前固件，或需要准备指定版本
+### B. 不知道当前固件，或需要更新
 
-先确认机器空闲、所有加热目标为零、实际温度低于 50 °C、烘干关闭、无 NFC/进退料动作。
-已有集成若送料辅助仍开启，可在 U1 对相应槽正常退料，等动作结束后重新冷却。不要为了更新而退空全部槽。
+确认机器空闲、所有加热目标为零、所有实际温度低于 50 °C、烘干关闭、没有 NFC 或进退料动作。
+已有集成的送料辅助仍开启时，在 U1 上对该通道正常退料，等动作结束并冷却。不要为了更新已有安装而退空全部槽。
 复制下面一块，等待下载、探测和恢复完成：
 ```powershell
 $AceResult = Wait-AceResult (Read-U1Json 'python3 tools/ace_usb/wizard_backend.py prepare')
@@ -202,14 +204,14 @@ if ($AceResult.state -notin @('PREPARED','ALREADY_TARGET') -or -not $AceResult.r
 Confirm-AceMaterial $AceResult
 ```
 
-如果得到 `ALREADY_TARGET`，**不要刷写**。确认来源确为指定 CFW 且 NFC 已正常工作，再使用上面的 A 块；不能确认则停止。
-如果得到 `PREPARED`，确认显示 **`V1.3.856` / 引导 `V1.0.1` → `CV1.3.863`**，再执行下一块。
-其他情况停止。不同源版本不能强制套用这个流程。
+- `ALREADY_TARGET`：**不要刷写**。确认来源确为指定 CFW 且 NFC 正常，再使用 A 块。不能确认则停止。
+- `PREPARED`：确认显示 **`V1.3.856` / 引导 `V1.0.1` → `CV1.3.863`**，再执行下一块。
+- 其他结果：停止。其他来源版本没有强制刷写的办法。
 
 > [!CAUTION]
 > **下一块会更新 ACE 固件。只运行一次。**
-> **原厂 `1.3.863` 文件只是已校验的参考，不是你设备的备份；原厂回退未实机验证。**
-> 接受此限制后输入 `UPDATE`。期间不要断电、拔 USB、重发命令或在其它窗口操作设备。
+> **已校验的原厂 `1.3.863` 文件只是参考，不是你设备的备份。原厂回退未实机验证。**
+> 接受此限制后才输入 `UPDATE`。保持电源和 USB 连接。不要重复命令，也不要在其他窗口操作设备。
 ```powershell
 if ($AceResult.state -ne 'PREPARED' -or $AceResult.source_firmware -ne 'V1.3.856' -or
     $AceResult.boot_firmware -ne 'V1.0.1' -or $AceResult.target_firmware -ne 'CV1.3.863' -or
@@ -224,21 +226,22 @@ Confirm-AceMaterial $AceResult
 $AceFirmwareAccepted = $true
 ```
 
-**完成标准：** `state: SUCCEEDED`、`ready: true`、`service_restored: true`；如材料有变化，已对照料卷确认。
-固件更新成功不等于主机集成已经安装；继续第 6 步。
-如果断线或结果不明，先看[恢复步骤](update-and-rollback.zh-CN.md#ace-interruption)，不要重跑上面的更新块。
+**完成标准：** `state: SUCCEEDED`、`ready: true`、`service_restored: true`。材料数据有变化时，对照料卷核对。
+主机集成此时还没有安装。继续第 6 步。
+如果断线或结果不明，按[恢复步骤](update-and-rollback.zh-CN.md#ace-interruption)操作。不要重跑更新块。
 
 <a id="5-check-before-installation"></a>
-## 6. 输入初值，生成设置并检查
+## 6. 输入初值并检查安装计划
 
-先核对 [A/B/C 管路说明](configuration.zh-CN.md)。**A 是主退料距离，B 是快速送料距离，C 是退料后回送距离。**
-首次安装输入根据自己四路路径核对过的 A、B 初值；并非声称已经完成安装后的运动测试。所有槽共用这些参数，B 必须小于 A。
-若没有可核对的管路测量或同布局记录，先停止，不能用软件或 AI 猜一个安全值。
-首次安装 C 固定为 0，速度为快送 200、慢速寻料 50、退料 80。稍后逐槽实测，再按参数说明启用消松。
-已有集成会保留原参数，包括 C；无需重复输入 A、B，下面的模板不会覆盖原值。
+先看 [A/B/C 管路说明](configuration.zh-CN.md)。**A 是主退料距离，B 是快速送料距离，C 是退料后的消松回送距离。**
 
-首装必须四个 ACE 入口及四个打印头都无料。已有集成保持当前料位。机器必须空闲、冷却、烘干与送料辅助关闭。
-以下代码根据你的回答生成 JSON，**不用手工改逗号或配置项**：
+- **首次安装：** 输入根据自己四路实际管路核对过的 A、B 初值。所有槽共用这些参数，B 必须小于 A。这次核对不等于安装后的运动测试。
+- **没有核对过的数值：** 没有核对过的管路测量或同布局记录时，停止。软件或 AI 不能猜出安全距离。
+- **其他初值：** C 为 0。速度为快送 200、慢速寻料 50、退料 80。安装后先逐槽测试，再启用消松回送。
+- **已有集成：** 本流程保留原参数，包括 C。不要求重新输入 A、B，也不会用模板覆盖原值。
+
+首次安装要求 ACE 入口和打印头都无料。已有安装保持当前料位。机器必须空闲、冷却，烘干和送料辅助关闭。
+代码块根据你的回答生成设置 JSON。**不用手工改 JSON 标点。**
 ```powershell
 if (-not $AceFirmwareAccepted) { throw 'STOP: Complete the ACE firmware step first' }
 $Status = Read-U1Json 'python3 installer.py status'
@@ -269,14 +272,15 @@ if ($Plan.compatible -ne $true -or $Plan.read_only -ne $true -or $Plan.calibrati
 $Plan.effective_settings | Format-List | Out-Host
 ```
 
-**完成标准：** 没有 `STOP`；显示 `effective_settings` 的参数与预期相符。
-初次主机状态里 `managed: false`、`ace_version: null` 可以正常。已有集成的有效参数应与旧设置一致。
-`filament_detection: external` 是安装计划，不代表只读检查已改好设置。
-如果拒绝未知核心文件改动或不兼容版本，保留原文件，停止。不要覆盖文件来绕过检查。
+**完成标准：** 没有 `STOP`，`effective_settings` 与你预期的数值一致。
+
+- 首次安装前，`managed: false` 和 `ace_version: null` 是正常的。已有集成的参数必须与原配置一致。
+- `filament_detection: external` 是安装计划；只读检查还没有应用它。
+- 如果因未知的核心文件改动或不兼容版本被拒绝，保留原文件并停止。不要覆盖文件来绕过拒绝。
 
 ## 7. 安装一次并核对结果
 
-确认摘要与机器状态后复制下面一块；确认时输入 `INSTALL`。之后等到命令结束，不重复输入：
+核对摘要和机器状态后，复制下面一块。输入 `INSTALL` 确认一次安装。等待命令结束。不要重复命令：
 ```powershell
 if (-not $AceFirmwareAccepted -or $Plan.compatible -ne $true) { throw 'STOP: Complete the checks first' }
 if ((Read-Host '摘要正确、设备空闲冷却，确认安装一次请输入 INSTALL') -cne 'INSTALL') { throw 'STOP: Installation cancelled' }
@@ -291,15 +295,15 @@ $FinalStatus | ConvertTo-Json -Depth 8 | Out-Host
 ```
 
 **完成标准：** `installed: true`、`ready_samples: 3`，最终状态 `klipper_state: ready`、`managed: true`、`filament_detection: external`。
-最终 `internal_rfid_enabled`、`openrfid_running` 均应为 `false`。保存显示的 `Backup` 编号。
-软件服务重启时短暂显示 Klipper disconnected 是正常的；只有明确报告成功后才开始测试。
+`internal_rfid_enabled` 和 `openrfid_running` 都必须是 `false`。保存显示的 `Backup` 编号。
+服务重启时短暂显示 Klipper disconnected 是正常的。确认成功后才开始测试。
 
 ## 8. 每次只测试一槽
 
-按[日常操作与验收](daily-use.zh-CN.md)对四个槽逐一完成：插入短咬料与 NFC → U1 进料 → 退料 → 不拔插再进料。
-核对类型、颜色和品牌，确认退料后材料信息保留。手离开滚筒，有打滑、卡料或异常立即停止。
-再按[参数说明](configuration.zh-CN.md)校准 C；不要把 1250、1150、300 直接当作所有机器的通用数值。
-完成各槽验证前，不安排无人值守打印。
+1. 按[日常操作与验收](daily-use.zh-CN.md)对四个槽逐一操作：插入并等待短咬料和 NFC → U1 进料 → 退料 → 不重新插入，再次进料。
+2. 核对品牌、类型和颜色。确认退料后材料信息保留。手离开滚筒。出现打滑、卡料或异常结果时停止。
+3. 然后按[参数说明](configuration.zh-CN.md)校准 C。不要把 1250、1150、300 当作通用距离。
+4. 所有槽通过之前，不要安排无人值守打印。
 
-**中途失败或断线：** 使用[独立查询与恢复说明](update-and-rollback.zh-CN.md)，不要直接再次执行安装块。
-本流程不证明全部 NFC 标签、ACE 内部校准或固件原厂回退已验证。见[验证范围](validation.md)。
+**失败或断线：** 使用[独立查询与恢复说明](update-and-rollback.zh-CN.md)。不要立即重复安装块。
+本流程不证明全部 NFC 标签、ACE 内部校准或原厂回退已验证。见[验证范围](validation.md)。
