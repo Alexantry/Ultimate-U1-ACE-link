@@ -25,11 +25,13 @@ You do not need to find the U1 or ACE firmware. The wizard downloads, verifies, 
 ## Install
 
 1. **Connect.** With the printer idle, cool, and without power, connect the cable and the four tubes. Then turn the power on.
-2. **Download.** [Download the v0.1.6 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip) ([SHA-256](downloads/SHA256SUMS)) and extract all files.
+2. **Download.** [Download the v0.1.7 ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.7.zip) ([SHA-256](downloads/SHA256SUMS)) and extract all files.
 3. **Run.** Double-click **START-HERE.cmd**, select English, and follow the prompts.
 
 The wizard does these stages in order: prepare the U1 firmware → prepare the ACE firmware → install this project → check the connection.
 You enter the printer address and password, and you confirm some steps on the printer screen.
+
+The functions new in v0.1.7 (runout continuation, removal, and restore) have offline checks only. They have no physical test. If you want only physically tested host modules, use [v0.1.6](docs/install-options.md#earlier-releases).
 
 > [!CAUTION]
 > **Do not copy the old SnapAce `filament_feed.py` or `extruder.py` onto U1 firmware 2.0.**

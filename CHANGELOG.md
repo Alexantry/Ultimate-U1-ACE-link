@@ -1,9 +1,13 @@
 # Changes
 
-## Unreleased — runout continuation (`port8-runout-continue`)
+## 0.1.7 — 2026-11-13
+
+Runout continuation (`port8-runout-continue`), removal and restore tools, shorter documents.
+
+**No new function in this version has received a physical test.** All have offline checks only.
+The earlier package, v0.1.6, stays available: see `docs/install-options.md`.
 
 This revision changes what happens when a spool becomes empty during a print.
-It has offline checks only. It has not received a physical test.
 
 Cause of the fault: when the end of the filament left the ACE, the ACE refused
 to start feed assist at the next tool change (`empty`). The host treated this as

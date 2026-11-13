@@ -21,7 +21,7 @@ Chinese readers who are new to the hardware and screen steps can read the [prepa
 
 ## 2. Download, extract, start
 
-1. [Download the ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip).
+1. [Download the ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.7.zip).
 2. In the Downloads folder, right-click the ZIP and select **Extract All**.
 3. Open the extracted `Ultimate-U1-ACE-link` folder and double-click **START-HERE.cmd**.
 4. Type **2** for English and press Enter.

@@ -21,7 +21,7 @@ U1 有自己改过的配置时，先另存备份；本项目的备份不保护�
 
 ## 2. 下载、解压、启动
 
-1. [下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip)。
+1. [下载安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.7.zip)。
 2. 在“下载”文件夹里右键这个压缩文件，点 **全部解压缩**。
 3. 打开解压出的 `Ultimate-U1-ACE-link` 文件夹，双击 **START-HERE.cmd**。
 4. 输入 **1** 选中文，按回车。

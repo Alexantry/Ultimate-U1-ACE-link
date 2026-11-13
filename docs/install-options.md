@@ -50,6 +50,7 @@ The retained archives are unchanged. Use each archive with its own instructions.
 
 | Version | Archive | Instructions and source | SHA-256 | Notes |
 | --- | --- | --- | --- | --- |
+| v0.1.6 | [Download](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/54b6df5e13f1be29c36ea440b182378874e3fab3/downloads/Ultimate-U1-ACE-link-v0.1.6.zip) | [Fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/54b6df5e13f1be29c36ea440b182378874e3fab3) | `2c018540275022a9e821a19bbe78df622e34df6f9b2de07f675ab88150250bd3` | Last package before runout continuation and the restore tools. Its host modules are the ones in the recorded physical test. |
 | v0.1.5 | [Download](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/55bb1ee475ddc0c0f3904b5a0d51b4af1b37ed32/downloads/Ultimate-U1-ACE-link-v0.1.5.zip) | [Fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/55bb1ee475ddc0c0f3904b5a0d51b4af1b37ed32) | `9aefb03d418bed99735736d8ed13a96fa3706faaf13fc163b453683913be503c` | Removed unrelated NFC key-entry guidance and credited OpenCubic's format support. |
 | v0.1.4 | [Download](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/c3cab67b49157fea251d44ac720ee00043b8f850/downloads/Ultimate-U1-ACE-link-v0.1.4.zip) | [Fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/c3cab67b49157fea251d44ac720ee00043b8f850) | `9ab8c4ff1b0ef2f6319f7478a684ffec381ab21c2a666f0e7f3ea27e22b8a6e1` | Corrected the NFC test evidence and the explanation of ACE decoding. Same installer and production modules as v0.1.3. |
 | v0.1.3 | [Download](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/4229c6fd384e1821268d2d61f7c2d2992bc91a9e/downloads/Ultimate-U1-ACE-link-v0.1.3.zip) | [Fixed source and instructions](https://github.com/Alexantry/Ultimate-U1-ACE-link/tree/4229c6fd384e1821268d2d61f7c2d2992bc91a9e) | `03de055d1c38d430f83817d5687c73dc387a3f282a2c4329df0b8ce882349e39` | Introduced the guided ACE firmware stage. |
@@ -62,7 +63,7 @@ SHA-256 of the v0.1.0 archive:
 81c21610c49b6e5861e1676cc2662df77bff447c6d24848881a6719319b13c1e
 ```
 
-The current version 0.1.6 adds a complete Chinese manual, recovery guidance, and clearer wizard task boundaries. The production transport and NFC modules are unchanged.
+The current version 0.1.7 adds runout continuation, removal of this project, and the restore tasks. It changes three of the four host modules. These new functions have offline checks only and no physical test. If you want only physically tested host modules, use v0.1.6.
 
 > [!IMPORTANT]
 > **The original package remains unchanged. It requires manual External selection and has no Windows launcher.**
@@ -74,7 +75,7 @@ The current version 0.1.6 adds a complete Chinese manual, recovery guidance, and
 - 离线中文手册是 **MANUAL-INSTALL.zh-CN.html**，英文手册是 **MANUAL-INSTALL.html**。
 - 手动方式不运行 Windows 向导，但仍会在打印机上执行开源的 `installer.py`。
 - 所有脚本和四个核心模块都可以先在 GitHub 查看。没有封闭的安装 EXE。
-- v0.1.0 到 v0.1.5 的安装包、校验值和对应说明都保留在上方的固定链接中，文件未被新版覆盖。
+- v0.1.0 到 v0.1.6 的安装包、校验值和对应说明都保留在上方的固定链接中，文件未被新版覆盖。
 - v0.1.0 需要自己设置 **External**。v0.1.1 及之后的安装器会自动设置并检查。
-- 各版本变化：v0.1.2 增加 U1 固件准备；v0.1.3 增加 ACE 引导更新；v0.1.4 仅更正说明，安装器行为及生产模块不变；v0.1.5 删除本方案不需要的密钥填写教程，并补充 OpenCubic 支持列表和署名；v0.1.6 补全中文手动安装和恢复说明，明确向导菜单的操作范围。
+- 各版本变化：v0.1.2 增加 U1 固件准备；v0.1.3 增加 ACE 引导更新；v0.1.4 仅更正说明，安装器行为及生产模块不变；v0.1.5 删除本方案不需要的密钥填写教程，并补充 OpenCubic 支持列表和署名；v0.1.6 补全中文手动安装和恢复说明，明确向导菜单的操作范围；v0.1.7 增加断料续打、卸载和恢复出厂，改动了四个核心模块中的三个，这些新功能只有离线测试、未经实机验证。只想用实机验证过的核心模块时，用 v0.1.6。
 - 请使用同一版本的文件与说明，不要混装。

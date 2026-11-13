@@ -25,11 +25,13 @@ U1 和 ACE 的固件不用自己找，安装向导会下载、校验并带你刷
 ## 安装
 
 1. **接线。** 打印机空闲、冷却、断电后，接好连接线和四路料管，再开机。
-2. **下载。** [下载 v0.1.6 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip)，右键“全部解压缩”。
+2. **下载。** [下载 v0.1.7 安装包](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.7.zip)，右键“全部解压缩”。
 3. **运行。** 双击 **START-HERE.cmd**，选中文，跟着提示走。
 
 向导会依次完成：准备 U1 固件 → 准备 ACE 固件 → 安装本项目 → 检查连接。
 你只需要输入打印机地址和密码，并在打印机屏幕上确认几次。
+
+v0.1.7 新增的断料续打、卸载和恢复出厂只通过了离线测试，还没有实机验证。只想用实机验证过的核心模块时，用 [v0.1.6](docs/install-options.md#earlier-releases)。
 
 > [!CAUTION]
 > **不要把旧 SnapAce 的 `filament_feed.py` 或 `extruder.py` 复制到 U1 2.0 固件上。**

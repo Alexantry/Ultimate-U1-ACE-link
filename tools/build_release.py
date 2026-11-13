@@ -59,11 +59,11 @@ def main():
     archive = out / ('Ultimate-U1-ACE-link-v' + version + '.zip')
     with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         for rel, p in files:
-            info = zipfile.ZipInfo(prefix + rel, (2026, 10, 30, 0, 0, 0))
+            info = zipfile.ZipInfo(prefix + rel, (2026, 11, 13, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             z.writestr(info, p.read_bytes())
-        info = zipfile.ZipInfo(prefix + 'PACKAGE-SHA256SUMS', (2026, 10, 30, 0, 0, 0))
+        info = zipfile.ZipInfo(prefix + 'PACKAGE-SHA256SUMS', (2026, 11, 13, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = 0o100644 << 16
         z.writestr(info, checksums)
@@ -82,7 +82,8 @@ def main():
             ('0.1.2', '2663853d3bab97efa09b579b110af099e852ffd7aee06d3afe105ea73e8a5c1c'),
             ('0.1.3', '03de055d1c38d430f83817d5687c73dc387a3f282a2c4329df0b8ce882349e39'),
             ('0.1.4', '9ab8c4ff1b0ef2f6319f7478a684ffec381ab21c2a666f0e7f3ea27e22b8a6e1'),
-            ('0.1.5', '9aefb03d418bed99735736d8ed13a96fa3706faaf13fc163b453683913be503c')]:
+            ('0.1.5', '9aefb03d418bed99735736d8ed13a96fa3706faaf13fc163b453683913be503c'),
+            ('0.1.6', '2c018540275022a9e821a19bbe78df622e34df6f9b2de07f675ab88150250bd3')]:
         retained = out / ('Ultimate-U1-ACE-link-v' + previous + '.zip')
         if retained.exists():
             assert hashlib.sha256(retained.read_bytes()).hexdigest() == previous_hash, 'Retained v' + previous + ' changed'
