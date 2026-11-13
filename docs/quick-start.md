@@ -1,167 +1,128 @@
-# Start here
+# Quick start
 
-[简体中文](quick-start.zh-CN.md) · **[Manual installation](installation.md)**
+[简体中文](quick-start.zh-CN.md) · [Manual installation](installation.md) · [Home](../README.md)
 
-Use Windows 10 or Windows 11. You do not need programming knowledge, local Python, Codex, or an API key.
-The wizard has **English** and **中文** prompts. It enters the commands for you.
-For tags supported by the specified OpenCubic firmware, you do not need to find or enter NFC keys.
+Use a Windows 10 or 11 computer and follow the wizard. You do not need programming knowledge.
 
 > [!CAUTION]
 > **Do not copy old SnapAce `filament_feed.py` or `extruder.py` onto U1 firmware 2.0.**
 > **This project replaces the original SnapAce software installation steps.** Use the upstream guide for hardware connections only.
 
-## 1. Prepare before an update or installation
+## 1. Prepare the devices
 
-1. Finish the current print and all filament operations.
-2. For a first installation, use normal Unload to remove filament from all four U1 heads. Remove filament from all four ACE inlets too.
-3. Turn off heating and ACE drying. Unloading can heat a nozzle. Wait until all nozzles and the bed are below 50°C.
-4. Confirm that the hardware is **ACE Pro Gen 1**, not ACE 2 Pro.
-5. Prepare the verified ACE-to-USB cable and four PTFE paths. Turn both devices off before connecting hardware. Turn them on after the connections are complete.
-6. Connect the computer and U1 to the same local network. Both need internet access for their firmware download stages.
-7. If U1 has custom changes, save a private backup before any U1 firmware update. The later project backup does not protect that earlier update.
+1. Finish the print and all filament operations. Turn off heating and ACE drying. Wait until the nozzles and the bed are below 50°C.
+2. First installation: unload normally on the U1, then pull the filament out of all four ACE inlets. For an update, you can keep the filament.
+3. Make sure that the feeder is an **ACE Pro Gen 1**, not an ACE 2 Pro.
+4. Turn both devices off. Connect the ACE-to-USB cable and the four PTFE tubes as in the [SnapAce hardware guide](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring). Then turn the power on. A normal charging cable is not a substitute.
+5. Connect the computer and the U1 to the same network. Both need internet access.
 
-**Existing project installation:** an ordinary update does not require emptying all four channels. The devices must still be idle and cold.
-Use the [SnapAce hardware guide](https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring) for the cable arrangement. A normal charging cable is not a substitute.
+If the U1 has your own configuration changes, save a backup first. The project backup does not protect changes made before a firmware update.
+Chinese readers who are new to the hardware and screen steps can read the [preparation guide](before-you-start.zh-CN.md).
 
-**You do not need to install ACE firmware separately before opening the wizard.**
-The same workflow can prepare U1 firmware and then check ACE firmware.
-You must still perform the hardware connections and the U1 screen actions yourself.
+## 2. Download, extract, start
 
-## 2. Download and extract
+1. [Download the ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip).
+2. In the Downloads folder, right-click the ZIP and select **Extract All**.
+3. Open the extracted `Ultimate-U1-ACE-link` folder and double-click **START-HERE.cmd**.
+4. Type **2** for English and press Enter.
 
-1. Download [the project ZIP](https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip).
-2. Open the Windows Downloads folder.
-3. Right-click the ZIP and select **Extract All**.
-4. Select **Extract**. Open the extracted `Ultimate-U1-ACE-link` folder.
-5. Double-click **START-HERE.cmd**.
-6. Select **2. English**. Enter menu numbers and press Enter.
+![Download, extract, and double-click](images/first-steps.en.svg)
 
-Do not run the launcher inside the ZIP viewer.
-If Windows hides extensions, the file can appear as `START-HERE`, with type **Windows Command Script**.
-Files ending in `.html` are instructions, not installation programs.
+Do not run the file from inside the ZIP preview. The `.html` files are offline instructions, not installers.
 
-![Download, extract, and start](images/first-steps.en.svg)
+## 3. Select a menu
 
-**START-HERE.en.html** is the English offline guide. **START-HERE.html** is the Chinese offline guide.
-You do not need to double-click a Python file or open PowerShell for the guided path.
-To inspect and enter each command yourself, use **[manual installation](installation.md)**. It still runs the readable printer installer.
+| Menu | When to select it |
+| --- | --- |
+| **1. U1 is ready** | The U1 has `2.0.0-paxx12-24`, Advanced Mode is on, and Root Access is Open. The wizard checks the ACE firmware and then installs. |
+| **2. Prepare U1 firmware USB** | The U1 does not have the specified firmware. You need a USB drive that is already FAT32 with 300 MB free. The wizard does not format it. |
+| **3. Manual installation** | You want to run each command yourself. This only opens the instructions and does not connect to the printer. |
+| **4. ACE firmware** | You only maintain the ACE, or you want the result of the last ACE update. This does not install the U1 integration. |
 
-## 3. Choose the correct menu
-
-| Menu | Choose it when | What happens |
-| --- | --- | --- |
-| **1. U1 is ready** | U1 has `2.0.0-paxx12-24`, Advanced Mode is on, and Root Access is Open. | Check ACE firmware when needed, then install or update the U1 integration. |
-| **2. Prepare U1 firmware USB** | The required U1 firmware is not installed. | Download and verify the U1 file, prepare a FAT32 USB drive, and guide the screen steps. Then continue in the same window. |
-| **3. Manual installation** | You prefer command instructions. | Open the local manual in your selected language and exit without connecting to the printer. |
-| **4. ACE firmware** | You need ACE maintenance or the result of an earlier ACE update. | Inspect the saved result first. Complete ACE maintenance, then exit. This choice does not install the U1 integration. |
-
-Menu 2 needs a removable USB drive that already uses **FAT32**, with at least 300 MB free.
-The wizard does not format a drive. It shows its letter, label, and size before copying.
-Follow [U1 preparation](u1-preparation.md) for the exact screen steps.
-After updating, reconnect Wi-Fi if necessary. The printer address can change.
-
-**Customized or different firmware needs a separate compatibility review. Do not overwrite it merely to pass this installer.**
-The required version is fixed. It is not necessarily the newest upstream release.
-After menu 4, reopen the wizard and select menu 1 if you also need to install or update the U1 integration.
+For menu 2, see [U1 firmware preparation](u1-preparation.md) for each screen step. The printer address can change after the update.
+If the U1 has a different or custom firmware, check compatibility separately. Do not overwrite it only to pass the check.
 
 ## 4. Enter the connection information
 
 | Prompt | What to enter |
 | --- | --- |
-| Printer address | The current IP address on the U1 Wi-Fi screen. Enter the address only, without `http://` or `/firmware-config/`. |
-| First SSH connection | Compare the address with the printer screen. Follow [the first-connection instructions](installation.md#confirm-the-connection). Stop if an existing host key changed unexpectedly. |
-| `password:` | The printer's SSH root password, followed by Enter. This is not the Wi-Fi or Snapmaker account password. |
-| Numbered question | Enter the listed number, then press Enter. |
+| Printer address | The IP on the U1 Wi-Fi page. Enter only the numeric address. |
+| First SSH connection | Compare the address with the screen, then confirm. See [first connection](installation.md#confirm-the-connection). |
+| `password:` | The SSH root password of the printer, not the Wi-Fi password. No characters appear while you type. This is normal. |
 
-The upstream default SSH username is `root`; its default password is `snapmaker`. Use your own password if it was changed. [Upstream SSH instructions](https://snapmakeru1-extended-firmware.pages.dev/ssh_access)
-**Password entry shows no characters or asterisks. This is normal.**
-Each SSH connection can request the password again. The wizard does not save it.
+If you did not change them, the user is `root` and the initial password is `snapmaker`. See the [upstream SSH notes](https://snapmakeru1-extended-firmware.pages.dev/ssh_access).
+The wizard does not store the password and can ask for it more than once.
 
-## 5. Follow the ACE firmware stage
+## 5. ACE firmware
 
-For a new installation, this stage appears automatically.
-Select automatic checking unless you already know the specified OpenCubic CFW 1.1.1 is installed and NFC works.
-U1 downloads the pinned images and checks their size, SHA-256, and format.
-The wizard then checks ACE identity, source version, and idle state.
+A first installation enters this stage automatically.
 
-The tested update route is **ACE Pro Gen 1: `V1.3.856` / boot `V1.0.1` → OpenCubic CFW 1.1.1, reporting `CV1.3.863`**.
-Another source version is not a supported automatic update route. Do not guess or force it.
-The version string `CV1.3.863` alone does not prove the exact community build.
+1. Select the automatic check.
+2. Wait while the wizard downloads and verifies the firmware and checks the ACE model, current version, and idle state.
+3. Compare the source and target versions in the window, then confirm the update.
+4. Until the result appears, do not remove power and do not disconnect USB.
 
-Read the source and target before confirming one update. Keep power and USB connected until the result is known.
-See [the ACE prompts and recovery instructions](ace-wizard.md).
+The only supported route is from **`V1.3.856` / boot `V1.0.1`** to **OpenCubic CFW 1.1.1 (shown as `CV1.3.863`)**.
+The wizard stops for other versions. Do not force it. See the [ACE firmware wizard](ace-wizard.md).
 
-## 6. Review initial tube distances, then install
+## 6. Review tube distances, then install
 
 > [!IMPORTANT]
-> **The installer cannot measure tube lengths or filament tension.**
-> **Do not copy example distances as universal settings.**
+> **The installer cannot measure your tube lengths. The example values are not universal. Do not copy them.**
 
-The first installation asks for A and B. Existing installations preserve their current settings.
+A first installation asks for two distances. An existing installation keeps its values.
 
-![Fast-feed and retraction lengths](images/length-guide.en.svg)
+![Distances and the position after unloading](images/length-guide.en.svg)
 
 | Letter | Meaning |
 | --- | --- |
-| **A** | Retract from the head while keeping the filament tip inside ACE and its rear tube. |
-| **B** | Feed quickly from a known starting position. End this stage before the head; use a value smaller than A. |
+| **A** | The distance the ACE pulls back on unload. The filament tip must stay in the tube behind the ACE. |
+| **B** | The fast feed distance on load. It must end before the print head and be less than A. |
 
-Use [the initial setup and calibration procedure](configuration.md#calibrate-the-ptfe-paths) to select initial values for your tube arrangement.
-Review and measure the layout before installation. Verify the values with all four slots after installation.
-The tested arrangement used A = 1250 mm and B = 1150 mm. These are reference values only.
-The speed defaults are 200 for fast feed, 50 for head approach, and 80 for retraction.
-Forward take-up starts disabled on a new installation. Enable it only after normal loading and unloading have been checked.
+1. Measure your tube paths with [settings and calibration](configuration.md#calibrate-the-ptfe-paths) and select A and B.
+2. Compare the settings in the window, then confirm installation.
 
-Review the displayed settings. Confirm installation only after the machine checks and initial distance review pass.
-The installer saves the files it changes, sets **Filament Detection → External**, and verifies the installation after a service restart.
-**External** is the option name. `extended` is used in firmware names and configuration paths.
-No U1 OpenRFID or NFC key setup is required for this workflow.
+The tested machine uses A = 1250 mm and B = 1150 mm. These are for comparison only.
+The installer makes a backup of the files it changes and sets Filament Detection to **External** automatically.
 
-## 7. Wait for success, then test
+## 7. After success, test each slot
 
-Wait until the window reports a complete project installation success.
-An ACE firmware success message alone does not mean the U1 integration is installed.
+Wait until the window reports that this project is installed. A message about the ACE firmware only is not sufficient.
 
-1. Insert filament into one empty ACE inlet. Keep your hands clear of the rollers.
-2. Wait for the short bite and NFC recognition to finish.
-3. Confirm that automatic full loading does not start. Check the material information, or enter it manually for an unrecognized spool.
-4. Select that slot's **Load** on U1. Wait for completion.
-5. Select **Unload**. Confirm the filament remains in ACE and the material data stays available.
-6. Without removing or reinserting filament, select **Load** again.
-7. After this slot passes, check the other three slots one at a time.
+1. Put filament into one empty ACE inlet and release the spool. Wait for the grip and the NFC read to end.
+2. Make sure that it did not feed to the print head by itself and that the material data is correct. You can enter unrecognized material manually.
+3. Select **Load** on the U1 and wait for completion.
+4. Select **Unload**. Make sure that the filament stays in the ACE and the material data stays.
+5. Do not remove the filament. Select **Load** again.
+6. When this slot passes, test the other three slots one at a time.
 
-The installer does not run these physical tests. All four slots share the distance settings.
-Stop if filament catches, a drive slips, or the printer reports an error.
-See [daily use](daily-use.md) and [validation limits](validation.md).
+Stop immediately if there is a jam, slipping, or an error. See [daily use](daily-use.md).
 
-## If a stage stops
+## If a step stops
 
-| Stage or message | Next action |
+| Situation | What to do |
 | --- | --- |
-| Missing OpenSSH Client | Install the Windows component using the steps below. Do not install Python. |
-| File transfer or connection failed before installation | Check the current IP, local network, Root Access, and SSH password. |
-| Printer hot, busy, drying, or using ACE | Finish the operation normally. Turn heating and drying off. Wait until temperatures are below 50°C. |
-| No unique ACE interface | Check power, generation, and the verified cable. Connect only one ACE. Do not guess a serial port. |
-| U1 firmware update error on the screen | Stop. Keep the exact error and use [the U1 recovery guidance](u1-preparation.md). This is not a host-installer rollback. |
-| ACE update result is missing or the computer disconnected | Keep power and USB connected. Reopen the same package version and select **menu 4**. Read the saved result; do not resend the update. |
-| U1 integration installation may have started, but no success result arrived | Keep the window and diagnostic file. Do not repeat installation. Use [host recovery](update-and-rollback.md) to inspect the backup and service state. |
+| The OpenSSH Client is missing | Add it with the steps below. You do not need Python. |
+| Connection or upload fails before installation | Check the current IP, the network, Root Access, and the SSH password. |
+| The machine is hot, busy, or drying | End the operation, turn off heating and drying, and wait until below 50°C. |
+| No single ACE interface is found | Check the power and the cable. Connect only one ACE. Do not guess the serial port. |
+| The U1 screen reports an update error | Stop and record the text. See [U1 firmware preparation](u1-preparation.md). |
+| The ACE update has no result, or the computer disconnects | Keep power and USB connected. Open the wizard again from the same package version and select menu 4. **Do not send the update again.** |
+| Installation possibly started but no success message | Keep the window. Do not install again. Follow [update and rollback](update-and-rollback.md). |
 
-ACE firmware maintenance and U1 host installation have different recovery paths.
-`Automatic rollback VERIFIED` refers to host files and services; it does not roll back ACE firmware.
-Do not publish private configuration, credentials, or unredacted diagnostics.
+`Automatic rollback VERIFIED` means that the files on the U1 were restored. **It does not mean that the ACE firmware was restored.**
+For other problems, see [troubleshooting](troubleshooting.md).
 
 ### Install the Windows OpenSSH Client if needed
 
-1. Select **Start**. Search for **Optional Features** and open that settings page.
+1. Select **Start**, then search for and open **Optional features**.
 2. Select **View features** or **Add a feature**.
-3. Search for **OpenSSH**. Select **OpenSSH Client**, then complete the displayed installation steps.
+3. Search for **OpenSSH**. Select **OpenSSH Client** and install it. Do not select OpenSSH Server.
 4. Run **START-HERE.cmd** again.
 
-Do not select OpenSSH Server. A managed computer can require its administrator to add the component.
-See [Microsoft's component instructions](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse).
+See the [Microsoft instructions](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse).
 
-## Development
+## About this project
 
-The user supplied requirements and performed physical tests. **OpenAI Codex** wrote and integrated the code, installer, and documentation.
-Users do not need Codex or another AI assistant to install or use the project.
-Upstream contributions and licenses remain listed in [THIRD_PARTY.md](../THIRD_PARTY.md).
+The user set the requirements and did the physical tests. **OpenAI Codex** wrote the code, the installer, and the documentation. You do not need Codex to install or use the project.
+See [THIRD_PARTY.md](../THIRD_PARTY.md) for upstream sources and licenses.

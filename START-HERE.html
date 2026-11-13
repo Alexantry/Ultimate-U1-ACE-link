@@ -34,447 +34,258 @@ footer{padding:22px;color:#52657b;font-size:15px}@media(max-width:700px){.steps,
 <div><b>② 打开这个文件夹</b>找到 START-HERE.cmd，快速点鼠标左键两次。</div>
 <div><b>③ 跟着窗口回答</b>输入地址和密码；新装时确认管路长度。向导负责执行命令。</div></div>
 <div class="note"><p><strong>External 已自动处理。</strong>向导会设置耗材来源、处理内置读卡服务，并保存备份。受支持标签无需自行寻找或填写 NFC 密钥。</p></div>
-<details id="prepare"><summary>机器还没准备好？从这里展开<small>固件、访问开关、网络、线缆和 ACE 代际；已完成的人可以跳过。</small></summary><h2 id="开始安装前零基础准备指南">开始安装前：零基础准备指南</h2>
-<p><a href="START-HERE.html#start">返回中文首页</a> · <strong><a href="START-HERE.html#start">主安装向导</a></strong> · <a href="MANUAL-INSTALL.zh-CN.html">中文手动安装</a></p>
-<p>这篇说明只处理需要你亲手完成的准备工作。你不需要编程，也不需要编辑 JSON 或 Python 文件。</p>
-<p><strong>通常按<a href="START-HERE.html#start">主安装向导</a>操作即可；不需要先照本页手动刷完两台设备。</strong></p>
-<p>本页用于查看型号、接线、屏幕和网络的详细步骤，也保留 U1 固件的手动下载替代方法。</p>
-<p><strong>想减少下载和复制操作：双击 START-HERE.cmd，选择菜单 2“准备 U1 固件”。</strong></p>
-<p>新向导可下载、校验并准备 U 盘，再逐步提示屏幕升级和访问开关；见<a href="START-HERE.html#firmware">整合准备流程</a>。</p>
-<p>本页保留完整手动替代步骤。</p>
-<p>准备完成后，主安装向导会处理文件传输、串口选择、备份、持久化、软件模块和 <strong>External</strong> 设置。你不需要安装 Codex，也不需要 API 密钥。</p>
-<h3 id="一先确认你手上的设备">一、先确认你手上的设备</h3>
-<div class="table"><table><thead><tr><th>需要确认的项目</th><th>怎么看</th><th>完成标准</th></tr></thead><tbody>
-<tr><td>打印机</td><td>查看机身标识或购买记录。</td><td>型号是 <strong>Snapmaker U1</strong>。</td></tr>
-<tr><td>送料盒</td><td>查看 ACE 机身铭牌、包装或购买记录。</td><td>型号是 <strong>ACE Pro 第一代</strong>。</td></tr>
-<tr><td>电脑</td><td>使用能连接家庭网络的 Windows 电脑。</td><td>能打开网页、下载文件和解压安装包。</td></tr>
-<tr><td>USB 连接</td><td>查看下面的硬件准备章节。</td><td>已有经过核对的 ACE 第一代专用 USB 连接线。</td></tr>
-<tr><td>四路料管</td><td>查看 ACE 到 U1 的实际管路。</td><td>四路连接明确，管路没有压扁或急弯。</td></tr>
-</tbody></table></div>
-<p><strong>ACE 2 Pro 不属于本项目当前的适用范围。</strong> 不要仅凭“四个料槽”判断代际。看不清型号时，先请卖家或设备提供者确认。</p>
-<p><a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">OpenCubic 发布页</a>同时列出了 ACE 1 Pro 和 ACE 2 Pro 的不同固件；两者不能混用。</p>
+<details id="prepare"><summary>机器还没准备好？从这里展开<small>固件、访问开关、网络、线缆和 ACE 代际；已完成的人可以跳过。</small></summary><h2 id="安装前准备">安装前准备</h2>
+<p><a href="START-HERE.html#start">返回首页</a> · <a href="START-HERE.html#start">快速开始</a> · <a href="MANUAL-INSTALL.zh-CN.html">手动安装</a></p>
+<p>这一页帮你确认型号、屏幕设置、网络和接线。全部确认后，回到<a href="START-HERE.html#start">快速开始</a>运行向导。</p>
+<p>U1 和 ACE 的固件都由向导准备，不用提前自己刷。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
 <p><strong>任何接线、固件更新或安装之前，先结束打印和全部耗材动作。</strong></p>
 <p><strong>关闭加热和 ACE 烘干，等待所有喷嘴和热床低于 50℃。</strong></p>
 </aside>
-<p>第一次安装时，先用 U1 的正常退料退出四个打印头，再将四路耗材退出 ACE 入口。</p>
-<p>退料可能加热喷嘴；完成后关闭加热并重新等待冷却。</p>
-<p>已经使用本项目、只是更新时，不要求清空四路，但仍需空闲、关闭烘干和冷却。</p>
-<h3 id="二在打印机屏幕查看版本">二、在打印机屏幕查看版本</h3>
-<ol start="1">
-<li>在 U1 屏幕打开 <strong>设置 / Settings</strong>。</li>
-<li>点 <strong>关于 / About</strong>。</li>
-<li>点 <strong>固件版本 / Firmware Version</strong>。</li>
-<li>记下当前显示的版本。</li>
-</ol>
-<p>这个入口也用于后面的本地更新。<a href="https://wiki.snapmaker.com/en/snapmaker_u1/firmware_update_procedure">Snapmaker 官方更新说明</a></p>
-<p>本项目使用的扩展固件版本是 <strong><code>v2.0.0-paxx12-24</code></strong>。</p>
-<div class="table"><table><thead><tr><th>你现在的情况</th><th>下一步</th></tr></thead><tbody>
-<tr><td>明确已安装 <code>v2.0.0-paxx12-24</code>，配置网页也能确认该构建版本</td><td>跳到第四节，检查访问开关。</td></tr>
-<tr><td>屏幕只显示 <code>2.0.0</code>，不知道有没有扩展固件</td><td>不能只凭 <code>2.0.0</code> 判断。先按第四、五节检查现有访问开关和配置网页；能确认准确构建就不必重复升级。</td></tr>
-<tr><td>使用其他扩展版本或自己修改过的系统</td><td>先保留原配置，再按对应维护流程迁移；不要为了安装本项目直接覆盖。</td></tr>
+<h3 id="一确认设备">一、确认设备</h3>
+<div class="table"><table><thead><tr><th>项目</th><th>要求</th></tr></thead><tbody>
+<tr><td>打印机</td><td><strong>Snapmaker U1</strong>。</td></tr>
+<tr><td>送料盒</td><td><strong>ACE Pro 第一代</strong>。看机身铭牌、包装或购买记录，不要只凭“四个料槽”判断。</td></tr>
+<tr><td>电脑</td><td>Windows 电脑，能上网、下载和解压文件。</td></tr>
+<tr><td>连接线</td><td>经过核对的 ACE 第一代专用 USB 连接线，见第五节。</td></tr>
+<tr><td>料管</td><td>四路料管连接明确，没有压扁或急弯。</td></tr>
 </tbody></table></div>
-<p>主安装向导会再次核对版本。固件文件可以由向导准备，U1 仍在屏幕确认后执行本地升级。</p>
-<h3 id="三还没有正确的-u1-扩展固件时">三、还没有正确的 U1 扩展固件时</h3>
-<p>如果已有自定义配置或改过系统文件，先把它们保存到电脑的私人备份目录，并保留原文件位置的记录。</p>
-<p>本项目不提供整台 U1 的系统镜像备份；只保存配置网页截图也不能备份自改文件。</p>
-<p>不知道现有系统改过什么或如何恢复时，先核对原安装记录，再决定迁移步骤。</p>
-<p>后面的主安装备份不能保护这一步升级之前的系统修改。</p>
-<p>如果已经选择向导菜单 <strong>2</strong>，由向导完成下载、校验和复制。直接跟随窗口操作，不需要重复下面的手动下载步骤。</p>
-<h4 id="1-下载正确的文件">1. 下载正确的文件</h4>
+<p><strong>ACE 2 Pro 不在支持范围内。</strong> <a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">OpenCubic 发布页</a>同时有 ACE 1 Pro 和 ACE 2 Pro 的固件，两者不能混用。</p>
+<ul>
+<li><strong>第一次安装：</strong> 先在 U1 上正常退料，再把四路耗材拔出 ACE 入口。退料会加热喷嘴，之后重新等待冷却。</li>
+<li><strong>只是更新本项目：</strong> 不用清空四路，但仍要空闲、关闭烘干并冷却。</li>
+</ul>
+<h3 id="二查看-u1-固件版本">二、查看 U1 固件版本</h3>
 <ol start="1">
-<li>在电脑浏览器打开 <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/tag/v2.0.0-paxx12-24">v2.0.0-paxx12-24 发布页</a>。</li>
-<li>确认页面标题包含 <strong><code>v2.0.0-paxx12-24</code></strong>。</li>
-<li>向下找到 <strong>Assets</strong>，必要时点开它。</li>
-<li>下载 <strong><code>U1_extended_2.0.0-paxx12-24_upgrade.bin</code></strong>。</li>
+<li>在 U1 屏幕打开 <strong>设置 → 关于 → 固件版本</strong>。</li>
+<li>记下显示的版本。</li>
 </ol>
-<p><strong>你会看到：</strong> 电脑下载文件夹中出现一个以 <code>.bin</code> 结尾的文件。</p>
-<p>不要下载 <code>Source code</code> 作为打印机升级文件，也不要选择 <code>rolling</code> 预发布版本。本项目要求上述准确版本。</p>
-<h4 id="2-校验下载文件">2. 校验下载文件</h4>
-<p>SHA-256 用于检查文件是否与本项目固定的上游文件完全一致。手动下载时也要检查。</p>
+<p>本项目要求扩展固件 <strong><code>v2.0.0-paxx12-24</code></strong>。屏幕只显示 <code>2.0.0</code> 时不能确定，要在第四节的配置网页里确认。</p>
+<div class="table"><table><thead><tr><th>现在的情况</th><th>下一步</th></tr></thead><tbody>
+<tr><td>已确认是 <code>v2.0.0-paxx12-24</code></td><td>跳到第三节。</td></tr>
+<tr><td>还没装，或不确定</td><td>运行向导选菜单 2，由它下载、校验并准备 U 盘，见 <a href="START-HERE.html#firmware">U1 固件准备</a>。</td></tr>
+<tr><td>其他扩展版本或自己改过的系统</td><td>先备份原配置并核对兼容性，不要直接覆盖。</td></tr>
+</tbody></table></div>
+<p>U1 有自定义改动时，升级固件前先自己备份。本项目不备份整台 U1 的系统，安装时的备份也不保护升级之前的改动。</p>
+<p>想手动下载和校验固件，同样见 <a href="START-HERE.html#firmware">U1 固件准备</a>。</p>
+<p>屏幕入口参考 <a href="https://wiki.snapmaker.com/en/snapmaker_u1/firmware_update_procedure">Snapmaker 官方更新说明</a>，升级报错参考<a href="https://wiki.snapmaker.com/en/snapmaker_u1/troubleshooting/firmware-update-failed">官方升级故障说明</a>。</p>
+<h3 id="三打开两个访问开关">三、打开两个访问开关</h3>
+<h4 id="1-advanced-mode">1. Advanced Mode</h4>
 <ol start="1">
-<li>在“下载”文件夹中，按住 <strong>Shift</strong>，右键刚下载的 <code>.bin</code> 文件。</li>
-<li>点 <strong>复制文件地址／复制为路径</strong>。</li>
-<li>按 <strong>Windows 键 + R</strong>，输入 <code>powershell</code>，按回车。</li>
-<li>复制下面这一行到打开的窗口，按回车。</li>
-<li>出现 <code>Paste the file path</code> 时，粘贴刚复制的文件路径，再按回车。</li>
+<li>在 U1 屏幕打开 <strong>设置 → 维护</strong>。</li>
+<li>开启 <strong>Advanced Mode</strong>，按要求重启。</li>
 </ol>
-<pre><code>
-Get-FileHash -Algorithm SHA256 -LiteralPath ((Read-Host &quot;Paste the file path&quot;).Trim(&#x27;&quot;&#x27;))
-</code></pre>
-<p>把结果中的完整 <code>Hash</code> 值与下面比较，字母大小写不影响结果：</p>
-<pre><code>
-42dcf59e06ef0f6fab20745883322f24ddd3c1a09da07449b356dd9dab943070
-</code></pre>
-<p><strong>不一致就不要安装。</strong> 从准确的上游链接重新下载后再检查。</p>
-<p>文件身份和来源见 <a href="START-HERE.html#firmware">U1 固件准备说明</a>。</p>
-<h4 id="3-准备-fat32-格式的-u-盘">3. 准备 FAT32 格式的 U 盘</h4>
+<p>回到维护页面时它仍为开启，才算完成。见<a href="https://snapmakeru1-extended-firmware.pages.dev/firmware_config">上游配置说明</a>。</p>
+<h4 id="2-root-access">2. Root Access</h4>
 <ol start="1">
-<li>把 U 盘插入电脑。</li>
-<li>按键盘 <strong>Windows 键 + E</strong>，打开文件资源管理器。</li>
-<li>点左侧的 <strong>此电脑</strong>。</li>
-<li>找到刚插入的 U 盘。</li>
-<li>右键该 U 盘，选择 <strong>属性</strong>。</li>
-<li>查看 <strong>文件系统</strong> 一项。</li>
+<li>打开 <strong>设置 → 维护 → Root Access</strong>。</li>
+<li>阅读说明，滚到底部点 <strong>Agree／同意</strong>。</li>
+<li>把状态设为 <strong>Open</strong>。</li>
 </ol>
-<p><strong>完成标准：</strong> 文件系统显示 <strong>FAT32</strong>。已经是 FAT32 时，不要重复格式化。</p>
-<p>如果不是 FAT32，可以改用已经准备好的 FAT32 U 盘。需要自行格式化时：</p>
+<p>页面显示 <strong>Open</strong> 才算完成。向导靠它通过 SSH 连接打印机，见<a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">上游 SSH 说明</a>。</p>
+<h3 id="四网络和登录">四、网络和登录</h3>
+<h4 id="1-找到打印机地址">1. 找到打印机地址</h4>
 <ol start="1">
-<li>先把 U 盘中需要的文件复制到电脑。</li>
-<li>再次核对选中的确实是这个 U 盘。</li>
-<li>右键该 U 盘，选择 <strong>格式化</strong>。</li>
-<li>在 <strong>文件系统</strong> 中选择 <strong>FAT32</strong>。</li>
-<li>确认接受清空这个 U 盘后，再点 <strong>开始</strong>。</li>
+<li>在 U1 屏幕打开 <strong>设置 → Wi-Fi</strong>，确认已连接。</li>
+<li>记下页面上的 <strong>IP 地址</strong>。</li>
 </ol>
-<p><strong>格式化会删除所选盘内的数据。</strong> 不确定哪个是 U 盘，或列表没有 FAT32 时，先停在这里，请熟悉电脑的人帮助准备。不要选择电脑系统盘或其他硬盘。</p>
-<h4 id="4-把升级文件放到-u-盘">4. 把升级文件放到 U 盘</h4>
+<p>固件升级后可能要重新连 Wi-Fi，地址也可能变，以屏幕当前显示为准。</p>
+<p>没有地址时先连上自己的 Wi-Fi，见 <a href="https://wiki.snapmaker.com/en/snapmaker_orca/cloud_mode_fail">Snapmaker 官方连接检查</a>。</p>
+<h4 id="2-电脑连同一个网络">2. 电脑连同一个网络</h4>
+<p>电脑和打印机要接在同一个路由器下，电脑用网线也可以。不要一个连手机热点、一个连家里的网络。</p>
+<p>见 <a href="https://wiki.snapmaker.com/en/snapmaker_u1/set-static-ip-for-u1">Snapmaker 官方网络准备说明</a>。</p>
+<h4 id="3-打开配置网页">3. 打开配置网页</h4>
 <ol start="1">
-<li>打开电脑的 <strong>下载</strong> 文件夹。</li>
-<li>复制刚下载并通过校验的 <code>.bin</code> 文件。</li>
-<li>打开 U 盘。</li>
-<li>直接把文件粘贴到 U 盘第一层，不要放进其他文件夹。</li>
-<li>等待复制完成。</li>
-<li>右键 U 盘，选择 <strong>弹出</strong>。</li>
-<li>从电脑拔出 U 盘。</li>
+<li>在电脑上打开 Edge 或 Chrome，点一下顶部地址栏。</li>
+<li>输入 <code>http://</code>，紧接打印机地址，再接 <code>/firmware-config/</code>，按回车。</li>
 </ol>
-<p>“第一层”指双击 U 盘后立即看到的位置，也叫根目录。FAT32 和根目录要求来自<a href="https://snapmakeru1-extended-firmware.pages.dev/install">扩展固件安装说明</a>。</p>
-<h4 id="5-在打印机上安装">5. 在打印机上安装</h4>
+<p>能打开 <strong>Firmware Config</strong> 页面，并且构建版本是 <strong><code>2.0.0-paxx12-24</code></strong>，才算完成。见<a href="https://snapmakeru1-extended-firmware.pages.dev/firmware_config">页面说明</a>。</p>
+<p>打不开时依次检查：IP 是否变了、Wi-Fi 是否连着、Advanced Mode 是否开启。</p>
+<h4 id="4-准备-ssh-密码">4. 准备 SSH 密码</h4>
+<ul>
+<li>向导要的是 <strong>SSH 密码</strong>，不是 Wi-Fi 密码，也不是 Snapmaker 账号密码。</li>
+<li>没改过的话，用户名是 <code>root</code>，初始密码是 <code>snapmaker</code>。见<a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">上游凭据说明</a>。</li>
+<li>输入时不显示字符是正常的。不要把密码贴到公开页面。</li>
+</ul>
+<h3 id="五接线">五、接线</h3>
+<p><strong>软件不能代替正确的线缆。</strong> 接口能插进去，不代表电气连接正确。</p>
+<ul>
+<li>按 <a href="https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring">SnapAce 的 Pinout and Wiring 硬件说明</a>制作或购买 <strong>ACE Pro 第一代连接 U1 USB</strong> 的专用线。</li>
+<li>不要按线的颜色猜线序，普通充电线不能代替。</li>
+<li>不会看接线图或做接头时，用确认过的成品线，或请有经验的人完成。不要先通电“试试”。</li>
+<li><strong>只参考 SnapAce 的硬件部分。</strong> 不要执行旧 SnapAce 的软件覆盖步骤。</li>
+</ul>
+<p>线准备好以后：</p>
 <ol start="1">
-<li>确认打印和耗材动作已经结束、加热与烘干关闭、喷嘴和热床低于 50℃。</li>
-<li>把 U 盘插入 U1 的 USB 接口。</li>
-<li>在屏幕依次点 <strong>设置 → 关于 → 固件版本 → 本地更新</strong>。</li>
-<li>选择 <strong><code>U1_extended_2.0.0-paxx12-24_upgrade.bin</code></strong>。</li>
-<li>按屏幕提示确认更新。</li>
-<li>等待更新结束和机器自动重启。</li>
+<li>等喷嘴和热床冷却，关闭 U1 和 ACE 的电源。</li>
+<li>接上专用 USB 线。</li>
+<li>把 ACE 的四路出料管接到对应的 U1 通道，核对 1、2、3、4 路没有交叉。</li>
+<li>整理料管，避免压扁、急弯或妨碍打印头移动。</li>
+<li>重新开机。</li>
 </ol>
-<p>更新过程中不要拔 U 盘或切断电源。</p>
-<p><strong>完成标准：</strong> U1 能正常进入主界面，没有升级错误。后面的配置网页还要确认构建版本。</p>
-<p>如果列表里没有该文件，先核对文件名、U 盘格式和文件位置。出现升级错误时，记录屏幕文字，按照<a href="https://wiki.snapmaker.com/en/snapmaker_u1/troubleshooting/firmware-update-failed">官方升级故障说明</a>排查；不要反复换随机固件尝试。</p>
-<h3 id="四打开两个不同的访问开关">四、打开两个不同的访问开关</h3>
-<h4 id="1-打开-advanced-mode">1. 打开 Advanced Mode</h4>
-<ol start="1">
-<li>在 U1 屏幕打开 <strong>设置 / Settings</strong>。</li>
-<li>点 <strong>维护 / Maintenance</strong>。</li>
-<li>找到 <strong>Advanced Mode</strong>，将它开启。</li>
-<li>按要求重启打印机。</li>
-</ol>
-<p><strong>完成标准：</strong> 回到维护页面时，Advanced Mode 仍为开启状态。扩展配置网页需要这个开关。<a href="https://snapmakeru1-extended-firmware.pages.dev/firmware_config">上游配置说明</a></p>
-<h4 id="2-打开-root-access">2. 打开 Root Access</h4>
-<ol start="1">
-<li>再次打开 <strong>设置 → 维护</strong>。</li>
-<li>点 <strong>Root Access</strong>。</li>
-<li>阅读页面说明，向下滚动到同意按钮。</li>
-<li>点 <strong>Agree / 同意</strong>。</li>
-<li>将状态设为 <strong>Open</strong>。</li>
-</ol>
-<p><strong>完成标准：</strong> Root Access 页面显示 <strong>Open</strong>。这是允许安装向导通过 SSH 连接打印机的开关。<a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">上游 SSH 说明</a></p>
-<p>Advanced Mode、Root Access 和系统持久化是三件不同的事。前两个需要在这里开启；持久化由本项目安装器处理，不需要你输入 <code>touch</code> 命令。</p>
-<h3 id="五找到打印机地址并确认电脑能够访问">五、找到打印机地址，并确认电脑能够访问</h3>
-<h4 id="1-在-u1-上查看地址">1. 在 U1 上查看地址</h4>
-<ol start="1">
-<li>在打印机屏幕打开 <strong>设置 → Wi-Fi</strong>。</li>
-<li>确认打印机已经连接你家或工作室的网络。</li>
-<li>找到页面上的 <strong>IP 地址 / IP Address</strong>。</li>
-<li>把这串带小数点的数字完整记下来。</li>
-</ol>
-<p><strong>完成标准：</strong> 页面显示已连接，并且有 IP 地址。没有地址时，先选择自己的 Wi-Fi 网络并输入 Wi-Fi 密码。<a href="https://wiki.snapmaker.com/en/snapmaker_orca/cloud_mode_fail">Snapmaker 官方连接检查</a></p>
-<p>固件更新后可能需要重新连接 Wi-Fi。地址也可能变化，请用屏幕现在显示的地址。</p>
-<h4 id="2-让电脑连接同一个家庭网络">2. 让电脑连接同一个家庭网络</h4>
-<p>电脑和打印机应连接同一个路由器。电脑用网线、打印机用 Wi-Fi 也可以属于同一个家庭网络。</p>
-<ol start="1">
-<li>点击 Windows 右下角的网络图标。</li>
-<li>检查电脑当前连接的网络。</li>
-<li>必要时连接到与打印机相同的家庭网络。</li>
-</ol>
-<p>不要把电脑留在手机热点，而让打印机连接另一个网络。<a href="https://wiki.snapmaker.com/en/snapmaker_u1/set-static-ip-for-u1">Snapmaker 官方网络准备说明</a></p>
-<h4 id="3-在电脑打开配置网页">3. 在电脑打开配置网页</h4>
-<ol start="1">
-<li>打开 Edge 或 Chrome。</li>
-<li>按 <strong>Ctrl + L</strong>，选中顶部地址栏。</li>
-<li>输入 <code>http://</code>，后面紧接刚才记下的打印机地址，再接 <code>/firmware-config/</code>。</li>
-<li>按回车键。</li>
-</ol>
-<p>不要把地址输入搜索框，也不要把“打印机地址”四个汉字输入网址。</p>
-<p><strong>你会看到：</strong> 名为 <strong>Firmware Config</strong> 的配置页面。状态区域会显示基础固件、构建版本等信息。</p>
-<p><strong>完成标准：</strong> 页面可以打开，构建版本对应 <strong><code>2.0.0-paxx12-24</code></strong>。<a href="https://snapmakeru1-extended-firmware.pages.dev/firmware_config">页面说明</a></p>
-<p>如果打不开，按顺序检查：屏幕 IP 是否变了、Wi-Fi 是否重连、Advanced Mode 是否开启。暂时不要继续主安装。</p>
-<h4 id="4-准备登录密码">4. 准备登录密码</h4>
-<p>安装向导需要的是 <strong>SSH 密码</strong>，不是 Wi-Fi 密码，也不是 Snapmaker 账号密码。</p>
-<p>如果从未修改过 SSH 密码，上游文档列出的用户名是 <code>root</code>，初始密码是 <code>snapmaker</code>。修改过就使用你自己的密码。<a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">上游凭据说明</a></p>
-<p>密码输入时，终端可能不显示字符或星号。这不表示键盘没有输入。不要把密码贴到公开问题页面。</p>
-<h3 id="六准备-ace-到-u1-的硬件连接">六、准备 ACE 到 U1 的硬件连接</h3>
-<p><strong>软件不能代替正确的线缆。</strong> 外形能插入，不代表电气连接正确。</p>
-<ol start="1">
-<li>打开 <a href="https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring">SnapAce 的 Pinout and Wiring 硬件说明</a>。</li>
-<li>请线缆提供者确认它适用于 <strong>ACE Pro 第一代连接 U1 USB</strong>。</li>
-<li>确认线缆已经按该硬件方案制作并检查。</li>
-</ol>
-<p>上游方案需要专门的 ACE 到 USB 连接。本页不根据线材颜色猜测线序，也不把普通充电线当成成品转接线。</p>
-<p>如果你不会看接线图、制作接头或检查线路，请使用经过确认的成品线，或者请有经验的人完成这部分。不要先通电“试试”。</p>
-<p>硬件已经准备好以后：</p>
-<ol start="1">
-<li>等喷嘴和热床冷却。</li>
-<li>关闭 U1 和 ACE 的电源。</li>
-<li>按已经核对的硬件方案连接专用 USB 线。</li>
-<li>把 ACE 四路出料管接到对应的 U1 通道。</li>
-<li>核对第 1、2、3、4 路没有交叉接错。</li>
-<li>整理管路，避免压扁、急弯或妨碍打印头移动。</li>
-<li>重新开启设备电源。</li>
-</ol>
-<p><strong>完成标准：</strong> 接线方案和型号已经确认；四路对应关系清楚；安装向导稍后能够找到 ACE 串口。</p>
-<p>如果向导报告“没有找到 ACE”或找到多个候选设备，先检查连接。不要随意选择一个串口继续。</p>
 <p><img alt="ACE 与 U1 的连接概念图" src="docs/images/system.svg"></p>
-<p>这张图只说明连接关系，不提供线序或装配尺寸。</p>
-<p><strong>只参考 SnapAce 的硬件部分。</strong> 不要先执行旧 SnapAce 软件覆盖步骤；本项目会安装适合 U1 2.0 的软件模块。</p>
-<h3 id="七让向导检查或准备-ace-固件">七、让向导检查或准备 ACE 固件</h3>
-<p>U1 固件和 ACE 固件是两个独立的系统。给 U1 安装扩展固件，不会自动更新 ACE。</p>
-<p><strong>不需要在启动主安装向导之前，另找工具刷写 ACE。</strong> 本项目向导会在安装适配之前检查它。</p>
-<p>本项目验证的 ACE NFC 路径为：</p>
+<p>这张图只说明连接关系，不提供线序或尺寸。</p>
+<p>之后向导如果提示找不到 ACE 或找到多个设备，先检查连接，不要随便选一个串口。</p>
+<h3 id="六ace-固件">六、ACE 固件</h3>
+<p>U1 固件和 ACE 固件是两回事，升级 U1 不会更新 ACE。<strong>不用提前自己刷 ACE</strong>，向导会在安装前检查并准备。</p>
 <div class="table"><table><thead><tr><th>项目</th><th>要求</th></tr></thead><tbody>
 <tr><td>硬件</td><td>ACE Pro 第一代</td></tr>
-<tr><td>ACE 运行版本</td><td><code>CV1.3.863</code></td></tr>
-<tr><td>对应社区固件</td><td>OpenCubic Gen1 CFW <code>1.1.1</code></td></tr>
-<tr><td>上游发布位置</td><td><a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">OpenCubic `v1.0.2` 发布页</a></td></tr>
-<tr><td>对应第一代文件</td><td><code>ACE_V1.3.863_20260716.bin</code></td></tr>
+<tr><td>运行版本</td><td><code>CV1.3.863</code></td></tr>
+<tr><td>对应固件</td><td>OpenCubic Gen1 CFW <code>1.1.1</code>，文件 <code>ACE_V1.3.863_20260716.bin</code></td></tr>
+<tr><td>上游位置</td><td><a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">OpenCubic `v1.0.2` 发布页</a></td></tr>
 </tbody></table></div>
-<p>发布页的 <code>v1.0.2</code> 是整个发布包的标签，不是 ACE 固件的内部版本。不要下载同页的 <code>ACE2_...</code> 文件。</p>
-<h4 id="已经有人为你准备过-ace">已经有人为你准备过 ACE</h4>
-<ol start="1">
-<li>向设备提供者确认具体固件来源和版本。</li>
-<li>确认它对应上表的第一代镜像，而不只是名称中带 <code>1.3.863</code>。</li>
-</ol>
-<p><strong>完成标准：</strong> 能确认使用的是上述版本。已有正确固件且 NFC 正常时，不必重复刷写。</p>
-<h4 id="全新原厂-ace或者你不知道里面是什么固件">全新原厂 ACE，或者你不知道里面是什么固件</h4>
-<p>机身铭牌通常只能帮助确认硬件，不能代替运行固件版本检查。不要因为看到了 <code>V1.3.863</code> 就当成 <code>CV1.3.863</code>。</p>
-<p>本项目已把 <a href="START-HERE.html#ace-firmware">ACE 固件准备整合进双语向导</a>。它通过 U1 的 USB 检查 ACE，不要求 Anycubic 打印机。</p>
-<p>首次安装跟着窗口提示即可；只维护 ACE 或查询上次更新时，选主菜单 <strong>4</strong>。</p>
-<p>这些路径不用输入命令或编辑设备配置。</p>
-<p>已实测的升级起点只有 <strong><code>V1.3.856</code>、引导版本 <code>V1.0.1</code></strong>。其他起点不能直接套用，也不能修改检测结果来绕过检查。</p>
-<p>向导负责下载校验、只读检测、生成私人设备配置，并显示准确的源版本和目标。</p>
-<p>你确认后才会执行一次更新，随后检查运行版本和后台就绪。断线后可从同一入口查看上次结果。</p>
-<p><strong>不受支持的源版本会被拒绝，不会强刷，也不能假设未知固件具有同样的 NFC 能力。</strong></p>
-<p>希望自己检查每条指令时，仍可使用<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">手动维护说明（英文）</a>。</p>
-<p>使用固定 OpenCubic 固件支持的标签，无需自行寻找或填写 NFC 密钥。</p>
-<p>不受支持或无法识别的耗材，可在 U1 手动填写材料信息；支持范围见 <a href="START-HERE.html#nfc">NFC 说明</a>。</p>
-<h3 id="八留给主安装向导处理的项目">八、留给主安装向导处理的项目</h3>
-<p>下面这些不用再手动操作：</p>
-<div class="table"><table><thead><tr><th>项目</th><th>向导或安装器会做什么</th></tr></thead><tbody>
-<tr><td>ACE 固件</td><td>从上游下载校验，检测已支持起点，经确认执行一次更新，并记录结果。</td></tr>
-<tr><td>传输和安装软件</td><td>复制匹配版本的软件模块。</td></tr>
-<tr><td>备份</td><td>保存它即将修改的内容，供回退使用。</td></tr>
-<tr><td>系统持久化</td><td>配置所需的持久化标记。</td></tr>
-<tr><td>ACE 串口</td><td>沿用现有设置，或识别可用设备。</td></tr>
-<tr><td>后台耗材来源</td><td>设置为 <strong>External</strong>，避免 U1 内置读卡器与 ACE 数据冲突。</td></tr>
-<tr><td>通用通信参数</td><td>使用项目规定的参数。</td></tr>
-</tbody></table></div>
-<p>后台选项叫 <strong>External</strong>，不是 <strong>extended</strong>。<code>extended</code> 是扩展配置目录或固件名称的一部分。External 不表示 ACE 只能读取某个品牌。</p>
-<p><strong>实际管路长度不能由软件自动测出。</strong> 如果是第一次安装，请先完成四路布局检查和物理测量，选择初始送料、回抽距离。</p>
-<p>安装后再进行四槽验证，不要求安装前已经用新软件测试。步骤见<a href="START-HERE.html#calibrate-the-ptfe-paths">管路初始设置与校准</a>。</p>
-<p>不要只因为示例写着 1250 mm 就照抄；已有安装保留原参数。</p>
-<h3 id="九最后确认再回到主安装页">九、最后确认，再回到主安装页</h3>
+<ul>
+<li>向导只支持从 <strong><code>V1.3.856</code>、引导 <code>V1.0.1</code></strong> 升级。其他版本会被拒绝，不会强刷。</li>
+<li><code>V1.3.863</code> 不等于 <code>CV1.3.863</code>，铭牌也不能代替版本检查。</li>
+<li>发布页的 <code>v1.0.2</code> 是发布包的标签，不是固件版本。不要下载同页的 <code>ACE2_...</code> 文件。</li>
+<li>已经有人替你刷好时，向对方确认固件来源和版本对应上表，就不用重刷。</li>
+</ul>
+<p>步骤见 <a href="START-HERE.html#ace-firmware">ACE 固件向导</a>，想逐条执行命令见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">手动维护说明（英文）</a>。</p>
+<p>支持的标签不需要 NFC 密钥，范围见 <a href="START-HERE.html#nfc">NFC 说明</a>。</p>
+<h3 id="七最后确认">七、最后确认</h3>
 <div class="table"><table><thead><tr><th>检查项</th><th>通过标准</th></tr></thead><tbody>
-<tr><td>打印机与版本</td><td>U1，配置网页确认 <code>2.0.0-paxx12-24</code>。</td></tr>
+<tr><td>固件</td><td>配置网页确认 <code>2.0.0-paxx12-24</code>，或准备用向导菜单 2 安装。</td></tr>
 <tr><td>访问开关</td><td>Advanced Mode 开启，Root Access 为 Open。</td></tr>
-<tr><td>网络</td><td>电脑能打开打印机的配置网页。</td></tr>
-<tr><td>登录信息</td><td>已记下当前打印机地址，并知道 SSH 密码。</td></tr>
-<tr><td>ACE</td><td>已确认是第一代硬件；固件可由主向导检查或准备，不要求事先刷好。</td></tr>
-<tr><td>接线与管路</td><td>连接经过核对，四路对应明确。</td></tr>
-<tr><td>初始距离</td><td>第一次安装已审查四路布局和测量结果；已有安装保留当前值。</td></tr>
-<tr><td>当前状态</td><td>没有打印、进料、退料或烘干任务。第一次安装时，四个头端和四个 ACE 入口都无料。</td></tr>
-<tr><td>温度</td><td>喷嘴与热床目标温度为零，实际温度低于 50 ℃。</td></tr>
+<tr><td>网络和登录</td><td>电脑能打开配置网页，已记下打印机地址和 SSH 密码。</td></tr>
+<tr><td>ACE</td><td>确认是第一代。固件留给向导检查。</td></tr>
+<tr><td>接线</td><td>专用线和四路料管已核对。</td></tr>
+<tr><td>管路长度</td><td>第一次安装已按<a href="START-HERE.html#calibrate-the-ptfe-paths">参数与校准</a>测量；已有安装保留原值。</td></tr>
+<tr><td>状态</td><td>没有打印、进退料或烘干。第一次安装时四个打印头和四个 ACE 入口都没有耗材。</td></tr>
+<tr><td>温度</td><td>喷嘴和热床目标温度为零，实际低于 50℃。</td></tr>
 </tbody></table></div>
-<p>第一次安装前，先用 U1 的正常退料操作退出头端耗材，再将四路耗材退出 ACE 入口。完成标准是四个头端和四个 ACE 入口都没有线材。</p>
-<p>正常退料可能加热喷嘴。退料结束后，再确认目标温度为零，并等待实际温度降到 50 ℃ 以下。</p>
-<p>已经在使用 ACE、只是升级本项目的用户，不需要为了升级退出四路耗材。按照主安装向导的状态检查提示处理即可。</p>
-<p>准备完成后，回到<a href="START-HERE.html#start">主安装向导</a>，按窗口继续。首次向导安装不需要手动编辑配置文件。</p>
-<p>只有得到本项目适配安装成功的提示后，才进行四槽的进料、退料和再次进料测试。</p></details>
-<section id="start"><h2 id="新手安装从这里开始">新手安装：从这里开始</h2>
-<p><a href="START-HERE.en.html#start">English</a> · <strong><a href="MANUAL-INSTALL.zh-CN.html">中文手动安装</a></strong></p>
-<p>使用 Windows 10 或 Windows 11 电脑即可。你不需要会编程，不需要安装 Python、Codex 或其他 AI，也不需要 API 密钥。</p>
-<p>向导支持 <strong>中文</strong> 和 <strong>English</strong>，会替你输入安装命令。</p>
-<p>使用指定 OpenCubic 固件支持的标签，<strong>无需自行寻找或填写 NFC 密钥</strong>。</p>
+<p>管路长度软件测不出来，不要照抄示例里的 1250 mm。</p>
+<p>都通过后，回到<a href="START-HERE.html#start">快速开始</a>运行向导。</p></details>
+<section id="start"><h2 id="快速开始">快速开始</h2>
+<p><a href="START-HERE.en.html#start">English</a> · <a href="MANUAL-INSTALL.zh-CN.html">手动安装</a> · <a href="START-HERE.html#start">返回首页</a></p>
+<p>用一台 Windows 10 或 11 电脑，跟着向导走完即可，不需要会编程。</p>
 
-<h3 id="1-更新或安装之前先准备设备">1. 更新或安装之前，先准备设备</h3>
+<h3 id="1-准备设备">1. 准备设备</h3>
 <ol start="1">
-<li>等打印及全部进退料动作结束。</li>
-<li>第一次安装时，先用正常“退料”退出四个 U1 打印头里的耗材，再将四路耗材退出 ACE 入口。</li>
-<li>关闭加热和 ACE 烘干。正常退料可能加热喷嘴；结束后等全部喷嘴和热床低于 50℃。</li>
+<li>等打印和进退料全部结束，关闭加热和 ACE 烘干，等喷嘴和热床低于 50℃。</li>
+<li>第一次安装：先在 U1 上正常退料，再把四路耗材拔出 ACE 入口。只是更新则不用清空。</li>
 <li>确认是 <strong>ACE Pro 第一代</strong>，不是 ACE 2 Pro。</li>
-<li>准备已核对的 ACE 专用 USB 线和四路料管。连接硬件前关闭两台设备电源；接好后再开机。</li>
-<li>让电脑和 U1 连接同一个局域网。两个设备都需要联网访问各自的固件下载地址。</li>
-<li>如果 U1 已有自定义改动，更新 U1 固件前先保存私人备份。本项目稍后的备份不能保护发生在它之前的固件更新。</li>
+<li>关闭两台设备的电源，按 <a href="https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring">SnapAce 硬件指南</a>接好专用 USB 线和四路料管，再开机。普通充电线不能代替。</li>
+<li>让电脑和 U1 连同一个网络，两者都要能上网。</li>
 </ol>
-<p><strong>已有本项目、只是更新：</strong> 不要求把四路耗材全部取出，但设备仍需空闲并冷却。</p>
-<p>连接线按 <a href="https://github.com/BlackFrogKok/SnapAce#pinout-and-wiring">SnapAce 硬件指南</a>准备，不能用普通充电线代替指定转接线。</p>
-<p><strong>打开向导前，不需要另外刷好 ACE 固件。</strong> 向导可以先准备 U1 固件，再检查和准备 ACE 固件。</p>
-<p>实际接线，以及 U1 屏幕上的更新与访问开关，仍需要你亲手操作。</p>
-<p>屏幕和 U 盘的详细操作见<a href="START-HERE.html#prepare">零基础机器准备指南</a>。</p>
+<p>U1 有自己改过的配置时，先另存备份；本项目的备份不保护固件升级前的改动。</p>
+<p>型号、接线、屏幕操作不熟悉，先看<a href="START-HERE.html#prepare">安装前准备</a>。</p>
 <h3 id="2-下载解压启动">2. 下载、解压、启动</h3>
 <ol start="1">
-<li>点击<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip">下载安装包</a>。</li>
-<li>打开 Windows 的“下载”文件夹。</li>
-<li>右键名称含 <code>Ultimate-U1-ACE-link-v0.1.6</code> 的压缩文件，点 <strong>全部解压缩／解压全部</strong>。</li>
-<li>点 <strong>提取／解压</strong>，打开解压后的 <code>Ultimate-U1-ACE-link</code> 文件夹。</li>
-<li>双击 <strong>START-HERE.cmd</strong>。</li>
-<li>选择 <strong>1. 中文</strong>。输入选项数字后按回车。</li>
+<li><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/raw/refs/heads/main/downloads/Ultimate-U1-ACE-link-v0.1.6.zip">下载安装包</a>。</li>
+<li>在“下载”文件夹里右键这个压缩文件，点 <strong>全部解压缩</strong>。</li>
+<li>打开解压出的 <code>Ultimate-U1-ACE-link</code> 文件夹，双击 <strong>START-HERE.cmd</strong>。</li>
+<li>输入 <strong>1</strong> 选中文，按回车。</li>
 </ol>
-<p>不要在压缩包预览窗口内运行安装程序。</p>
-<p>如果 Windows 隐藏后缀，文件可能只显示为 <code>START-HERE</code>，类型为 <strong>Windows 命令脚本</strong>。</p>
-<p>以 <code>.html</code> 结尾的文件是说明页面，不是安装程序。</p>
 <p><img alt="下载、解压、双击的示意图" src="docs/images/first-steps.svg"></p>
-<p><strong>START-HERE.html</strong> 是中文离线手册；<strong>START-HERE.en.html</strong> 是英文离线手册。</p>
-<p>使用向导时，不需要双击 Python 文件，也不需要自己打开 PowerShell。</p>
-<p>如果想逐条检查并输入命令，使用 <strong><a href="MANUAL-INSTALL.zh-CN.html">中文手动安装</a></strong> 或 <strong><a href="MANUAL-INSTALL.html">English manual</a></strong>。手动方式仍运行可阅读的打印机安装程序。</p>
-<h3 id="3-主菜单选哪一个">3. 主菜单选哪一个</h3>
-<div class="table"><table><thead><tr><th>菜单</th><th>什么时候选</th><th>接下来会做什么</th></tr></thead><tbody>
-<tr><td><strong>1. U1 已准备好</strong></td><td>已有 <code>2.0.0-paxx12-24</code>，Advanced Mode 开启，Root Access 为 Open。</td><td>必要时检查 ACE 固件，再安装或更新 U1 适配。</td></tr>
-<tr><td><strong>2. 准备 U1 固件 U 盘</strong></td><td>尚未安装指定 U1 固件。</td><td>下载校验、准备 FAT32 U 盘，再引导屏幕操作；完成后在同一窗口继续。</td></tr>
-<tr><td><strong>3. 手动安装</strong></td><td>希望使用完整命令说明。</td><td>打开对应语言的本地手动文档，然后退出，不连接打印机。</td></tr>
-<tr><td><strong>4. ACE 固件</strong></td><td>只维护 ACE，或查看上次 ACE 更新结果。</td><td>先查询已有记录，完成 ACE 维护后退出；不会安装 U1 适配。</td></tr>
+<p>不要在压缩包预览窗口里直接运行。<code>.html</code> 文件是离线说明，不是安装程序。</p>
+<h3 id="3-选择菜单">3. 选择菜单</h3>
+<div class="table"><table><thead><tr><th>菜单</th><th>什么时候选</th></tr></thead><tbody>
+<tr><td><strong>1. U1 已准备好</strong></td><td>U1 已是 <code>2.0.0-paxx12-24</code>，Advanced Mode 开启，Root Access 为 Open。向导检查 ACE 固件后安装。</td></tr>
+<tr><td><strong>2. 准备 U1 固件 U 盘</strong></td><td>U1 还没装指定固件。需要一个已是 FAT32、空闲 300 MB 以上的 U 盘，向导不会格式化它。</td></tr>
+<tr><td><strong>3. 手动安装</strong></td><td>想自己逐条执行命令。只打开说明，不连接打印机。</td></tr>
+<tr><td><strong>4. ACE 固件</strong></td><td>只维护 ACE，或查看上次 ACE 更新结果。不安装 U1 适配。</td></tr>
 </tbody></table></div>
-<p>菜单 2 需要一个<strong>已经是 FAT32 格式</strong>的可移动 U 盘，至少空闲 300 MB。</p>
-<p>向导不会格式化 U 盘；复制前会让你核对盘符、名称和容量。</p>
-<p>屏幕每一步见 <a href="START-HERE.html#firmware">U1 固件准备</a>。更新后必要时重连 Wi-Fi，IP 地址可能变化。</p>
-<p><strong>自定义或其他版本固件需要单独核对兼容性，不要只为通过安装检查就覆盖。</strong></p>
-<p>本项目要求固定版本，不等于要求上游最新版本。</p>
-<p>菜单 4 完成后，如果还需要安装或更新 U1 适配，重新打开向导并选择菜单 1。</p>
+<p>选菜单 2 时，屏幕上的每一步见 <a href="START-HERE.html#firmware">U1 固件准备</a>。升级后打印机地址可能变化。</p>
+<p>U1 上是其他版本或自改固件时，先单独核对兼容性，不要为了通过检查而覆盖。</p>
 <h3 id="4-填写连接信息">4. 填写连接信息</h3>
-<div class="table"><table><thead><tr><th>窗口提示</th><th>你要输入什么</th></tr></thead><tbody>
-<tr><td>打印机地址</td><td>U1 的 Wi-Fi 屏幕当前显示的 IP。只填地址，不加 <code>http://</code> 或 <code>/firmware-config/</code>。</td></tr>
-<tr><td>首次 SSH 连接</td><td>对照打印机屏幕核对地址，按<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">首次连接说明</a>处理。已有主机指纹意外变化时停止。</td></tr>
-<tr><td><code>password:</code></td><td>打印机的 SSH root 密码，然后按回车。不是 Wi-Fi 密码，也不是 Snapmaker 账号密码。</td></tr>
-<tr><td>数字选项</td><td>输入窗口列出的数字，再按回车。</td></tr>
+<div class="table"><table><thead><tr><th>窗口提示</th><th>输入什么</th></tr></thead><tbody>
+<tr><td>打印机地址</td><td>U1 的 Wi-Fi 页面显示的 IP，只填数字地址。</td></tr>
+<tr><td>首次 SSH 连接</td><td>对照屏幕核对地址后确认，见<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">首次连接说明</a>。</td></tr>
+<tr><td><code>password:</code></td><td>打印机的 SSH root 密码，不是 Wi-Fi 密码。输入时不显示字符是正常的。</td></tr>
 </tbody></table></div>
-<p>上游默认 SSH 用户名是 <code>root</code>，初始密码是 <code>snapmaker</code>；修改过则用自己的密码。<a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">上游 SSH 说明</a></p>
-<p><strong>输入密码时没有字符或星号是正常的。</strong> 按正常速度输入完，再按回车。</p>
-<p>每次 SSH 连接可能再次要求密码；向导不会保存密码。</p>
-<h3 id="5-跟随-ace-固件步骤">5. 跟随 ACE 固件步骤</h3>
-<p>首次安装会自动出现此阶段。</p>
-<p>除非你已经确认指定 OpenCubic CFW 1.1.1 已安装且 NFC 正常，否则选择自动检查。</p>
-<p>U1 会下载固定镜像，检查大小、SHA-256 和格式，再核对 ACE 身份、源版本和空闲状态。</p>
-<p>已实测更新路径为：<strong>ACE Pro 第一代 <code>V1.3.856</code>／引导 <code>V1.0.1</code> → OpenCubic CFW 1.1.1，运行版本显示 <code>CV1.3.863</code></strong>。</p>
-<p>其他源版本不属于当前支持的自动更新路径，不要猜测或强行继续。</p>
-<p>单独看到 <code>CV1.3.863</code>，也不能证明具体是哪一个社区构建。</p>
-<p>核对源版本和目标版本后，再确认一次更新。结果未确认前，保持电源和 USB 连接。</p>
-<p>详细提示和断线处理见 <a href="START-HERE.html#ace-firmware">ACE 双语向导说明</a>。</p>
-<h3 id="6-核对初始管路长度再安装">6. 核对初始管路长度，再安装</h3>
+<p>没改过的话，用户名是 <code>root</code>，初始密码是 <code>snapmaker</code>，见<a href="https://snapmakeru1-extended-firmware.pages.dev/ssh_access">上游 SSH 说明</a>。</p>
+<p>向导不保存密码，可能会问多次。</p>
+<h3 id="5-ace-固件">5. ACE 固件</h3>
+<p>第一次安装会自动进入这一步。</p>
+<ol start="1">
+<li>选自动检查。</li>
+<li>等向导下载并校验固件，核对 ACE 的型号、当前版本和空闲状态。</li>
+<li>核对窗口显示的源版本和目标版本，再确认更新。</li>
+<li>出结果之前，不要断电，不要拔 USB。</li>
+</ol>
+<p>只支持从 <strong><code>V1.3.856</code>／引导 <code>V1.0.1</code></strong> 升级到 <strong>OpenCubic CFW 1.1.1（显示 <code>CV1.3.863</code>）</strong>。</p>
+<p>其他版本向导会停下，不要强行继续。详见 <a href="START-HERE.html#ace-firmware">ACE 固件向导</a>。</p>
+<h3 id="6-核对管路长度再安装">6. 核对管路长度，再安装</h3>
 <aside class="alert important"><div class="alert-title">必须确认</div>
-<p><strong>安装器不能测量实际管长或线材张力。</strong></p>
-<p><strong>示例距离不是所有机器通用的参数，不要直接照抄。</strong></p>
+<p><strong>安装器不能测量实际管长。示例数值不是通用参数，不要直接照抄。</strong></p>
 </aside>
-<p>第一次安装会询问 A 和 B；已有安装保留当前参数。</p>
+<p>第一次安装会问两个长度，已有安装保留原值。</p>
 <p><img alt="长度和退料后位置的概念图" src="docs/images/length-guide.svg"></p>
 <div class="table"><table><thead><tr><th>字母</th><th>含义</th></tr></thead><tbody>
-<tr><td><strong>A</strong></td><td>从打印头向 ACE 回抽的距离，退完后尖端仍要留在 ACE 及后方料管内。</td></tr>
-<tr><td><strong>B</strong></td><td>从已知起点开始的快速送料距离，应在到达打印头前结束，且小于 A。</td></tr>
+<tr><td><strong>A</strong></td><td>退料时 ACE 回抽的距离。退完后耗材尖端要留在 ACE 后方的料管里。</td></tr>
+<tr><td><strong>B</strong></td><td>进料时快速送料的距离。要在到达打印头之前结束，并且小于 A。</td></tr>
 </tbody></table></div>
-<p>按<a href="START-HERE.html#calibrate-the-ptfe-paths">初次设置与校准步骤</a>选择适合自己管路的初始值。</p>
-<p>安装前完成布局审查与测量，安装后再对四槽逐一实机验证。</p>
-<p>已测装置使用 A = 1250 mm、B = 1150 mm，仅供对照。</p>
-<p>速度默认值是快速送料 200、接近打印头 50、退料 80。</p>
-<p>新装默认关闭退料后的回送消松，正常进退料验证后才启用。</p>
-<p>阅读窗口列出的设置；设备检查和初始长度核对通过后，才确认安装。</p>
-<p>安装器会备份即将修改的文件，自动设置 <strong>Filament Detection → External</strong>，重启服务并验证生效情况。</p>
-<p>选项叫 <strong>External</strong>；<code>extended</code> 是固件名称或配置路径中的文字。</p>
-<p>这条安装流程不需要配置 U1 内置 OpenRFID，也没有 NFC 密钥填写步骤。</p>
-<h3 id="7-等到成功再逐槽测试">7. 等到成功，再逐槽测试</h3>
-<p>等待窗口明确报告本项目安装成功。</p>
-<p>只有 ACE 固件成功的提示，不代表 U1 适配已经安装完成。</p>
 <ol start="1">
-<li>向一个空 ACE 入口插入耗材，手离开滚筒。</li>
-<li>等短咬料和 NFC 识别结束。</li>
-<li>确认没有自动长送到打印头。核对材料信息；未识别的耗材可手动填写。</li>
-<li>在 U1 对该槽点 <strong>进料</strong>，等到完成。</li>
-<li>点 <strong>退料</strong>，确认耗材仍留在 ACE 内，材料信息也保留。</li>
-<li>不拔插耗材，再点一次 <strong>进料</strong>。</li>
-<li>这一槽通过后，其余三槽也分别验证，一次只测一槽。</li>
+<li>按<a href="START-HERE.html#calibrate-the-ptfe-paths">参数与校准</a>测量自己的管路，选出 A 和 B。</li>
+<li>核对窗口列出的设置，确认安装。</li>
 </ol>
-<p>向导不会代替你执行实机测试；四槽共用同一套距离参数。</p>
-<p>有卡料、打滑或屏幕报错时停止。日常操作见<a href="START-HERE.html#daily">使用说明</a>，测试边界见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">验证记录</a>。</p>
+<p>已测机器用的是 A = 1250 mm、B = 1150 mm，仅供对照。</p>
+<p>安装器会备份要改的文件，并自动把 Filament Detection 设为 <strong>External</strong>。</p>
+<h3 id="7-成功后逐槽测试">7. 成功后逐槽测试</h3>
+<p>等窗口明确提示本项目安装成功。只提示 ACE 固件成功不算。</p>
+<ol start="1">
+<li>向一个空的 ACE 入口插入耗材，手离开滚筒，等它咬料并读完 NFC。</li>
+<li>确认它没有自己一路送到打印头，材料信息正确。没识别的可手动填写。</li>
+<li>在 U1 上点 <strong>进料</strong>，等完成。</li>
+<li>点 <strong>退料</strong>，确认耗材留在 ACE 里，材料信息还在。</li>
+<li>不拔耗材，再点一次 <strong>进料</strong>。</li>
+<li>这一槽通过后，其余三槽一次测一槽。</li>
+</ol>
+<p>卡料、打滑或报错时立即停止。日常操作见<a href="START-HERE.html#daily">日常使用</a>。</p>
 <h3 id="某一步停住时怎么办">某一步停住时怎么办</h3>
-<div class="table"><table><thead><tr><th>停在哪一步或提示什么</th><th>怎么处理</th></tr></thead><tbody>
-<tr><td>提示缺少 OpenSSH 客户端</td><td>按下面的 Windows 组件步骤安装；不要安装 Python。</td></tr>
-<tr><td>文件上传或连接失败，尚未开始安装</td><td>核对当前 IP、同一网络、Root Access 和 SSH 密码。</td></tr>
-<tr><td>机器热、忙、烘干或正在使用 ACE</td><td>正常结束动作，关闭加热和烘干，等待温度低于 50℃。</td></tr>
-<tr><td>没有唯一 ACE 接口</td><td>核对电源、代际和专用线，只连接一台 ACE；不要猜串口。</td></tr>
-<tr><td>U1 屏幕固件更新报错</td><td>停止并保留原文，查看 <a href="START-HERE.html#firmware">U1 固件说明</a>。这不是主机安装器的文件回退。</td></tr>
-<tr><td>ACE 更新没有完整结果，或电脑断线</td><td>保持电源和 USB。使用同一版本安装包重开向导，选 <strong>菜单 4</strong> 查看已有结果；不要重发更新。</td></tr>
-<tr><td>U1 适配安装可能已开始，但没有成功结果</td><td>保留窗口和诊断文件，不重复安装；按<a href="START-HERE.html#recovery">主机回退说明</a>核对备份与服务状态。</td></tr>
+<div class="table"><table><thead><tr><th>情况</th><th>怎么处理</th></tr></thead><tbody>
+<tr><td>提示缺少 OpenSSH 客户端</td><td>按下面的步骤添加，不需要装 Python。</td></tr>
+<tr><td>连接或上传失败，还没开始安装</td><td>核对当前 IP、同一网络、Root Access 和 SSH 密码。</td></tr>
+<tr><td>提示机器热、忙或在烘干</td><td>结束动作，关闭加热和烘干，等低于 50℃。</td></tr>
+<tr><td>找不到唯一的 ACE 接口</td><td>检查电源和专用线，只连一台 ACE。不要猜串口。</td></tr>
+<tr><td>U1 屏幕升级报错</td><td>停下并记下原文，见 <a href="START-HERE.html#firmware">U1 固件准备</a>。</td></tr>
+<tr><td>ACE 更新没出结果或电脑断线</td><td>保持供电和 USB。用同一版本安装包重开向导，选菜单 4 查看结果。<strong>不要重发更新。</strong></td></tr>
+<tr><td>适配安装可能已开始但没提示成功</td><td>保留窗口，不要重装，按<a href="START-HERE.html#recovery">更新与回退</a>核对。</td></tr>
 </tbody></table></div>
-<p>ACE 固件维护和 U1 主机安装使用不同的恢复路径。</p>
-<p><code>Automatic rollback VERIFIED</code> 表示主机文件与服务回退通过，<strong>不表示 ACE 固件已回退</strong>。</p>
-<p>不要公开私人配置、凭据或未脱敏的诊断记录。</p>
+<p><code>Automatic rollback VERIFIED</code> 指 U1 上的文件已回退，<strong>不表示 ACE 固件已回退</strong>。</p>
+<p>其他问题见<a href="START-HERE.html#troubleshooting">故障排查</a>。</p>
 <h4 id="windows-提示缺少-openssh-客户端">Windows 提示缺少 OpenSSH 客户端</h4>
 <ol start="1">
-<li>点 <strong>开始</strong>，搜索 <strong>可选功能</strong>，打开找到的设置页面。</li>
+<li>点 <strong>开始</strong>，搜索并打开 <strong>可选功能</strong>。</li>
 <li>点 <strong>查看功能</strong> 或 <strong>添加功能</strong>。</li>
-<li>搜索 <strong>OpenSSH</strong>，选择 <strong>OpenSSH 客户端</strong>，按页面按钮完成安装。</li>
-<li>再次运行 <strong>START-HERE.cmd</strong>。</li>
+<li>搜索 <strong>OpenSSH</strong>，选 <strong>OpenSSH 客户端</strong> 并安装。不要选 OpenSSH 服务器。</li>
+<li>重新运行 <strong>START-HERE.cmd</strong>。</li>
 </ol>
-<p>不要选择 OpenSSH 服务器。受管理的电脑可能需要管理员添加组件。</p>
-<p>步骤依据 <a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">Microsoft 的组件说明</a>。</p>
-<h3 id="关于-codex">关于 Codex</h3>
-<p>用户提出需求并完成实机测试；<strong>OpenAI Codex</strong> 编写和整合代码、安装器及文档。</p>
-<p>安装和使用本项目不需要 Codex 或其他 AI 助手。上游来源与许可见 <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>。</p></section>
-<details id="firmware"><summary>U1 固件与访问设置</summary><h2 id="u1-固件准备已放进同一个安装流程">U1 固件准备：已放进同一个安装流程</h2>
+<p>见 <a href="https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">Microsoft 的组件说明</a>。</p>
+<h3 id="关于本项目">关于本项目</h3>
+<p>用户提出需求并完成实机测试，<strong>OpenAI Codex</strong> 编写代码、安装器和文档。安装和使用不需要 Codex。</p>
+<p>上游来源与许可见 <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>。</p></section>
+<details id="firmware"><summary>U1 固件与访问设置</summary><h2 id="准备-u1-固件">准备 U1 固件</h2>
 <p><a href="START-HERE.en.html#firmware">English</a> · <a href="START-HERE.html#start">新手向导</a> · <strong><a href="MANUAL-INSTALL.zh-CN.html">手动安装入口</a></strong></p>
-<p>向导会自动准备准确的 U1 扩展固件文件，并逐步提示屏幕操作。</p>
-<p>使用的是<strong>上游原版固件</strong>，不是把本项目塞进固件后生成的新镜像。</p>
-<p>此步骤不刷写 ACE。</p>
-<p>完成 U1 准备后，同一安装器会提供独立的<a href="START-HERE.html#ace-firmware">双语 ACE 固件步骤</a>。</p>
+<p>向导会下载准确的 U1 扩展固件（<strong>上游原版文件</strong>），校验后复制到 U 盘。然后你在 U1 屏幕上完成更新，并打开 Advanced Mode 和 Root Access。</p>
+<p>这一步不刷写 ACE。<a href="START-HERE.html#ace-firmware">ACE 固件步骤</a>在同一个向导里随后进行。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
-<p><strong>首次固件更新仍要在 U1 屏幕确认，Advanced Mode 和 Root Access 也要在屏幕打开。</strong></p>
-<p>这些动作已纳入向导提示；不能在尚未开放访问时，声称电脑已替你完成了它们。</p>
+<p><strong>首次固件更新必须在 U1 屏幕上确认。</strong></p>
+<p><strong>远程安装前，还必须在屏幕上打开 Advanced Mode 和 Root Access。</strong></p>
 </aside>
 <h3 id="准备什么">准备什么</h3>
 <ul>
-<li>能联网的 Windows 10 或 Windows 11 电脑。</li>
-<li>一个已经是 <strong>FAT32</strong> 格式的可移动 U 盘，至少空闲 300 MB。</li>
-<li>已完整解压的本项目安装包。</li>
-<li>已结束打印和全部耗材动作、并已冷却的 U1。</li>
-<li>关闭全部加热和 ACE 烘干，等待喷嘴和热床低于 50℃。</li>
-<li>已有自定义配置时，在固件更新前保存私人备份。</li>
+<li>能联网的 Windows 10 或 Windows 11 电脑，以及已完整解压的本项目安装包。</li>
+<li>一个已经是 <strong>FAT32</strong> 格式的可移动 U 盘，至少空闲 300 MB。向导不格式化磁盘。</li>
+<li>空闲并已冷却的 U1：打印和全部耗材动作已结束，加热和 ACE 烘干已关闭，喷嘴和热床低于 50℃。</li>
+<li>第一次安装时：用正常退料操作退出四个打印头里的耗材，取出四个 ACE 入口的耗材，然后再次等待加热器冷却。只是更新本项目时，不要求清空入口。</li>
+<li>已有自定义配置时，在固件更新前自己保存一份备份。本项目稍后的安装备份保护不了它。</li>
 </ul>
-<p>第一次安装时，先用正常退料操作退出四个打印头里的耗材，再退出四个 ACE 入口的耗材。</p>
-<p>退料可能加热喷嘴，结束后再次等待冷却。已有本项目、只是更新时，不要求清空四个入口。</p>
-<p>本项目稍后的安装备份，不能保护发生在它之前的固件更新。</p>
-<p>已使用准确的支持版本时，选择“已经准备好”的路径。</p>
-<p>有其他自定义固件或较新版本时，不要为了通过检查就直接覆盖。</p>
-<h3 id="跟着同一个窗口操作">跟着同一个窗口操作</h3>
+<p>U1 已经是准确的支持版本时，改选菜单 <strong>1. U1 已准备好</strong>。有其他自定义固件或较新版本时，不要为了通过安装检查就直接覆盖。</p>
+<h3 id="向导步骤">向导步骤</h3>
 <ol start="1">
-<li>完整解压项目压缩包。</li>
-<li>双击 <strong>START-HERE.cmd</strong>。</li>
-<li>选择中文或 English。</li>
-<li>选择 <strong>2. 准备 U1 固件 U 盘</strong>。</li>
-<li>把 FAT32 U 盘插入电脑。</li>
-<li>在列表中选择它，核对盘符、名称和容量。</li>
-<li>确认目标 U 盘。</li>
-<li>等待下载、SHA-256 校验、复制和复制后校验全部完成。</li>
-<li>在 Windows 中弹出 U 盘，再拔出。</li>
-<li>把 U 盘插入 U1。</li>
-<li>在 U1 屏幕点 <strong>设置 → 关于 → 固件版本 → 本地更新</strong>。</li>
-<li>选择 <code>U1_extended_2.0.0-paxx12-24_upgrade.bin</code>，确认更新。</li>
-<li>等待更新完成并重启，期间保持供电。</li>
+<li>完整解压项目压缩包。双击 <strong>START-HERE.cmd</strong>，选择语言，再选择 <strong>2. 准备 U1 固件 U 盘</strong>。</li>
+<li>把 FAT32 U 盘插入电脑。在列表中选择它，核对盘符、名称和容量，然后确认。</li>
+<li>等待下载、SHA-256 校验、复制和复制后校验全部完成，然后在 Windows 中<strong>弹出</strong> U 盘。</li>
+<li>把 U 盘插入 U1。在 U1 屏幕点 <strong>设置 → 关于 → 固件版本 → 本地更新</strong>。</li>
+<li>选择 <code>U1_extended_2.0.0-paxx12-24_upgrade.bin</code>，确认更新。等待更新完成并重启，期间保持供电。</li>
 <li>点 <strong>设置 → 维护 → Advanced Mode</strong>，开启并按要求完成重启。</li>
 <li>点 <strong>设置 → 维护 → Root Access</strong>，阅读提示，向下滚动点 <strong>Agree / 同意</strong>，设为 <strong>Open</strong>。</li>
-<li>检查 Wi-Fi，必要时重连，记下现在显示的 IP 地址。</li>
-<li>完成后回到电脑的同一个向导，继续安装。</li>
+<li>检查 Wi-Fi，必要时重连，记下现在显示的打印机 IP 地址。</li>
+<li>回到电脑上的同一个向导继续。它会询问打印机地址和 SSH 密码。</li>
 </ol>
-<p>下一阶段会询问当前打印机地址和 SSH 密码，先检查或准备 ACE 固件，再安装 U1 适配。</p>
-<p>第一次安装还需要核对适合自己管路的初始长度。</p>
-<p>随后自动执行兼容检查、备份、安装和验证；完整步骤和四槽测试见<a href="START-HERE.html#start">主安装指南</a>。</p>
-<p>电脑上准备 U 盘文件的阶段不会连接打印机，也不会触发机器动作。</p>
-<p>屏幕确认的 U1 更新，以及之后的 ACE 固件阶段，属于单独的设备操作。</p>
-<p>U1 更新报错时，保存屏幕原文，按 <a href="https://wiki.snapmaker.com/en/snapmaker_u1/troubleshooting/firmware-update-failed">Snapmaker 固件更新故障说明</a>处理。</p>
-<p>不要反复尝试随机固件；主机适配的文件回退不能撤销 U1 固件更新。</p>
-<h3 id="u-盘文件会怎样处理">U 盘文件会怎样处理</h3>
-<p>向导<strong>不格式化磁盘、不使用固定内部硬盘、不覆盖内容不同的同名文件</strong>。</p>
-<p>只把校验成功的固件复制到已选 U 盘第一层，其余文件保留。</p>
-<p>如果有同名冲突，先自行检查该文件，再决定如何处理。</p>
-<p>找不到合适的盘时，换用 FAT32 可移动 U 盘，不要改程序强制选择系统盘。</p>
-<p>下载文件缓存在当前 Windows 用户的 Local AppData 项目文件夹。</p>
-<p>完整且校验一致的文件可复用；未完成或校验失败的文件不会用于安装。</p>
-<p>向导不会执行下载的脚本。</p>
+<p>向导不会覆盖名称相同但内容不同的文件。先自己检查该文件，再重试。找不到合适的盘时，换用 FAT32 可移动 U 盘。不要改程序强制选择其他磁盘。</p>
+<p>U1 更新失败时，保存屏幕显示的报错原文，按 <a href="https://wiki.snapmaker.com/en/snapmaker_u1/troubleshooting/firmware-update-failed">Snapmaker 固件更新故障说明</a>处理。不要尝试随机固件文件。主机适配的回退不能撤销 U1 固件更新。</p>
 <h3 id="固件身份和校验值">固件身份和校验值</h3>
 <div class="table"><table><thead><tr><th>项目</th><th>固定内容</th></tr></thead><tbody>
 <tr><td>上游版本</td><td><code>v2.0.0-paxx12-24</code></td></tr>
@@ -483,107 +294,76 @@ Get-FileHash -Algorithm SHA256 -LiteralPath ((Read-Host &quot;Paste the file pat
 <tr><td>SHA-256</td><td><code>42dcf59e06ef0f6fab20745883322f24ddd3c1a09da07449b356dd9dab943070</code></td></tr>
 </tbody></table></div>
 <p><a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/tag/v2.0.0-paxx12-24">上游发布页和校验值</a> · <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/download/v2.0.0-paxx12-24/U1_extended_2.0.0-paxx12-24_upgrade.bin">准确下载地址</a></p>
-<p>这是用于识别上游文件的校验值，不是 Snapmaker 的签名。</p>
-<p>本项目压缩包不包含 U1 固件二进制，许可边界见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">第三方项目说明</a>。</p>
+<p>这个校验值用于识别上游文件，不是 Snapmaker 的签名。本项目压缩包不包含 U1 固件二进制，见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">第三方项目说明</a>。</p>
 <h3 id="不想运行向导">不想运行向导</h3>
-<p>自己从上游发布页下载同一文件，检查 SHA-256，复制到 FAT32 U 盘第一层。</p>
-<p>完成上面第 11–16 步后，进入 <strong><a href="MANUAL-INSTALL.zh-CN.html">手动源码安装</a></strong>。</p>
-<p><a href="START-HERE.html#prepare">完整机器准备指南</a>保留了 Windows 校验文件、文件资源管理器、U 盘及屏幕的详细操作。</p>
-<h3 id="为什么这次不直接发布全合一新固件">为什么这次不直接发布全合一新固件</h3>
-<p>把本项目和访问默认值写进镜像，会形成不同于原版 v24 的新固件。</p>
-<p>它需要独立版本标识、源码及许可核查、恢复验证和实机测试，而且首次仍需屏幕确认升级。</p>
-<p>本次采用准确的已测上游基线，把准备工作自动化，不把未经验证的新镜像冒充原版固件。</p>
-<p>依据：<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 安装说明</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode 要求</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH 访问说明</a>。</p></details><details id="ace-firmware"><summary>ACE 固件：跟着窗口更新和查询结果</summary><h2 id="ace-固件跟着双语向导完成">ACE 固件：跟着双语向导完成</h2>
+<p>自己从上游发布页下载同一个文件，使用前检查 SHA-256：</p>
+<ol start="1">
+<li>在文件资源管理器中，按住 <strong>Shift</strong>，右键刚下载的 <code>.bin</code> 文件，点 <strong>复制文件地址／复制为路径</strong>。</li>
+<li>按 <strong>Windows 键 + R</strong>，输入 <code>powershell</code>，按回车。</li>
+<li>复制下面这一行到打开的窗口，按回车。出现 <code>Paste the file path</code> 时，粘贴刚复制的路径，再按回车。</li>
+</ol>
+<pre><code>
+Get-FileHash -Algorithm SHA256 -LiteralPath ((Read-Host &quot;Paste the file path&quot;).Trim(&#x27;&quot;&#x27;))
+</code></pre>
+<p>把完整的 <code>Hash</code> 值与上表的 SHA-256 比较，字母大小写不影响结果。<strong>两者不一致时，不要使用这个文件</strong>。从准确的上游地址重新下载。</p>
+<p>把校验通过的文件复制到 FAT32 U 盘第一层，完成向导步骤的第 4–8 步，再进入 <strong><a href="MANUAL-INSTALL.zh-CN.html">手动源码安装</a></strong>。</p>
+<p>依据：<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/install.md">v24 安装说明</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/firmware_config.md">Advanced Mode 要求</a>、<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/ssh_access.md">SSH 访问说明</a>。</p></details><details id="ace-firmware"><summary>ACE 固件：跟着窗口更新和查询结果</summary><h2 id="ace-固件向导">ACE 固件向导</h2>
 <p><a href="START-HERE.en.html#ace-firmware">English</a> · <a href="START-HERE.html#start">新手入口</a> · <a href="MANUAL-INSTALL.zh-CN.html">中文手动安装</a> · <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">手动刷机参考（英文）</a></p>
-<p>Windows 安装向导现在包含 ACE 固件准备阶段。</p>
-<p>你不需要输入命令、编辑设备配置或在电脑安装 Python。</p>
-<p>维护工具通过 SSH，在已完成前置准备的 U1 上运行。</p>
-<p>ACE 的<a href="START-HERE.html#nfc">这些 NFC 格式支持</a>由 OpenCubic 提供；使用支持的标签时，不需要自行寻找或填写 NFC 密钥。</p>
+<p>Windows 向导在安装主机适配之前，先准备 ACE 固件。你不需要输入命令。</p>
+<p>固件由 U1 下载，工具也在 U1 上运行，所以 U1 必须能联网访问 GitHub。<a href="START-HERE.html#nfc">这些 NFC 格式</a>由 OpenCubic 提供，使用它们不需要 NFC 密钥。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
 <p><strong>只适用于 ACE Pro 第一代，不适用于 ACE 2 Pro。</strong></p>
 <p><strong>U1 必须先安装指定扩展固件，开启 Advanced Mode，并将 Root Access 设为 Open。</strong></p>
 <p><strong>遇到未验证的 ACE 源版本，向导会停止，不会强行刷写。</strong></p>
 </aside>
-<h3 id="安装包里有什么">安装包里有什么？</h3>
-<p>包内只有可阅读的维护程序和双语提示，<strong>没有固件二进制、NFC 密钥或私人设备配置</strong>。</p>
-<p>你选择准备固件后，程序才从指定上游下载准确的文件。</p>
-<p>下载由 U1 执行，因此 U1 必须能够联网访问 GitHub；电脑保持与 U1 在同一局域网。</p>
-<p>下载后检查大小、SHA-256 和固件格式；检查通过前不能开始写入。</p>
+<h3 id="固件文件">固件文件</h3>
 <div class="table"><table><thead><tr><th>用途</th><th>固定文件</th><th>SHA-256</th></tr></thead><tbody>
 <tr><td>目标：OpenCubic 第一代 CFW 1.1.1</td><td><code>ACE_V1.3.863_20260716.bin</code>，113720 字节，<a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">发布页 v1.0.2</a></td><td><code>95e0b6ddb1e77d624d127ac91d9b3e21caf58adc5e1598faf2be3feacf9b4048</code></td></tr>
 <tr><td>原厂参考文件</td><td><code>ACE_V1.3.863_20250518.bin</code>，105652 字节，<a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/originalFirmware/ACE_V1.3.863_20250518.bin">固定的社区托管文件</a></td><td><code>3f3676ba357749b3d0367922cb7f6b0dedc9b3d104c1c29e719ac3e563f5eb63</code></td></tr>
 </tbody></table></div>
-<p>原厂文件只是参考，<strong>不是从你自己的 ACE 备份出来的固件</strong>。</p>
-<p><strong>原厂回退还没有经过实机验证，向导不会自动执行回退。</strong></p>
-<p>下载文件不因此变成本项目的 GPL 授权内容，见<a href="START-HERE.html#licensing">许可说明</a>。</p>
-<h3 id="哪些版本可以直接跟向导更新">哪些版本可以直接跟向导更新？</h3>
+<p>向导下载这些文件，检查大小、SHA-256 和固件格式，通过前不能开始写入。安装包本身不含固件二进制。</p>
+<p>原厂文件只是参考，不是从你自己的 ACE 备份出来的固件。<strong>原厂回退还没有经过实机验证，向导不会自动执行回退。</strong></p>
+<h3 id="支持的起始版本">支持的起始版本</h3>
 <div class="table"><table><thead><tr><th>实际检测结果</th><th>向导的处理</th></tr></thead><tbody>
 <tr><td>第一代，应用版本 <code>V1.3.856</code>，引导程序 <code>V1.0.1</code></td><td>通过全部检查后，可以更新到指定目标。</td></tr>
 <tr><td>已显示 <code>CV1.3.863</code></td><td>不重复刷写；询问你是否已安装指定 OpenCubic 版本，且 NFC 正常。</td></tr>
 <tr><td>其他源版本、引导版本、代际或无法确认身份</td><td>停止；不猜测、不修改检测结果、不强行启用写入。</td></tr>
 </tbody></table></div>
-<p>目标固件的运行版本显示为 <code>CV1.3.863</code>。</p>
-<p>这个字符串不能区分所有社区修改版。</p>
-<p>不知道之前刷了什么时，不要把“已有正确版本”的问题回答为已确认。</p>
-<p>向导也可以用本次重新探测结果，匹配过去 24 小时内由本向导完成的成功记录。</p>
-<p>ACE 身份、设备信息和目标镜像哈希都必须匹配；旧成功记录本身不能证明当前连接的 ACE 已通过检查。</p>
+<p><code>CV1.3.863</code> 这个字符串不能区分所有社区修改版。不知道之前刷了什么时，不要把“已有正确版本”的问题回答为已确认。</p>
 <h3 id="开始前">开始前</h3>
 <ol start="1">
-<li>等打印、进料、退料及其他耗材动作结束。</li>
-<li>第一次安装本项目时，先用正常退料退出四个 U1 打印头，再退出四个 ACE 入口的耗材。</li>
-<li>关闭加热和烘干。退料可能加热喷嘴，结束后等待打印机所有加热器降到 50℃ 以下。</li>
-<li>连接硬件前关闭两台设备。接好已核对的第一代 ACE USB 连接线及四路料管后，再开机。</li>
-<li>必要时完成 <a href="START-HERE.html#firmware">U1 固件准备</a>，确认 Advanced Mode 开启、Root Access 为 Open。</li>
-<li>开始维护后，保持 ACE 电源和 USB 连接稳定。</li>
-<li>维护及重启期间，手离开滚筒。</li>
+<li>等打印和全部耗材动作结束，关闭加热和烘干。</li>
+<li>第一次安装本项目时，退出四个 U1 打印头里的耗材，再取出四个 ACE 入口的耗材。只是更新时，不要求清空入口。</li>
+<li>等打印机所有加热器降到 50℃ 以下。</li>
+<li>连接硬件前关闭两台设备。接好已核对的第一代 ACE USB 连接线和四路料管，再开机。</li>
+<li>需要时先完成 <a href="START-HERE.html#firmware">U1 固件准备</a>。确认 Advanced Mode 已开启，Root Access 为 Open。</li>
+<li>维护和重启期间，保持 ACE 电源和 USB 线连接，手离开滚筒。</li>
 </ol>
-<p>已有本项目、只是更新时，不要求清空入口；仍需空闲并冷却，关闭加热和烘干。</p>
-<p>程序会核对空闲状态、加热目标、温度、烘干和串口占用。</p>
-<p>它不会发送进退料命令来让失败检查通过。</p>
-<p>设备或服务初始化仍可能触发 ACE 自身动作；请保持手离开滚筒。</p>
-<p>如果仍有动作，先用设备正常控制结束，再重新准备。</p>
 <h3 id="跟窗口操作">跟窗口操作</h3>
 <ol start="1">
-<li>完整解压项目压缩包。</li>
-<li>双击 <strong>START-HERE.cmd</strong>，选择中文或 English。</li>
-<li>按下表选择任务。</li>
-<li>按提示输入当前打印机 IP 和 SSH root 密码；填写方法见<a href="START-HERE.html#4-填写连接信息">主安装指南</a>。</li>
-<li>如果存在上次 ACE 更新记录，先查看结果，再考虑新的维护。</li>
-<li>阅读并确认准备条件。</li>
-<li>等待下载、校验及实际设备检查完成。</li>
+<li>完整解压项目压缩包。双击 <strong>START-HERE.cmd</strong>，选择中文或 English。按下表选择任务。</li>
+<li>按提示输入打印机当前 IP 地址和 SSH root 密码，填写方法见<a href="START-HERE.html#4-填写连接信息">连接信息说明</a>。</li>
+<li>如果存在上次 ACE 更新的记录，先查看结果，再做新的维护。</li>
+<li>确认显示的准备条件，然后等待程序下载、校验并检查设备。</li>
 <li>核对显示的源版本、引导版本和目标版本，并确认设备是 ACE Pro 第一代。</li>
-<li>只有显示的组合正确时，才确认一次固件更新。</li>
-<li>保持供电，等待完整验证结果。</li>
+<li>只有显示的组合正确时，才确认一次固件更新。保持供电，等待验证结果。</li>
 </ol>
 <div class="table"><table><thead><tr><th>你的任务</th><th>主菜单怎么选</th><th>ACE 完成之后</th></tr></thead><tbody>
 <tr><td>U1 已准备好，要安装本项目</td><td><strong>1. U1 已准备好</strong></td><td>在同一窗口继续主机适配安装。</td></tr>
 <tr><td>先准备 U1，再安装本项目</td><td><strong>2. 准备 U1 固件 U 盘</strong></td><td>完成 U1 屏幕步骤，再继续 ACE 与主机适配安装。</td></tr>
 <tr><td>只维护 ACE，或查询上次 ACE 结果</td><td><strong>4. ACE 固件</strong></td><td>完成 ACE 维护；如还要安装主机适配，重新打开向导，选菜单 1。</td></tr>
 </tbody></table></div>
-<p>菜单 1、2 不要求你先完成另一套手动 ACE 刷机流程。</p>
-<p>菜单 3 打开所选语言的手动文档，然后退出。</p>
-<p>准备阶段会暂时停止 Klipper，以便独占 ACE 接口。</p>
-<p>完成仅检查、不刷写的过程后，会恢复并核对打印机后台就绪。</p>
-<p>真正开始更新后，事务在 U1 上独立运行并记录状态，即使电脑 SSH 断开也可以继续。</p>
+<p>菜单 3 打开所选语言的手动文档，然后退出。更新一旦开始，就在 U1 上继续运行，电脑的 SSH 断开也不影响。</p>
 <aside class="alert caution"><div class="alert-title">重要警示</div>
-<p><strong>电脑不再显示进度，不代表要重新刷一次。</strong></p>
+<p><strong>不要因为电脑不再显示进度，就再启动一次更新。</strong></p>
 <p><strong>写入期间不要切断 ACE 电源。</strong></p>
-<p>使用<strong>同一版本的安装包</strong>重新打开向导，选择菜单 <strong>4</strong> 查看上次更新结果。</p>
-<p>已有事务时，这个入口先读取保存的结果，不会自动重复写入。</p>
+<p>使用<strong>同一版本的安装包</strong>重新打开向导，选择菜单 <strong>4</strong> 查看上次结果。</p>
+<p>已有事务时，这个入口读取保存的结果，不会自动重复写入。</p>
 </aside>
-<h3 id="怎样才算成功">怎样才算成功？</h3>
-<p>执行固件写入后，程序必须观察到运行版本变为目标值，并连续收到就绪状态。</p>
-<p>然后恢复 Klipper，核对 U1 配置、传感器及材料信息的保留情况。</p>
-<p>已开始更新的操作，只有得到完整成功结果，才允许继续主机安装。</p>
-<p>如果原来已装好准确固件，则通过“已确认正确版本”的路径继续，不需要重复写入。</p>
-<p>新 NFC 解码可能让非空品牌、材质或颜色发生变化，例如 Generic 变成 Bambu。</p>
-<p>向导会显示变化，要求你对照当前料盘核对，再进入主机适配安装。</p>
-<p>它不会把新品牌自动改回 Generic；原有材料信息丢失也不会被当作保留检查通过。</p>
-<p>这不是固件全量回读，也不是对 ACE 内部全部校准值的验证。</p>
-<p>它也不能证明每一种 NFC 标签都可读取。</p>
-<p>适配安装完成后，请对四槽逐一做受控的<a href="START-HERE.html#daily">进料 → 退料 → 再进料</a>，一次只测一槽，并对照料盘核对品牌、材质和颜色。</p>
-<p>原有管长参数应保留；更新固件不能替你测量新管路。</p>
-<p>第一次安装在安装前审查初始长度，安装后用上述四槽测试验证。</p>
+<h3 id="怎样才算成功">怎样才算成功</h3>
+<p>更新必须得到完整成功结果，才能继续主机安装。如果原来已装好准确固件，走“已确认正确版本”的路径，不要再写入一次。</p>
+<p>新的 NFC 解码可能改变品牌、材质或颜色，例如 Generic 变成 Bambu。进入主机安装前，把显示的变化和当前料盘对照。</p>
+<p>主机安装完成后，对每个槽做一次有人看护的<a href="START-HERE.html#daily">进料 → 退料 → 再进料</a>检查，一次只测一槽。保留已校准的管长参数。</p>
 <h3 id="停止或断线后怎么办">停止或断线后怎么办？</h3>
 <div class="table"><table><thead><tr><th>提示或情况</th><th>你该做什么</th></tr></thead><tbody>
 <tr><td>下载或校验失败</td><td>检查网络；失败文件不会进入刷写步骤。</td></tr>
@@ -594,240 +374,134 @@ Get-FileHash -Algorithm SHA256 -LiteralPath ((Read-Host &quot;Paste the file pat
 <tr><td>电脑断线</td><td>使用同一版本安装包重开向导查看上次结果，不重复刷写。</td></tr>
 <tr><td>已开始更新，但结果无法确认</td><td>保持打印控制停止，保留私人记录，按显示的恢复信息处理。</td></tr>
 </tbody></table></div>
-<p>发送过部分数据不等于升级成功。</p>
-<p>程序不会自动刷原厂包、清空事务或恢复打印。</p>
-<p>如果后台任务在<strong>尚未尝试写入固件之前</strong>停止，菜单 <strong>4</strong> 可以提供“仅检查并恢复”的操作。</p>
-<p>确认一次后等待检查 ACE 并恢复服务；该操作不刷固件。只要曾经尝试写入，就不会提供此恢复操作。</p>
-<p>超出已验证路径的故障仍可能需要<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md#uncertain-results-and-recovery">手动维护和恢复（英文）</a>。</p>
-<p>不要修改记录文件来绕过拒绝条件。</p>
-<p><strong>ACE 固件成功不等于主机适配已安装成功。</strong></p>
-<p>后面的主机安装失败时，使用<a href="START-HERE.html#recovery">主机更新和回退说明</a>。</p>
-<p><code>Automatic rollback VERIFIED</code> 只表示主机文件和服务已回退，不表示 ACE 固件已恢复。</p>
-<p>私人事务记录留在打印机的 <code>/userdata/ultimate-u1-ace-link/ace-firmware/</code> 目录下。</p>
-<p>尚有未处理的固件事务时，新版主机安装和回滚都会停止；不要同时运行旧安装器或独立的手动维护工具。</p>
-<p>不要公开设备身份、密码、NFC 密钥或未脱敏的维护日志。</p>
-<h3 id="验证范围">验证范围</h3>
-<p>原始传输路线已在上表中的源版本和引导版本上实测。</p>
-<p>新增向导和事务调度使用模拟设备、服务、下载及故障进行测试，尚未独立完成从头到尾的实机安装验收。</p>
-<p>原有四个送料、退料及 NFC 核心模块保持不变。</p></details><details id="parameters"><summary>料管长度、退料及回送参数</summary><h2 id="按料管长度设置进料退料和消松回送">按料管长度设置进料、退料和消松回送</h2>
+<p>结果无法确认的写入不算升级成功，即使已经发送过部分数据。程序不会自动刷原厂包、清空事务或恢复打印。</p>
+<p>如果后台任务在<strong>尚未尝试写入固件之前</strong>停止，菜单 <strong>4</strong> 可以提供“仅检查并恢复”的操作。确认一次后等待。它不刷固件；只要曾经尝试写入，就不会提供。</p>
+<p>其他情况可能需要<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md#uncertain-results-and-recovery">手动维护和恢复（英文）</a>。不要修改保存的记录（在打印机的 <code>/userdata/ultimate-u1-ace-link/ace-firmware/</code> 目录下）来绕过拒绝条件。</p>
+<p><strong>ACE 固件成功不等于主机适配安装成功</strong>。后面的主机安装失败时，按<a href="START-HERE.html#recovery">主机更新和回退说明</a>处理。<code>Automatic rollback VERIFIED</code> 只表示主机文件和服务已回退，不表示 ACE 固件已恢复。</p>
+<p>还有未处理的固件事务时，新的主机安装和回退都会拒绝运行。不要同时运行旧安装器或独立的手动维护工具。</p>
+<p>不要公开设备身份、密码、NFC 密钥或未脱敏的维护日志。</p></details><details id="parameters"><summary>料管长度、退料及回送参数</summary><h2 id="参数与校准">参数与校准</h2>
 <p><a href="START-HERE.en.html#parameters">English</a> · <a href="START-HERE.html#start">新手安装向导</a></p>
-<p>先记住三项：<strong>A 是主退料长度，B 是快速送料长度，C 是退料后的消松回送长度。</strong></p>
-<p>料管长度会影响它们，但量到的 PTFE 管长并不等于三个参数的值。</p>
-<div class="table"><table><thead><tr><th>记号</th><th>设置文件中的名称</th><th>实际作用</th><th>仅供对照的参考值</th></tr></thead><tbody>
-<tr><td><strong>A</strong></td><td><code>retract_length</code></td><td>U1 完成热端退料后，ACE 把线材拉回自身方向的距离。</td><td>1250 mm，速度 80</td></tr>
-<tr><td><strong>B</strong></td><td><code>fast_load_length</code></td><td>送料前段允许快速前进的距离；之后改为慢速接近喷头。</td><td>1150 mm，速度 200</td></tr>
-<tr><td><strong>C</strong></td><td><code>forward_takeup_length</code></td><td>A 完成后，再往 U1 方向送一小段，把料盘处松出的线材吸入管内。</td><td>初次设 0；已测参考为 300 mm，速度 50</td></tr>
+<p>进料和退料由三个长度控制。四个槽共用这三个长度和速度设置，所以四条管路都要检查。</p>
+<p>长度单位是毫米 mm。速度是请求值，单位 mm/s，不是实测的线材速度。</p>
+<div class="table"><table><thead><tr><th>记号</th><th>设置文件中的名称</th><th>作用</th><th>仅供对照的参考值</th></tr></thead><tbody>
+<tr><td><strong>A</strong></td><td><code>retract_length</code></td><td>主退料长度：U1 完成热端退料后，ACE 把线材拉回的距离。</td><td>1250 mm，速度 80</td></tr>
+<tr><td><strong>B</strong></td><td><code>fast_load_length</code></td><td>进料的快速段。必须在喷头之前结束，留出慢速接近段。</td><td>1150 mm，速度 200</td></tr>
+<tr><td><strong>C</strong></td><td><code>forward_takeup_length</code></td><td>消松回送：A 完成后再往 U1 方向送一段，把松出的线材吸入 PTFE 管。</td><td>初次设 0；已测参考为 300 mm，速度 50</td></tr>
 </tbody></table></div>
-<p><strong>这三项以及速度设置由四个槽共同使用，不是每个槽各设一套。</strong></p>
-<p>不能只量一根管、只测试一个槽，就认为另外三个槽也一定适用。</p>
-<p>本文长度单位均为毫米 mm，速度单位为协议请求的毫米/秒 mm/s。</p>
-<p>请求速度不等于实测的滚筒转速或线材速度；ACE 固件可能限速。</p>
 <aside class="alert caution"><div class="alert-title">重要警示</div>
-<p><strong>1250／1150／300 是已测试装置的参考值，不是所有管路都能直接照抄的通用值。</strong></p>
-<p>正常送料以 <strong>U1 喷头端的耗材传感器检测到线材</strong> 为停止条件，再交给 U1 原有挤出机上料流程。</p>
-<p>它不会故意一直顶到堵转才停。找不到传感器时，会受最大行程和超时限制而报错。</p>
+<p><strong>1250／1150／300 是一套已测试装置的参考值，不是通用值。</strong></p>
+<p><strong>不要把量到的管长直接填进 A、B、C。</strong></p>
+<p>进料在 U1 喷头传感器检测到线材时停止，不会故意一直顶到堵转。</p>
+<p>进料不成功时，由最大行程和超时限制停止。</p>
 </aside>
 <a id="settings-files"></a>
-<h3 id="在哪里填写这些值">在哪里填写这些值</h3>
-<p><strong>第一次安装：</strong>双击<a href="START-HERE.html#start">安装向导</a>，按提示填写 A 和 B。</p>
-<p>向导初次安装时把 C 设为 0，并使用下文的参考速度。</p>
-<p><strong>已经安装：</strong>再次运行向导会保留现有参数，<strong>不会替你改成新的 A／B／C</strong>。</p>
-<p>需要主动修改时，请按本文末尾的<a href="#apply-changed-settings">应用新参数</a>操作。</p>
-<p>该流程先导出机器当前实际参数，再只改需要的项目，避免覆盖串口、烘干温度上限等设置。</p>
-<div class="table"><table><thead><tr><th>文件</th><th>用途</th></tr></thead><tbody>
-<tr><td><code>config/settings.example.json</code></td><td>保守模板：C 为 0，默认保留已安装参数。</td></tr>
-<tr><td><code>config/settings.tested-reference.json</code></td><td>已测参考模板：C 为 300，要求替换已安装参数。不要直接覆盖自己的配置。</td></tr>
-<tr><td><code>config/settings.local.json</code></td><td>按本文手动修改时使用的个人工作文件。</td></tr>
-</tbody></table></div>
-<p>两个模板的 <code>calibrated_acknowledged</code> 都默认为 <code>false</code>。</p>
-<p>它表示尚未确认物理长度和速度；改成 <code>true</code> 不代表软件已经自动测量过管长。</p>
-<div class="table"><table><thead><tr><th>名称</th><th>参考值</th><th>需要知道的含义</th></tr></thead><tbody>
-<tr><td><code>serial</code></td><td>你的 ACE USB 路径</td><td>已有安装保留原值；新装可自动识别唯一匹配的 ACE。</td></tr>
-<tr><td><code>auto_detect_serial</code></td><td>默认 <code>true</code></td><td>自动识别必须只有一个匹配设备，多个时不会随便选。</td></tr>
-<tr><td><code>baud</code></td><td><code>115200</code></td><td>串口波特率，保持此值。</td></tr>
-<tr><td><code>feed_speed</code></td><td><code>200</code></td><td>手动 <code>ACE_FEED</code> 的默认速度，不是屏幕进料的快速段速度。</td></tr>
-<tr><td><code>feed_length</code></td><td><code>1250</code></td><td>保留的旧预送料参数；现在已关闭自动长距离预送料。<strong>它不是 B。</strong></td></tr>
-<tr><td><code>retract_speed</code></td><td><code>80</code></td><td>主退料速度。</td></tr>
-<tr><td><code>retract_length</code></td><td><code>1250</code></td><td>A：主退料距离。</td></tr>
-<tr><td><code>forward_takeup_length</code></td><td>初次用 <code>0</code></td><td>C：消松回送距离；0 表示不执行。</td></tr>
-<tr><td><code>forward_takeup_speed</code></td><td><code>50</code></td><td>C 启用后的回送速度。</td></tr>
-<tr><td><code>fast_load_length</code></td><td><code>1150</code></td><td>B：扣除上次回送记录之前的快速段基准长度。</td></tr>
+<h3 id="设置文件">设置文件</h3>
+<ul>
+<li><strong>第一次安装：</strong><a href="START-HERE.html#start">安装向导</a>会让你填写 A 和 B，C 从 0 开始。</li>
+<li><strong>已经安装：</strong>再次运行向导<strong>不会</strong>应用新的 A／B／C。请按<a href="#apply-changed-settings">应用新参数</a>操作。</li>
+<li><code>config/settings.example.json</code> 是保守模板：C 为 0，保留已安装参数。<code>config/settings.local.json</code> 是下文流程使用的个人工作文件。</li>
+<li><code>config/settings.tested-reference.json</code> 的 C 为 300，并要求替换已安装参数。不要拿它覆盖自己的配置。</li>
+</ul>
+<div class="table"><table><thead><tr><th>名称</th><th>参考值</th><th>说明</th></tr></thead><tbody>
+<tr><td><code>serial</code></td><td>你的 ACE USB 路径</td><td>保留导出的值。</td></tr>
+<tr><td><code>auto_detect_serial</code></td><td><code>true</code></td><td>要求只有一个匹配的 ACE。</td></tr>
+<tr><td><code>baud</code></td><td><code>115200</code></td><td>不要改。</td></tr>
+<tr><td><code>feed_speed</code></td><td><code>200</code></td><td>只用于手动 <code>ACE_FEED</code>。</td></tr>
+<tr><td><code>feed_length</code></td><td><code>1250</code></td><td>旧参数。<strong>不是 B。</strong> 不要改。</td></tr>
+<tr><td><code>retract_speed</code></td><td><code>80</code></td><td>A 的速度。</td></tr>
+<tr><td><code>forward_takeup_length</code></td><td>初次用 <code>0</code></td><td>C。0 表示不执行。</td></tr>
+<tr><td><code>forward_takeup_speed</code></td><td><code>50</code></td><td>C 的速度。</td></tr>
 <tr><td><code>fast_load_speed</code></td><td><code>200</code></td><td>快速段速度。</td></tr>
-<tr><td><code>sensor_load_speed</code></td><td><code>50</code></td><td>接近喷头传感器时的慢速段速度。</td></tr>
-<tr><td><code>sensor_load_max_length</code></td><td><code>2500</code></td><td>两段合计的最大请求行程，属于故障上限，不是必须送满的长度。</td></tr>
-<tr><td><code>max_dryer_temperature</code></td><td><code>55</code></td><td>烘干温度上限；调管长时保留原值。</td></tr>
-<tr><td><code>calibrated_acknowledged</code></td><td>模板为 <code>false</code></td><td>检查并确认实际长度和速度后才改为 <code>true</code>。</td></tr>
-<tr><td><code>apply_existing_settings</code></td><td>通常为 <code>false</code></td><td>想主动修改已安装参数时，必须改为 <code>true</code>。</td></tr>
+<tr><td><code>sensor_load_speed</code></td><td><code>50</code></td><td>最后接近喷头的速度。</td></tr>
+<tr><td><code>sensor_load_max_length</code></td><td><code>2500</code></td><td>整次进料的故障上限，不是目标长度。不要用加大它来掩盖送料失败。</td></tr>
+<tr><td><code>max_dryer_temperature</code></td><td><code>55</code></td><td>烘干温度上限。保留原值。</td></tr>
+<tr><td><code>calibrated_acknowledged</code></td><td>模板为 <code>false</code></td><td>检查实际长度和速度后改为 <code>true</code>。它不会测量任何东西。</td></tr>
+<tr><td><code>apply_existing_settings</code></td><td>通常为 <code>false</code></td><td>要修改已安装参数时改为 <code>true</code>。</td></tr>
 </tbody></table></div>
-<p>不要因为看见 <code>feed_length: 1250</code>，就以为屏幕进料仍会固定送 1250。</p>
-<p>现在 <strong>U1 屏幕“进料”使用 B 和喷头传感器；“退料”使用 A，然后按需执行 C。</strong></p>
-<p>手动 <code>ACE_FEED</code> 也要求单独写明 <code>LENGTH</code>，不会自动采用 <code>feed_length</code>。</p>
-<p>安装器会写入 <code>/home/lava/printer_data/config/extended/klipper/ace.cfg</code>，并把分段送料参数应用到模块中。</p>
-<p>它也会处理 External 耗材读取设置和内部读卡服务。</p>
-<p><strong>请通过安装器改参数，不要自行修改 <code>ace.py</code> 源码。</strong></p>
-<p>安装器检查：C 为 0–500，且小于 A 和 B；B 不大于 A，并小于最大送料行程。</p>
-<p>快速段速度不能超过 200，慢速段和消松回送速度不能超过 50。</p>
-<p>这些只是输入限制，<strong>通过检查不代表机械上已经校准正确</strong>。</p>
-<p>本文调参时保持最大送料行程 2500，不要用放大上限的办法掩盖送料失败。</p>
+<p><strong>请通过安装器改参数，不要自己修改 <code>ace.py</code>。</strong></p>
+<p>安装器会拒绝超出下列限制的值。通过检查不代表这些值适合你的料管。</p>
+<ul>
+<li>C 为 0–500 mm，且小于 A 和 B。</li>
+<li>B 不大于 A，并小于 2500 mm 的进料上限。</li>
+<li>快速段速度不超过 200，慢速段和消松回送速度不超过 50。</li>
+</ul>
 <a id="how-the-distances-interact"></a>
 <h3 id="abc-如何一起工作">A、B、C 如何一起工作</h3>
-<p>把线材插入 ACE 后，ACE 只原生咬料并识别 NFC，随后等待。</p>
-<p>只有在 U1 屏幕对该槽选择“进料”，才会长距离送到喷头。</p>
-<p>在有可靠起始位置记录时：</p>
+<p>把线材插入 ACE，只会触发短距离咬料和 NFC 读取。在 U1 上选择“进料”后，才会长距离送料。</p>
+<p>有可靠的起始位置记录时，程序这样计算：</p>
 <pre><code>
 本次快速段 = max(0, B − 已记录的回送量)
 本次慢速段最大余量 = 2500 − 本次快速段
 </code></pre>
-<p>两段中任何时候，只要喷头传感器检测到线材，都会进入停止和确认流程。</p>
-<p>慢速段的数字是剩余故障上限，<strong>不是必须再送完的距离</strong>。</p>
-<div class="table"><table><thead><tr><th>起始状态</th><th>参考设置下的快速段</th><th>后续慢速段</th></tr></thead><tbody>
-<tr><td>确认是重新插入的新起点，B = 1150</td><td>1150 mm，速度 200</td><td>速度 50，最多剩余 1350 mm；到传感器即停。</td></tr>
-<tr><td>上次正常退料完成，B = 1150、C = 300</td><td><strong>850 mm，速度 200</strong></td><td>速度 50，最多剩余 1650 mm；到传感器即停。</td></tr>
-<tr><td>重启、动作中断或起点不确定</td><td>不使用快速段</td><td>全程速度 50，总上限 2500 mm。</td></tr>
-</tbody></table></div>
-<p><strong>C = 300 时，不要把 B 手动改成 850 来“扣除回送量”。</strong></p>
-<p>这组参考参数里，B 仍填 1150，程序会自动算出 1150 − 300 = 850。</p>
-<p>如果先把 B 填成 850，程序下一次还会再减 300，快速段就变成 550。</p>
+<ul>
+<li>两段中任何时候，喷头传感器都可以提前停止送料。慢速段速度为 50，余量是上限，不是目标。</li>
+<li>B = 1150、C = 300 并成功退料后，快速段为 850 mm。程序会自己减去已记录的 C。<strong>C = 300 时，不要把 B 填成 850 来抵消。</strong> 那样快速段会变成 550 mm。</li>
+<li>重启、动作中断或位置不确定后，不使用快速段。这时第一次进料较慢是正常的。</li>
+</ul>
 <p><img alt="送料与退料阶段示意图" src="docs/images/feed-cycle.zh-CN.svg"></p>
-<p>图片表示控制阶段，不表示管路实际尺寸。</p>
-<p>程序记录的是一次保守的前送预算，不是传感器量出的尖端坐标。</p>
-<p>这个起点记录只能消费一次，重启后也不会盲目沿用。</p>
-<p>因此，安装或重启后第一次进料全程较慢，可能是正常保护行为。</p>
-<p>退料顺序为：</p>
-<ol start="1">
-<li>U1 先按原有流程加热、释放热端内的耗材。</li>
-<li>ACE 按 A、速度 80 向自身方向回抽。</li>
-<li>确认喷头端已无料，ACE 入口仍有料。</li>
-<li>C 大于 0 时，按速度 50 往 U1 方向回送 C。</li>
-<li>确认完成后，记录 C，供下一次快速段扣减使用。</li>
-</ol>
-<p>最终目标是：<strong>线材仍被 ACE 入口保留，尖端停在 ACE 后方 PTFE 管内，喷头传感器为空。</strong></p>
-<p>只要线材仍留在 ACE 入口，材料信息应继续保留。</p>
-<p>完成状态无法确认时，不会自动再重发一轮长距离动作。</p>
+<p>退料：U1 释放热端，ACE 按速度 80 回抽 A，C 启用时再按速度 50 送 C，并记录 C 供下一次进料使用。</p>
+<p>退料后，线材必须仍留在 ACE 入口和后方 PTFE 管内，U1 喷头传感器必须为空。</p>
 <a id="calibrate-the-ptfe-paths"></a>
-<h3 id="怎样量四根管并选择初始参数">怎样量四根管，并选择初始参数</h3>
-<h4 id="先记录实际管路">先记录实际管路</h4>
-<p>用软尺沿料管实际弯曲的路径量，不要量 ACE 到 U1 的直线距离。</p>
-<p>外部 PTFE 管长不包含 ACE 内部路径、初始咬入量、喷头内部路径和热端退料动作。</p>
-<p>把无法量到的部分记成“未知”，不要当成 0。</p>
-<p>本项目没有自动测管长功能，也没有固定加减公式能从管长直接算出准确 A。</p>
+<h3 id="校准-ptfe-管路">校准 PTFE 管路</h3>
+<h4 id="测量四条管路">测量四条管路</h4>
 <ol start="1">
-<li>结束打印，等待所有进退料动作完成。</li>
-<li>等打印机冷却，再检查管路。</li>
-<li>需要拆管或拔接硬件时，先断电。</li>
-<li>给每根管两端标清 ACE 槽号和对应 U1 喷头号。</li>
-<li>沿安装后的弯曲路线量每根 PTFE 管，记录毫米数。</li>
-<li>记录无法看到或量到的内部部分。</li>
-<li>记录希望退料后尖端停留的位置。</li>
-<li>重新接牢所有管路后，才进行通电测试。</li>
+<li>结束打印和所有进退料动作，等打印机冷却。拆管或拔接硬件前先断电。</li>
+<li>给每根管的两端标上 ACE 槽号和 U1 喷头号。</li>
+<li>沿安装后的弯曲路线量每根管，不要量直线距离。量不到的部分记为“未知”，不要当成 0。</li>
+<li>选定退料后尖端的停留点：靠近 ACE 一侧的 PTFE 管内。尖端不能到达喷头，也不能退出 ACE 入口。</li>
+<li>把所有料管重新接牢，再做通电测试。</li>
 </ol>
-<p>停留点应在靠近 ACE 的后部 PTFE 管内，既不能还留在喷头，也不能退出 ACE 入口。</p>
-<p>A 的起算点是 <strong>U1 已完成热端释放之后</strong>，不是软尺的一端。</p>
-<p><strong>不要把量到的管长直接同时填进 A、B、C。</strong></p>
-<p>可以复制或打印这张表：</p>
-<div class="table"><table><thead><tr><th>槽位与喷头</th><th>实测 PTFE 路径长度 mm</th><th>内部路径／未知部分</th><th>退料后尖端实际位置</th><th>本次 A／B／C</th><th>进料 → 退料 → 再进料结果</th></tr></thead><tbody>
-<tr><td>ACE 1 → 喷头 ___</td><td>___</td><td>___</td><td>___</td><td>___／___／___</td><td>___</td></tr>
-<tr><td>ACE 2 → 喷头 ___</td><td>___</td><td>___</td><td>___</td><td>___／___／___</td><td>___</td></tr>
-<tr><td>ACE 3 → 喷头 ___</td><td>___</td><td>___</td><td>___</td><td>___／___／___</td><td>___</td></tr>
-<tr><td>ACE 4 → 喷头 ___</td><td>___</td><td>___</td><td>___</td><td>___／___／___</td><td>___</td></tr>
-</tbody></table></div>
-<p>四行最终必须能使用同一组 A／B／C。</p>
-<p>选择 B 时，以<strong>到喷头的最短有效路径</strong>检查余量，让快速段在抵达喷头前结束。</p>
-<p>“全新插入”和“完成退料后再次进料”两种状态都要检查。</p>
-<p>参考值 A = 1250、B = 1150，相差 100。</p>
-<p><strong>这不等于你的机器一定还剩 100 mm 的物理安全距离。</strong></p>
-<p>不能推导出“所有管长减 100 就是 B”。</p>
-<p>如果四条路径差异大到没有共同适用的设置，应先调整管路布局，再继续。</p>
-<h4 id="初次校准顺序">初次校准顺序</h4>
-<p><strong>不是要求你先装好并测试，再回来安装。</strong> 这分成两步：</p>
-<div class="table"><table><thead><tr><th>时间</th><th>你需要做什么</th><th>什么时候进入下一步</th></tr></thead><tbody>
-<tr><td>安装前</td><td>记录四路路线、ACE 后方的预定停留点；审查初始 A、B，C 保持 0。</td><td>已明确线材退到哪里、快速送料在哪之前结束，未知的路径尺寸已查清。</td></tr>
-<tr><td>安装后</td><td>在 U1 屏幕对一槽依次进料、退料、再进料；停止后检查尖端并记录结果。</td><td>第一槽通过后，再逐槽检查另外三槽；全部通过后才正常打印。</td></tr>
-</tbody></table></div>
-<p>向导中的参数确认只表示你审查了初始值，<strong>不表示软件已经量管或完成实机校准</strong>。</p>
-<p>已有同一管路的正常记录时，以记录中的参数为起点。</p>
-<p>软尺测量用于判断余量，不能单独证明某个 A 一定合适。</p>
-<p>如果还不清楚尖端应停在哪里、路线到底多长，先查清，不要猜长回抽值。</p>
-<p>首次安装向导可以退出，不必填猜测值继续安装。</p>
+<ul>
+<li>软尺量不到 ACE 内部路径、初始咬入量、喷头内部路径和热端退料动作。测量只用来判断余量。</li>
+<li>按到喷头的最短路径检查 B。参考值 A 和 B 相差 100 mm。这不代表你的机器也有 100 mm 的余量。</li>
+<li>如果四条路径找不到安全的共用参数，先调整管路布局。</li>
+</ul>
+<h4 id="选择并测试-a-和-b">选择并测试 A 和 B</h4>
 <ol start="1">
-<li>先把 C 设为 <code>0</code>，不启用消松回送。</li>
-<li>保持快速送料 <code>200</code>、接近喷头 <code>50</code>、主回抽 <code>80</code>。</li>
-<li>B 先选较保守的长度，保证到喷头前还有慢速接近过程。</li>
-<li>A 以“退完仍留在 ACE 后管内的记录位置”为目标。</li>
-<li>首装在向导填已审查的 A／B；后续调整按下文流程应用新值。</li>
-<li>先测试一个槽：在 U1 屏幕依次“进料 → 退料 → 再进料”。</li>
-<li>每一步等它正常完成，再点下一步。</li>
-<li>记录尖端位置、喷头有无料、ACE 入口有无料以及料盘松圈。</li>
-<li>用同一组参数测试剩余三个槽。</li>
-<li>保存四槽记录及最终参数。</li>
+<li>这套管路已有正常工作的记录时，从记录的参数开始。先查清未知的尺寸，再填长回抽值。向导可以中途退出，不安装。</li>
+<li>把 C 设为 <code>0</code>。保持快速段速度 <code>200</code>、接近速度 <code>50</code>、退料速度 <code>80</code>。</li>
+<li>B 选得短一些，保证到喷头前还有慢速接近段。A 要让尖端退回到停留点。</li>
+<li>在向导里填写 A 和 B（首次安装），或按<a href="#apply-changed-settings">应用新参数</a>操作。</li>
+<li>在一个槽上，在 U1 依次点进料、退料、再进料。每个动作完成后再点下一个。</li>
+<li>运动停止后，检查尖端位置、喷头传感器、ACE 入口和松出的线材。滚筒转动时手不要靠近。拆管前先断电。</li>
+<li>用同一组参数在另外三个槽上重复，然后才正常打印。结果记在<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md#repeat-the-acceptance-check">验收清单</a>里。</li>
 </ol>
-<p>滚筒转动时手不要伸进去；尖端位置只能在运动停止后检查。</p>
-<p>需要拆管观察时先断电，不要在通电动作中拔管找尖端。</p>
-<p>完整验收项可对照<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md#repeat-the-acceptance-check">进退料验收表</a>。</p>
-<h4 id="看见什么现象该改哪一项">看见什么现象，该改哪一项</h4>
-<div class="table"><table><thead><tr><th>观察到的现象</th><th>调整方向</th></tr></thead><tbody>
-<tr><td>还在快速送料，线材就已经到喷头。</td><td>减小 B。传感器能停下，不代表快速段留够了慢速余量。</td></tr>
-<tr><td>慢速段较长，但最终正常进料。</td><td>可以保持 B，这只是速度体验；只有确认四路余量后，才考虑增加 B。</td></tr>
-<tr><td>正常退料后，喷头已无料，但尖端仍离 ACE 太远。</td><td>确认 ACE 端仍有保留余量后，小幅增加 A，并先保持 C = 0 重测。</td></tr>
-<tr><td>线材被抽出 ACE 入口，或入口显示无料。</td><td>先恢复正确物理状态，再减小 A；不要连续再点“退料”补救。</td></tr>
-<tr><td>退料报错、喷头仍有料、打滑或卡住。</td><td>先查热端释放和管路阻力，不要盲目加大 A。</td></tr>
-<tr><td>退料成功，但料盘旁留有松圈。</td><td>不先改 A／B，单独评估 C，见下一节。</td></tr>
-<tr><td>改了 B，但重启后第一次进料仍全程很慢。</td><td>起点不确定时会用慢速；正常退料完成后的再进料才可能使用新快速段。</td></tr>
-</tbody></table></div>
-<p>每次只改一项长度，调整幅度不得超过能确认的剩余空间。</p>
-<p>没有对所有管路都安全的固定步长或比例公式。</p>
-<h4 id="换管缩短管子或重新走管以后">换管、缩短管子或重新走管以后</h4>
-<ol start="1">
-<li>保存原来正常工作的参数和四槽记录。</li>
-<li>量新路线，更新对应记录。</li>
-<li>重新找四路中最短的有效路径。</li>
-<li>重新校准时先关闭 C。</li>
-<li>下一次进退料前先重新检查 A 和 B。</li>
-<li>重做四路的进料、退料和再进料检查。</li>
-<li>新 A／B 都通过后，再考虑启用 C。</li>
-</ol>
-<p>即使只改一根管，共用的 B 也可能不再适合。</p>
-<p>不要用旧快速段冲一次，靠是否碰到喷头来判断新管是不是太短。</p>
+<h4 id="调整">调整</h4>
+<ul>
+<li>还在快速段，线材就到了喷头：减小 B。传感器能停下，不代表余量足够。</li>
+<li>退料后尖端太靠近 U1 一侧，喷头为空，没有报错：在 ACE 一侧余量内小幅增加 A。保持 C = 0 重测。</li>
+<li>尖端退出 ACE 入口：先恢复正确的物理状态，再减小 A。不要重复点“退料”来补救。</li>
+<li>退料失败、喷头仍检测到线材、打滑或卡住：停止。检查热端释放和管路。不要盲目加大 A。</li>
+<li>每次只改一个长度，幅度不超过你能确认的余量。换管或重新走管后，把 C 设为 0，重做本节。不要用旧参数去试新管是不是太短。</li>
+<li>其他现象见<a href="START-HERE.html#troubleshooting">故障排查</a>。</li>
+</ul>
 <a id="enable-forward-take-up"></a>
-<h3 id="再启用-c退料后消松回送">再启用 C：退料后消松回送</h3>
-<p>C 把料盘附近松出的线材吸回 PTFE 管，让松圈减小。</p>
-<p><strong>它不是单独加速滚筒，也不是检测收紧后自动停止。</strong></p>
-<p>它按设定长度向 U1 方向送一段，没有张力传感器终点。</p>
+<h3 id="启用消松回送">启用消松回送</h3>
+<p>C 在 A 之后按设定长度往 U1 方向送一段。它没有张力传感器。</p>
+<p><strong>C = <code>0</code> 时四个槽的进料、退料、再进料都通过后，才能启用 C。</strong></p>
 <ol start="1">
-<li>先确认 C = <code>0</code> 时四路进料、退料、再进料都正常。</li>
-<li>观察退料后实际留下多少松圈。</li>
-<li>根据松圈和尖端到喷头的余量，选择有限的 C。</li>
+<li>观察退料后松出的线材。</li>
+<li>按看到的松量和到喷头的余量，选一个有限的 C。已测的 C = 300（<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">第 4 槽记录</a>）不是给你的推荐值。</li>
 <li><code>forward_takeup_speed</code> 保持不超过 <code>50</code>。</li>
-<li>应用参数后，先对一个槽执行一次正常退料。</li>
-<li>检查喷头仍为空、ACE 入口仍有料。</li>
-<li>不拔出线材，继续检查下一次进料。</li>
-<li>再检查其他三个槽。</li>
+<li>应用参数，测试一次正常退料。喷头必须仍为空，ACE 入口必须仍有料。</li>
+<li>不拔出线材，再进料一次。</li>
+<li>在四个槽上重复这些检查。</li>
 </ol>
-<p><strong>300 mm 是已测参考，不是默认推荐给所有用户的数值。</strong></p>
-<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">实测记录</a>说明了第 4 槽那次测试的范围。</p>
-<p>C 越大，尖端越往喷头方向前进，停留余量越少。</p>
-<p>仍有松圈时先确认线材移动顺畅；只有余量明确且未超过限制，才考虑增加 C。</p>
-<p>出现过紧、卡住或碰到喷头时停止测试，减小 C 或设为 0。</p>
-<p>不要为了抵消过大的 C，又盲目加大 A。</p>
+<ul>
+<li>C 越大，停留的尖端离喷头越近。线材过紧、卡住或到达喷头时，停止，减小 C 或设为 0。</li>
+<li>仍有松圈时，先确认线材移动顺畅。不要为了抵消过大的 C 而加大 A。</li>
+</ul>
 <a id="apply-changed-settings"></a>
-<h3 id="已安装用户怎样应用新参数">已安装用户：怎样应用新参数</h3>
-<p>下面适用于<strong>已经安装本项目、现在要主动调参</strong>的用户。</p>
-<p>首装请用<a href="START-HERE.html#start">双击安装向导</a>，填 A／B 并从 C = 0 开始。</p>
-<p>你不需要编写程序，下面命令可以按整块复制到 Windows PowerShell。</p>
-<p>它们先导出当前有效参数，让你只改 A／B／C，保留其他项目。</p>
-<p><strong>不要拿通用模板覆盖整份已有配置，也不要手改 Python 模块。</strong></p>
-<h4 id="第一步准备机器和解压目录">第一步：准备机器和解压目录</h4>
+<h3 id="应用新参数">应用新参数</h3>
+<p>本流程用于修改<strong>已经安装</strong>的参数。它先导出当前参数，所以串口路径和烘干温度上限会保留。</p>
+<p><strong>不要拿通用模板覆盖整份配置。</strong></p>
+<h4 id="1-准备打印机和项目文件夹">1. 准备打印机和项目文件夹</h4>
 <ol start="1">
-<li>结束打印和所有进退料动作。</li>
-<li>按<a href="MANUAL-INSTALL.zh-CN.html#5-check-before-installation">安装前准备</a>让机器处于可更新状态。</li>
-<li>喷嘴、热床目标温度设为 0，实际温度降到 50 °C 以下。</li>
-<li>关闭 ACE 烘干和辅助送料，原有耗材位置不要随意改动。</li>
-<li>打开支持当前已安装版本的完整项目解压文件夹。</li>
-<li>进入能同时看见 <code>installer.py</code> 和 <code>manifest.json</code> 的那层目录。</li>
-<li>点击资源管理器地址栏，输入 <code>powershell</code>，按回车。</li>
+<li>结束打印和所有进退料动作。完成<a href="MANUAL-INSTALL.zh-CN.html#5-check-before-installation">安装前检查</a>。</li>
+<li>加热目标温度保持为 0，实际温度低于 50 °C。关闭 ACE 烘干和辅助送料。</li>
+<li>打开支持当前已安装版本的项目解压文件夹，进入包含 <code>installer.py</code> 和 <code>manifest.json</code> 的那层。</li>
+<li>在资源管理器地址栏输入 <code>powershell</code>，按回车。所有命令都在这个窗口执行。任何命令报错就停下。</li>
 </ol>
-<p>后续都使用这个窗口。只复制框内命令，不复制代码框外的反引号。</p>
-<p>任何一步报错就停下，不要继续下一块。</p>
 <pre><code>
 $ProjectDir = (Get-Location).Path
 if (-not (Test-Path -LiteralPath .\installer.py)) { throw &quot;Open the folder containing installer.py first.&quot; }
@@ -849,16 +523,9 @@ foreach ($Name in $PublicFiles) {
 scp -O -r &quot;$UploadDir&quot; &quot;${PrinterTarget}:$RemoteDir&quot;
 if ($LASTEXITCODE -ne 0) { throw &quot;Upload failed. Stop here.&quot; }
 </code></pre>
-<p>看到 <code>Printer IP from the Wi-Fi page</code> 时，输入你自己的 U1 Wi-Fi 页面显示的 IP。</p>
-<p>不要输入 <code>http://</code>，也不要照抄别人的 IP。</p>
-<p>要求密码时输入打印机 root 密码；输入时不显示字符是正常现象。</p>
-<p>首次主机密钥提示请按<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">连接核对说明</a>确认打印机身份。</p>
-<p>临时上传目录只包含列表中的公开文件，不复制你的备份或本地私人配置。</p>
-<p>找不到 <code>ssh</code> 或 <code>scp</code> 时，先按安装说明启用 Windows“OpenSSH 客户端”。</p>
-<h4 id="第二步导出机器当前实际参数">第二步：导出机器当前实际参数</h4>
-<p>下面的 <code>check</code> 只读检查，不会安装模板。</p>
-<p>它以“保留已有设置”的方式取得有效参数，保存为本地工作文件。</p>
-<p>工作文件已存在时，先在同目录保存带时间戳的副本。</p>
+<p>输入打印机 IP，并在要求时输入 root 密码。输入密码时不显示字符。出现新的主机密钥提示时，按<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">连接核对说明</a>确认。</p>
+<h4 id="2-导出当前参数">2. 导出当前参数</h4>
+<p>这次检查是只读的。它先给已有的本地工作文件保存一份带时间戳的副本，再用记事本打开导出的参数。</p>
 <pre><code>
 $PlanText = ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.example.json&quot;
 if ($LASTEXITCODE -ne 0) { throw &quot;Check failed. Stop here.&quot; }
@@ -870,11 +537,8 @@ if (Test-Path -LiteralPath .\config\settings.local.json) {
 $Plan.effective_settings | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath .\config\settings.local.json -Encoding UTF8
 notepad .\config\settings.local.json
 </code></pre>
-<p>成功后记事本会打开 <code>config/settings.local.json</code>。</p>
-<p>若检查拒绝未知修改，先保留文件并处理兼容性，不要为了通过检查强行覆盖。</p>
-<h4 id="第三步在记事本修改-abc">第三步：在记事本修改 A／B／C</h4>
-<p>下面只是完整文件中的<strong>部分项目示例</strong>，不是让你删掉原文件，只剩这几行。</p>
-<p>数字仅供对照，实际填你的校准记录。</p>
+<h4 id="3-修改三个长度">3. 修改三个长度</h4>
+<p>只改下面这些项目。这只是<strong>部分项目示例</strong>，不能用来替换完整文件。数值请填你的校准记录。</p>
 <pre><code>
 {
   &quot;retract_length&quot;: 1250,
@@ -884,74 +548,53 @@ notepad .\config\settings.local.json
   &quot;calibrated_acknowledged&quot;: true
 }
 </code></pre>
-<ol start="1">
-<li>找到 <code>retract_length</code>，冒号后数字改为 A。</li>
-<li>找到 <code>fast_load_length</code>，冒号后数字改为 B。</li>
-<li>找到 <code>forward_takeup_length</code>，数字改为 C；重新校准先用 0。</li>
-<li>把 <code>apply_existing_settings</code> 改为 <code>true</code>，明确要求替换已有参数。</li>
-<li>确认物理长度和速度后，把 <code>calibrated_acknowledged</code> 改为 <code>true</code>。</li>
-<li>保留导出的其他所有项目，不改串口、烘干上限等无关值。</li>
-<li>按 Ctrl+S 保存，关闭记事本。</li>
-</ol>
-<p>数字用整数，不加 <code>mm</code>，不给数字加引号。</p>
-<p><code>true</code>／<code>false</code> 用小写；原有逗号、双引号和大括号不要删。</p>
-<p><code>feed_length</code> 保持原值，它不是当前屏幕进料的快速段设置。</p>
-<p>参考速度是 <code>retract_speed: 80</code>、<code>fast_load_speed: 200</code>、<code>sensor_load_speed: 50</code>。</p>
-<p>此前有自定义速度时请单独核对，不要调长度时无意覆盖。</p>
-<h4 id="第四步先检查再安装最后验收">第四步：先检查，再安装，最后验收</h4>
-<p>先上传改好的文件并只读检查：</p>
+<ul>
+<li>把 <code>retract_length</code> 改为你的 A，<code>fast_load_length</code> 改为你的 B，<code>forward_takeup_length</code> 改为你的 C。校准期间 C 用 0。</li>
+<li>把 <code>apply_existing_settings</code> 改为 <code>true</code>。审查实际长度和速度后，把 <code>calibrated_acknowledged</code> 改为 <code>true</code>。</li>
+<li>其他项目全部保留，包括 <code>feed_length</code> 和自定义的速度。数字用整数，不加引号和单位，<code>true</code> 用小写。保存文件，关闭记事本。</li>
+</ul>
+<h4 id="4-检查应用验证">4. 检查、应用、验证</h4>
+<p>上传改好的文件，并运行只读检查：</p>
 <pre><code>
 scp -O .\config\settings.local.json &quot;${PrinterTarget}:$RemoteDir/config/settings.local.json&quot;
 if ($LASTEXITCODE -ne 0) { throw &quot;Settings upload failed. Stop here.&quot; }
 ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.local.json&quot;
 if ($LASTEXITCODE -ne 0) { throw &quot;Check failed. Do not install.&quot; }
 </code></pre>
-<p>输出的 <code>effective_settings</code> 是本次实际准备采用的值。</p>
-<p>逐项核对 A／B／C、速度、串口和烘干上限。</p>
-<p>确认 <code>apply_existing_settings</code> 及检查结果的 <code>calibration_acknowledged</code> 均为 <code>true</code>。</p>
-<p>仍是旧值或检查报错时，先处理，不继续安装。</p>
-<p>保持机器空闲、冷却、烘干和辅助送料关闭，再执行：</p>
+<p>在 <code>effective_settings</code> 里核对 A、B、C、速度、串口路径和烘干温度上限。</p>
+<p>输出仍是旧值或报错时，不要安装。打印机空闲并冷却后，应用参数：</p>
 <pre><code>
 ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py install --settings config/settings.local.json&quot;
 if ($LASTEXITCODE -ne 0) { throw &quot;Install failed. Read the rollback result and backup ID. Stop here.&quot; }
 </code></pre>
-<p>保存输出的备份 ID，然后再次核对：</p>
+<p>保存输出的备份 ID，然后再运行一次只读检查：</p>
 <pre><code>
 ssh $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py check --settings config/settings.local.json&quot;
 if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a transport test.&quot; }
 </code></pre>
-<p>确认实际参数正确后，再按上文四槽表进行实机检查。</p>
-<p>安装器重启 Klipper 并验证已加载配置，因此首次进料可能因起点未知而全程慢速。</p>
-<p>它会保留 NFC 私有配置，并检查已有材料信息。</p>
-<p>安装失败先看自动回滚结果，需要恢复时参考<a href="START-HERE.html#recovery">更新与回滚</a>。</p></details><details id="nfc"><summary>NFC 支持范围与识别流程</summary><h2 id="nfc-与耗材信息">NFC 与耗材信息</h2>
+<p>确认实际生效的值，然后重做四个槽的检查。</p>
+<p>安装失败时，先看自动回滚结果。参考<a href="START-HERE.html#recovery">更新与回退</a>和<a href="START-HERE.html#troubleshooting">故障排查</a>。</p></details><details id="nfc"><summary>NFC 支持范围与识别流程</summary><h2 id="nfc-与耗材信息">NFC 与耗材信息</h2>
 <p><a href="START-HERE.en.html#nfc">English</a></p>
-<p>本项目把 ACE 已识别的品牌、材料类型、细分类型和颜色同步到 U1。</p>
-<p>识别标签的是 ACE 自己的读卡器和固件；本项目负责接收、转换和保留这些信息。</p>
-<p><strong>本项目已实测成功：拓竹品牌、耗材类型和耗材颜色的识别与同步。</strong></p>
-<p>固定 ACE 固件还支持 Anycubic 和部分开放标签格式，<strong>但本项目尚未实际测试这些标签</strong>。</p>
+<p>标签由 ACE 读取和解码，解码能力来自 <a href="https://github.com/Jupsi/OpenCubic">OpenCubic</a>。</p>
+<p>本项目向 ACE 查询结果，把品牌、材料类型、细分类型和颜色同步到 U1。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
 <p><strong>ACE 读卡器和 U1 内置读卡器是两套独立系统。</strong></p>
 <p><strong>使用本项目固定的 OpenCubic 固件及其支持的标签时，用户不需要自行寻找或填写 NFC 密钥。</strong></p>
 <p>U1 的耗材读取方式保持 External。</p>
 </aside>
-<h3 id="先确认-ace-所需条件">先确认 ACE 所需条件</h3>
+<h3 id="需要什么">需要什么</h3>
 <div class="table"><table><thead><tr><th>项目</th><th>应当是什么</th></tr></thead><tbody>
 <tr><td>硬件</td><td>Anycubic ACE Pro 第一代，已正确连接 U1。</td></tr>
 <tr><td>ACE 固件</td><td><code>CV1.3.863</code>，内含 OpenCubic CFW <code>1.1.1</code>。</td></tr>
 <tr><td>对应下载</td><td><a href="https://github.com/Jupsi/OpenCubic/releases/tag/v1.0.2">OpenCubic v1.0.2 发布页</a>中的 <code>ACE_V1.3.863_20260716.bin</code>。</td></tr>
-<tr><td>U1 耗材读取方式</td><td><strong>External（外部）</strong>；当前安装器会自动设置并检查。</td></tr>
-<tr><td>料卷</td><td>带受支持的 NFC 标签，且标签位置适合 ACE 读取。</td></tr>
+<tr><td>U1 耗材读取方式</td><td><strong>External（外部）</strong>；当前安装器会自动设置。</td></tr>
+<tr><td>料卷</td><td>带受支持的标签，且标签位置正确。</td></tr>
 </tbody></table></div>
-<p>发布页标签 <code>v1.0.2</code> 和固件内部版本 <code>1.1.1</code> 不是同一种版本编号，因此同时出现是正常的。</p>
-<p>需要准备 ACE 固件时，按<a href="START-HERE.html#ace-firmware">双语 ACE 固件向导</a>操作即可。</p>
-<p>选择手动安装时，从<a href="MANUAL-INSTALL.zh-CN.html#ace-firmware">中文手动指南的 ACE 步骤</a>开始。</p>
-<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md">高级固件维护参考（英文）</a>仍保留，供需要逐项检查维护工具的用户使用。不能把 ACE 2 的镜像刷入第一代 ACE。</p>
-<p>OpenCubic 在 ACE 内部处理受支持的标签格式。</p>
-<p>本安装流程没有需要用户提供 NFC 密钥的步骤。</p>
-<h3 id="哪些-nfc-标签受支持">哪些 NFC 标签受支持？</h3>
-<p>下表以 <a href="https://github.com/Jupsi/OpenCubic/blob/v1.0.2/docs/supported-spools.md">OpenCubic v1.0.2 的详细支持文档</a>为依据。</p>
-<p><strong>多品牌 NFC 解码能力由 OpenCubic 项目提供；Ultimate U1-ACE link 负责读取 ACE 返回的识别结果并同步到 U1。</strong></p>
-<p>表中的“Anycubic 第一代／第二代”指标签格式，不表示本项目支持第二代 ACE 硬件。</p>
+<p>用 <a href="START-HERE.html#ace-firmware">ACE 固件向导</a>或<a href="MANUAL-INSTALL.zh-CN.html#ace-firmware">手动指南的 ACE 步骤</a>准备固件。</p>
+<p>不要把 ACE 2 的固件镜像刷入第一代 ACE Pro。</p>
+<h3 id="支持的标签">支持的标签</h3>
+<p>“上游”一列以 <a href="https://github.com/Jupsi/OpenCubic/blob/v1.0.2/docs/supported-spools.md">OpenCubic v1.0.2 的支持文档</a>为依据。</p>
+<p>表中的“Anycubic 第一代／第二代”指标签格式，不是 ACE 硬件代数。</p>
 <div class="table"><table><thead><tr><th>标签品牌或格式</th><th>上游详细文档的状态</th><th>本项目的实机验证</th></tr></thead><tbody>
 <tr><td>Anycubic 第一代标签</td><td>已确认</td><td>本项目未实测。</td></tr>
 <tr><td>Anycubic 第二代标签</td><td>已确认</td><td>本项目未实测。</td></tr>
@@ -963,131 +606,72 @@ if ($LASTEXITCODE -ne 0) { throw &quot;Verification failed. Do not start a trans
 <tr><td>QIDI／起迪</td><td>不支持；仅有占位实现</td><td>本项目未实测。</td></tr>
 <tr><td>Creality／创想三维</td><td>不支持；仅有占位实现</td><td>本项目未实测。</td></tr>
 </tbody></table></div>
-<p>同一版本的 README 对 TigerTag 和 OpenSpool 仍写着“尚未实测”，更新滞后于详细支持文档。</p>
-<p>这里采用详细文档明确列出的第一代 ACE 实测状态，并与本项目自己的测试结果分开说明。</p>
-<p><strong>本项目自己的 NFC 实机证据仅覆盖拓竹标签，不代表每个品牌、批次或标签安装位置都已验证。</strong></p>
-<p><strong>固定 ACE 固件尚未实现 QIDI 和 Creality 标签识别。</strong> 这些料卷请手动设置材料信息，品牌名称映射不能增加标签支持。</p>
-<p>U1 内置 OpenRFID 的品牌支持表与 ACE 的支持表也不能互相替代。</p>
-<h3 id="理解两条读卡路径">理解两条读卡路径</h3>
+<p>本项目自己只测过拓竹标签，不代表每种料卷、批次或标签位置都已验证。</p>
+<p>QIDI、Creality 和没有标签的料卷，请在 U1 上手动填写材料信息。</p>
+<h3 id="识别流程">识别流程</h3>
 <ol class="flow"><li>耗材 NFC 标签</li><li>ACE 读取并解码</li><li>U1 查询并转换结果</li><li>显示并保存耗材信息</li></ol><p>多品牌解码来自 OpenCubic。U1 内置 OpenRFID 是另一条独立路径。</p>
 <ol start="1">
-<li>ACE 的读卡器读取标签，ACE 固件完成标签解码和材料识别。</li>
-<li>运行在 U1 上的适配程序查询 ACE 状态，并通过 <code>get_filament_info</code> 获取该槽的已解码信息。</li>
-<li>ACE 返回品牌 <code>brand</code>、耗材类型 <code>type</code>、RGB 颜色 <code>color</code>、<code>sku</code> 和 <code>rfid</code> 状态等字段。</li>
-<li>适配程序统一品牌名称，分开材料类型与细分类型，转换颜色格式，再通过 <code>SET_PRINT_FILAMENT_CONFIG</code> 写入 U1。</li>
+<li>ACE 的读卡器读取标签，ACE 固件完成解码。</li>
+<li>运行在 U1 上的适配程序向 ACE 查询，取得该槽已解码的品牌、类型和颜色。</li>
+<li>适配程序转换名称和颜色格式，再写入 U1。例如 <code>Bambu Lab</code>／<code>PLA Matte</code> 变成 <code>Bambu</code>／<code>PLA</code>／<code>Matte</code>。品牌为空时显示 <code>Generic</code>。</li>
 </ol>
-<p><strong>这是 U1 查询、ACE 返回识别结果的流程。ACE 不会直接修改 U1 配置；U1 也不在这条路径中解密原始 NFC 标签。</strong></p>
-<p>例如，ACE 返回 <code>Bambu Lab</code>、<code>PLA Matte</code> 和 RGB 颜色后，适配程序把它们整理成 <code>Bambu</code>、<code>PLA</code>／<code>Matte</code> 和 U1 使用的颜色值。</p>
-<p>这里的 <code>rfid</code> 是识别状态字段，不是供 U1 解码的原始标签内容。</p>
-<p>U1 内置读卡器不会通过 USB 去读取 ACE 里面的料卷。</p>
-<p>U1 的 OpenRFID 服务使用自己的读卡器和配置文件。</p>
-<p>它与 ACE 解码路径独立，在本方案中保持停用。</p>
-<h3 id="external-应该怎么设置">External 应该怎么设置？</h3>
-<p>当前安装器会自动选择 <strong>External</strong>、禁用 U1 内置读卡路径并停止 U1 的 OpenRFID 服务。</p>
-<p>它会核对结果，并备份原来的设置和服务状态。</p>
-<p>保留的旧版 v0.1.0 安装包仍需手动设置 External。</p>
-<p>查看当前状态：</p>
+<p>U1 内置读卡器是另一套读卡器，本方案不使用。安装器会设置 <strong>External</strong> 并停止 U1 的 OpenRFID 服务。</p>
+<h3 id="检查-external-模式">检查 External 模式</h3>
 <ol start="1">
-<li>在浏览器打开打印机的 <code>/firmware-config/</code> 页面。</li>
+<li>打开打印机的 <code>/firmware-config/</code> 页面。</li>
 <li>找到 <strong>Snapmaker Components</strong>。</li>
-<li>查看 <strong>Filament Detection</strong>。</li>
+<li>查看 <strong>Filament Detection</strong>，选中值必须是 <strong>External</strong>。保留的旧版 v0.1.0 安装包不会自动设置，需要手动选择 External。</li>
 </ol>
-<p><strong>完成标准：选中值是 External。</strong></p>
-<p>如果使用 v0.1.0 或正在明确排查这个设置，选择 External 后等待相关服务重启完成。</p>
-<p>选项名称是 <strong>External</strong>，不是 <code>extended</code>；部分上游说明把该项称为 <strong>RFID Detection System</strong>。</p>
-<p>External 的作用是避免 U1 内置读卡路径与 ACE 的材料更新互相干扰。</p>
-<p>它不表示 ACE 只能读取 OpenSpool。</p>
-<p><a href="https://snapmakeru1-extended-firmware.pages.dev/design/rfid">上游 RFID 说明</a>中的外置读卡器表格，描述的是表内那些具体项目，不是所有外接设备的共同上限。</p>
 <aside class="alert caution"><div class="alert-title">重要警示</div>
 <p><strong>使用本项目连接 ACE 时，请保持 External。</strong></p>
-<p>不要为了修复 ACE 识别，改成内置 OpenRFID 模式。</p>
-<p>切换后启用的是另一条读卡路径，可能干扰 ACE 的材料信息处理。</p>
+<p>不要为了改善 ACE 识别而启用内置 OpenRFID。</p>
+<p>这样会启用另一条读卡路径，可能干扰 ACE 的材料信息处理。</p>
 </aside>
-<h3 id="第一次检查识别结果">第一次检查识别结果</h3>
+<h3 id="检查识别结果">检查识别结果</h3>
 <ol start="1">
-<li>向一个空 ACE 入口插入耗材。</li>
-<li>把手移开滚筒。</li>
+<li>向一个空的 ACE 入口插入耗材，手远离滚筒。</li>
 <li>等待短咬料和 NFC 识别结束。</li>
-<li>在 U1 屏幕打开该槽的耗材详情。</li>
-<li>对照料卷检查品牌、类型、细分类型和颜色。</li>
+<li>在 U1 上打开该槽的耗材详情，对照料卷检查。</li>
 </ol>
-<p><strong>预期结果：识别信息出现，线材停在 ACE 端，等待你点击 U1“进料”。</strong></p>
-<p>插入耗材不会自动长送到打印头。</p>
-<p>先后插入多卷时，ACE 识别可能需要更长时间；本项目最多等待 180 秒就绪，然后才开始计算送料动作的时间限额。</p>
-<p>识别期间不要反复点“进料”。</p>
-<p>没有 NFC 标签的耗材，可以在 U1 耗材界面手动填写材料信息。</p>
-<p>只要 ACE 入口仍检测到耗材，正常进料和退料都会保留自动识别或手填的数据。</p>
-<p>真正从 ACE 入口拔出耗材后，该槽的信息才会清空。</p>
-<p>断连、未知状态或暂时没有新状态，不会被当作“已拔出”。</p>
-<h3 id="品牌名称转换不等于增加标签支持">品牌名称转换不等于增加标签支持</h3>
-<div class="table"><table><thead><tr><th>ACE 返回的品牌文字</th><th>U1 显示的品牌</th></tr></thead><tbody>
-<tr><td><code>Bambu Lab</code>、<code>BambuLab</code>、<code>Bambu</code></td><td><code>Bambu</code></td></tr>
-<tr><td><code>Creality</code></td><td><code>Creality</code></td></tr>
-<tr><td><code>Elegoo</code></td><td><code>Elegoo</code></td></tr>
-<tr><td><code>Qidi</code></td><td><code>QIDI</code></td></tr>
-<tr><td><code>Snapmaker</code></td><td><code>Snapmaker</code></td></tr>
-<tr><td><code>Anycubic</code></td><td><code>Anycubic</code></td></tr>
-<tr><td>其他非空品牌名</td><td>保留 ACE 返回的名称。</td></tr>
-<tr><td>空品牌名</td><td><code>Generic</code></td></tr>
+<ul>
+<li>耗材停在 ACE 处等待。插入耗材不会自动送到打印头。</li>
+<li>多个槽接连变化时，识别可能更久。识别期间不要反复点进料。</li>
+<li>只要 ACE 入口仍有耗材，进料和退料都会保留材料信息。</li>
+<li>确认入口为空后，该槽的信息才会清除。未知状态或断连状态不会清除。</li>
+</ul>
+<h3 id="识别失败时">识别失败时</h3>
+<div class="table"><table><thead><tr><th>看到什么</th><th>怎么办</th></tr></thead><tbody>
+<tr><td>料卷没有标签</td><td>在 U1 上手动填写材料信息。</td></tr>
+<tr><td>QIDI 或 Creality 料卷</td><td>手动填写材料信息；这些标签的解码尚未实现。</td></tr>
+<tr><td>受支持的标签没有识别</td><td>检查 ACE 固件版本是否准确、是否确有原装标签、标签位置是否正确。</td></tr>
+<tr><td>类型和颜色出现，但品牌显示 Generic</td><td>ACE 返回的品牌为空，需要时手动填写品牌。</td></tr>
+<tr><td>U1 显示 Bambu，切片软件不显示</td><td>单独检查切片软件的耗材预设。</td></tr>
 </tbody></table></div>
-<p>这些规则只整理成功读取后的品牌文字，不会给 ACE 增加标签解码器。</p>
-<p>因此，映射表中出现 Creality、QIDI 或 Snapmaker，并不证明 ACE 能读取这些品牌的原装标签。</p>
-<p>例如，<code>PLA Matte</code> 会分成材料类型 <code>PLA</code> 和细分类型 <code>Matte</code>，颜色单独同步。</p>
-<p>U1 正确显示品牌，也不保证切片软件中存在同名材料预设。</p>
-<h3 id="保留私人配置">保留私人配置</h3>
-<p>本项目不包含专有 NFC 密钥。</p>
-<p>升级或重装前保留自己的私人配置；不要公开配置备份、凭据或未脱敏的维护日志。</p>
-<h3 id="没有识别时先区分是哪种情况">没有识别时，先区分是哪种情况</h3>
-<div class="table"><table><thead><tr><th>看到什么</th><th>应检查什么</th></tr></thead><tbody>
-<tr><td>料卷没有 NFC 标签</td><td>在 U1 手动填写材料信息。</td></tr>
-<tr><td>类型和颜色正确，品牌显示 Generic</td><td>ACE 是否返回了非空品牌名称。</td></tr>
-<tr><td>声称支持的标签没有识别</td><td>ACE 是否为准确固件、料盘是否确有原装标签、标签位置是否适合读取。</td></tr>
-<tr><td>料盘仍在识别转动</td><td>等待识别结束，不要重复发送进料操作。</td></tr>
-<tr><td>固定 ACE 固件读不出 QIDI 或 Creality</td><td>使用手填材料；这些标签的解码尚未实现。</td></tr>
-<tr><td>U1 显示拓竹，切片软件不显示</td><td>单独检查切片软件的材料预设和显示限制。</td></tr>
-</tbody></table></div>
-<p>更多信息见<a href="START-HERE.html#troubleshooting">故障排查</a>和<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">实机验证范围</a>。</p></details><details id="daily"><summary>日常进退料与远程操作</summary><h2 id="日常进料退料与远程控制">日常进料、退料与远程控制</h2>
+<p>本项目不包含 NFC 密钥。不要公开配置备份、凭据或未脱敏的日志。</p>
+<p>更多信息见<a href="START-HERE.html#troubleshooting">故障排查</a>和<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/validation.md">验证范围</a>。</p></details><details id="daily"><summary>日常进退料与远程操作</summary><h2 id="日常进料退料与远程控制">日常进料、退料与远程控制</h2>
 <p><a href="START-HERE.en.html#daily">English</a> · <a href="START-HERE.html#parameters">管路校准</a> · <a href="START-HERE.html#nfc">NFC</a></p>
-<h3 id="插入耗材">插入耗材</h3>
-<ol start="1">
-<li>把耗材插进一个空的 ACE 入口。</li>
-<li>手离开滚筒。</li>
-<li>等待短咬料、预进料和 NFC 识别结束。</li>
-<li>在 U1 检查材料详情；无芯片或读不出的料卷请手动填写。</li>
-</ol>
-<p>结束后耗材停在 ACE 附近，不会因为插入就自动长送到挤出头。</p>
-<p>识别动作由 ACE 固件控制，本项目不承诺所有标签使用同一个固定短进料长度。</p>
-<h3 id="送到挤出头">送到挤出头</h3>
-<ol start="1">
-<li>在 U1 屏幕选择对应打印头。</li>
-<li>点正常“进料”。</li>
-<li>按屏幕提示等待完整动作结束，不重复点击。</li>
-</ol>
-<p>起点已知时，ACE 先快速送设定距离，再慢速寻找头端传感器。</p>
-<p>传感器到料后结束 ACE 的输送阶段，U1 继续完成热端上料流程。</p>
-<p>重启后或起点不确定时，可能全程使用较慢速度。</p>
-<h3 id="退料和消除松圈">退料和消除松圈</h3>
-<ol start="1">
-<li>在对应打印头执行正常“退料”。</li>
-<li>等待 U1 先从热端退出材料。</li>
-<li>等待 ACE 回抽设定距离。</li>
-<li>如果启用了回送消松，再等待这段动作完成。</li>
-<li>确认耗材仍留在 ACE 及后方管路内。</li>
-</ol>
-<p>只要入口仍有耗材，材料信息就保留。下次直接点进料，无需为了重新识别而拔插。</p>
+<h3 id="你做什么会发生什么">你做什么，会发生什么</h3>
+<div class="table"><table><thead><tr><th>你做什么</th><th>会发生什么</th></tr></thead><tbody>
+<tr><td>把耗材插进空的 ACE 入口，手离开滚筒</td><td>ACE 咬住耗材、读取 NFC 标签，然后停住等待，不会自动送到打印头。</td></tr>
+<tr><td>在 U1 上检查材料详情</td><td>没有标签或读不出的料卷，请手动填写。</td></tr>
+<tr><td>在 U1 上选择打印头，点正常的“进料”</td><td>ACE 先快速送料，再慢速送到打印头传感器检测到耗材为止，U1 完成热端上料。</td></tr>
+<tr><td>对该打印头点正常的“退料”</td><td>U1 把耗材从热端退出，ACE 回抽，耗材头留在 ACE 及其后方料管内。</td></tr>
+<tr><td>不拔出耗材，再次点进料</td><td>直接开始进料。只要 ACE 入口仍有耗材，材料信息就保留。</td></tr>
+</tbody></table></div>
+<ul>
+<li>每个动作完成后再发下一个指令。</li>
+<li>重启后或位置不确定时，可能全程使用较慢速度。</li>
+</ul>
 <aside class="alert important"><div class="alert-title">必须确认</div>
-<p><strong>新装默认关闭回送消松；必须校准后启用。</strong></p>
-<p>其原理是把耗材朝 U1 方向送回一段，吸收料盘附近的松圈；不是滚筒独立补转，也没有张力传感器。</p>
+<p><strong>新安装默认关闭回送消松，校准后才能启用。</strong></p>
+<p>它把耗材朝 U1 方向送回一段，消除松圈。它没有张力传感器，也不会单独驱动滚筒。</p>
 </aside>
-<p>实测示例是退料 <code>1250 mm / 80 mm/s</code>，再回送 <code>300 mm / 50 mm/s</code>。</p>
-<p>这不是适合所有料管的通用参数，调整方法见<a href="START-HERE.html#parameters">管路校准</a>。</p>
-<h3 id="在电脑上远程操作">在电脑上远程操作</h3>
-<p>最直观的方式是使用 U1 的可选远程屏幕。</p>
-<p>在 <strong>Firmware Config → Web → Remote Screen Access</strong> 开启后，打开这台打印机的 <code>/screen/</code> 页面。</p>
-<p>按与实体屏幕相同的方式点进料或退料。</p>
-<p>本项目安装器不会自动开启远程屏幕，设置依据见<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/remote_screen.md">固定 v24 远程屏幕说明</a>。</p>
-<p>也可以通过网页控制台调用完整的 U1 原生流程。</p>
-<p>例如第 1 槽，单独发送以下一个指令，并按打印机提示操作。</p>
+<p>实测示例是以 80 mm/s 回抽 1250 mm，再以 50 mm/s 回送 300 mm。</p>
+<p>这不是通用距离，见<a href="START-HERE.html#parameters">管路校准</a>。</p>
+<h3 id="远程操作">远程操作</h3>
+<p><strong>远程屏幕。</strong> 开启 <strong>Firmware Config → Web → Remote Screen Access</strong>，再打开这台打印机的 <code>/screen/</code> 页面，像在实体屏幕上一样点进料或退料。</p>
+<p>安装器不会自动开启它。见 <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/remote_screen.md">v24 远程屏幕说明</a>。</p>
+<p><strong>网页控制台。</strong> 以第 1 槽为例，只发送下面<strong>一个</strong>指令，并按打印机提示操作。第 2、3、4 槽分别用 <code>EXTRUDER=1</code>、<code>2</code>、<code>3</code>。</p>
 <p>进料：</p>
 <pre><code>
 AUTO_FEEDING EXTRUDER=0 LOAD=1
@@ -1096,27 +680,27 @@ AUTO_FEEDING EXTRUDER=0 LOAD=1
 <pre><code>
 AUTO_FEEDING EXTRUDER=0 UNLOAD=1
 </code></pre>
-<div class="table"><table><thead><tr><th>ACE 槽号</th><th><code>EXTRUDER</code> 填写</th></tr></thead><tbody>
-<tr><td>1</td><td>0</td></tr>
-<tr><td>2</td><td>1</td></tr>
-<tr><td>3</td><td>2</td></tr>
-<tr><td>4</td><td>3</td></tr>
-</tbody></table></div>
-<p>不要把两个指令一起发送。不要用底层 <code>ACE_FEED</code> 或 <code>ACE_RETRACT</code> 代替完整热端进退料流程。</p>
-<p>可选 <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/afc-lite.md">AFC 耗材面板</a>需要另开 AFC Stub，本项目不保证任何默认网页都有它。</p></details><details id="recovery"><summary>中断、失败与恢复</summary><h2 id="更新断线查询与回退">更新、断线查询与回退</h2>
+<ul>
+<li>不要同时发送进料和退料指令。</li>
+<li>不要用 <code>ACE_FEED</code> 或 <code>ACE_RETRACT</code> 代替。它们只移动耗材，不执行热端流程。</li>
+<li>可选的 <a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/v2.0.0-paxx12-24/docs/afc-lite.md">AFC 面板</a>需要另外开启 AFC Stub 设置，本项目安装后默认不提供。</li>
+</ul></details><details id="recovery"><summary>中断、失败与恢复</summary><h2 id="更新断线查询与回退">更新、断线查询与回退</h2>
 <p><a href="START-HERE.en.html#recovery">English</a> · <a href="MANUAL-INSTALL.zh-CN.html">手动安装</a> · <a href="START-HERE.html#troubleshooting">故障排查</a></p>
-<p><strong>先区分 ACE 固件更新和 U1 主机适配安装。</strong> 两者不是同一事务；主机备份不能回退 ACE 或 U1 固件。</p>
-<p>出现未知结果时，保持设备空闲，不开始打印，不重发安装或刷写。</p>
-<p>本页命令在 <strong>Windows PowerShell</strong> 运行，不需要 AI，也不需要以前的窗口仍然打开。</p>
+<p>本页命令在 <strong>Windows PowerShell</strong> 里运行，不需要以前的窗口还开着。</p>
+<ul>
+<li><strong>ACE 固件维护和 U1 主机适配安装是两个独立的事务。</strong></li>
+<li>主机备份不能回退 ACE 或 U1 固件。</li>
+<li>结果未知时：保持设备空闲，不打印，不重发安装或刷写命令。</li>
+</ul>
 <a id="read-installation-status"></a>
-<h3 id="1-新开窗口重新建立查询连接">1. 新开窗口，重新建立查询连接</h3>
+<h3 id="1-新开窗口并连接">1. 新开窗口并连接</h3>
 <ol start="1">
-<li>点击 Windows“开始”，搜索并打开 <strong>Windows PowerShell</strong>。</li>
-<li>准备 U1 屏幕当前 IP，以及操作时记录的 <strong>RemoteDir</strong>。安装目录名称包含 <code>stage</code>，手动参数调整目录名称包含 <code>tuning</code>。向导失败时会显示该目录，电脑私人日志中也有 <code>Remote stage</code>。</li>
-<li>粘贴下面整块；先输入 IP 和 SSH 密码，再粘贴记录中的完整目录。</li>
-<li>初次 SSH 连接的身份核对和隐藏密码输入，见<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">连接说明</a>。</li>
+<li>点击“开始”，搜索并打开 <strong>Windows PowerShell</strong>。</li>
+<li>准备 U1 屏幕当前的 IP 和记录的 <strong>RemoteDir</strong>。安装目录名含 <code>stage</code>，手动调参目录名含 <code>tuning</code>。向导失败时会显示该目录，电脑私人日志里也记有 <code>Remote stage</code>。</li>
+<li>粘贴下面整块。先输入 IP 和 SSH 密码，再粘贴记录的完整目录。</li>
+<li>首次连接的身份核对和隐藏密码输入，见<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">确认连接</a>。</li>
 </ol>
-<p><strong>不要猜目录。</strong> 若找不到记录，先保留错误窗口、屏幕信息及现有文件；不要选择一个看似最新的目录执行写入。</p>
+<p><strong>不要猜目录。</strong> 找不到记录时，保留错误窗口、屏幕信息和文件。不要用一个只是看起来最新的目录执行写入。</p>
 <pre><code>
 $ErrorActionPreference = &#x27;Stop&#x27;
 Get-Command ssh.exe, scp.exe -CommandType Application | Out-Host
@@ -1135,39 +719,47 @@ if ($RemoteDir -notmatch &#x27;^/userdata/ultimate-u1-ace-(?:stage|tuning)-[0-9]
 ssh.exe $PrinterTarget &quot;ls &#x27;$RemoteDir/installer.py&#x27; &#x27;$RemoteDir/manifest.json&#x27; &#x27;$RemoteDir/tools/ace_usb/wizard_backend.py&#x27;&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Recorded package files are unavailable&#x27; }
 </code></pre>
-<p><strong>完成标准：</strong> <code>uid=0(root)</code> 和三个文件路径均正常显示。</p>
-<p>如果目录或文件不存在，不从其它版本拼文件；从同一版本重新上传的处理需要先确认上次事务，不能直接开始新安装。</p>
-<h4 id="先读-ace-事务再读主机状态">先读 ACE 事务，再读主机状态</h4>
-<p>此查询不会访问串口、恢复服务或启动刷写：</p>
+<p><strong>期望：</strong> 显示 <code>uid=0(root)</code> 和三个文件路径。</p>
+<p>目录或文件不存在时，不要从其它版本拼文件。先确认原事务的结果，再上传替换包或开始任何写入。</p>
+<h4 id="先读-ace-状态再读主机状态">先读 ACE 状态，再读主机状态</h4>
+<p>这条查询不会打开串口、恢复服务或启动刷写：</p>
 <pre><code>
 ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 tools/ace_usb/wizard_backend.py result --wait-seconds 30&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: ACE result query failed&#x27; }
 </code></pre>
-<p>如果 ACE 显示 <code>PREPARING</code>、<code>STARTING</code>、<code>RUNNING</code> 或 <code>RECOVERING</code>，保持供电，再执行同一条 <code>result</code> 查询即可。</p>
-<p>如果为 <code>NEEDS_ATTENTION</code>、<code>ERROR</code> 或无法查询，转到<a href="#ace-interruption">ACE 中断处理</a>，不要读不到 Klipper 就去重启或回退。</p>
-<p>安全终态也必须核对 <code>ready: true</code> 和 <code>service_restored: true</code>；<code>NONE</code> 表示没有 ACE 事务。</p>
-<p>仅在没有未决 ACE 事务时，运行主机只读状态命令：</p>
+<div class="table"><table><thead><tr><th>ACE 结果</th><th>怎么做</th></tr></thead><tbody>
+<tr><td><code>PREPARING</code>、<code>STARTING</code>、<code>RUNNING</code>、<code>RECOVERING</code></td><td>保持供电，稍后重复同一条 <code>result</code> 查询。</td></tr>
+<tr><td><code>NEEDS_ATTENTION</code>、<code>ERROR</code> 或查询失败</td><td>转到 <a href="#ace-interruption">ACE 中断处理</a>。不要因为读不到 Klipper 就重启或回退。</td></tr>
+<tr><td><code>NONE</code></td><td>没有 ACE 事务。</td></tr>
+</tbody></table></div>
+<p>安全终态还必须有 <code>ready: true</code> 和 <code>service_restored: true</code>。</p>
+<p>只有在没有未决 ACE 事务时，才读取主机状态：</p>
 <pre><code>
 ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py status&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Host status is unavailable; do not start a write&#x27; }
 </code></pre>
-<p>期望 <code>klipper_state: ready</code>。已安装时 <code>managed: true</code>；<code>ace_version</code> 是本项目模块版本，不是 ACE 固件版本。</p>
-<p><code>status</code> 读取当前状态，<strong>不能证明之前失联的安装进程已经结束</strong>，也不能单独证明那次安装成功。</p>
-<p>如果原进程可能仍在运行，继续等待并保留记录，不进行回退或再次安装。</p>
+<ul>
+<li>期望 <code>klipper_state: ready</code>。安装后 <code>managed</code> 为 <code>true</code>。</li>
+<li><code>ace_version</code> 是本项目的模块版本，不是 ACE 固件版本。</li>
+<li><code>status</code> 读取的是当前状态。<strong>它不能证明失联的安装程序已经结束，也不能证明那次安装成功。</strong></li>
+<li>原进程可能还在运行时，继续等待并保留记录。不要回退，也不要再次安装。</li>
+</ul>
 <a id="ace-interruption"></a>
 <h3 id="2-ace-固件操作中断">2. ACE 固件操作中断</h3>
-<p><strong>最简单的路径：</strong> 解压同一版本安装包，双击 <code>START-HERE.cmd</code>，选择 <strong>菜单 4：ACE 固件</strong>，查看保存的事务结果。</p>
-<p>此入口先查询原事务，不自动重刷。只有尚未开始写入的中断，才可能提供“检查并恢复服务”。</p>
+<p><strong>最简单的路径：</strong> 解压同一版本的安装包，运行 <code>START-HERE.cmd</code>，选择 <strong>菜单 4：ACE 固件</strong>。</p>
+<p>它先读取保存的事务，不会自动重刷。</p>
+<p>只有在任何写入之前就失败的情况，它才可能提供“检查并恢复服务”。</p>
 <div class="table"><table><thead><tr><th>结果</th><th>怎么做</th></tr></thead><tbody>
-<tr><td>正在运行</td><td>保持 ACE、U1 和 USB 供电连接；继续查询。</td></tr>
-<tr><td><code>SUCCEEDED</code> 且服务恢复</td><td>核对材料变化。ACE 阶段完成，主机安装结果另行核对。</td></tr>
-<tr><td><code>FAILED_SAFE</code></td><td>按诊断修正网络、空闲或冷却条件，再在同一版本向导中重新准备。</td></tr>
-<tr><td><code>NEEDS_ATTENTION</code> 且 <code>flash_attempted: false</code></td><td>菜单 4 可提供仅检查和恢复；确认一次，再等待结果。</td></tr>
-<tr><td><code>NEEDS_ATTENTION</code> 且 <code>flash_attempted: true</code></td><td><strong>不重刷、不自动刷原厂包、不强行启动 Klipper。</strong> 保留记录，停止正常使用。</td></tr>
-<tr><td>检测版本不支持或记录损坏</td><td>停止，不能靠编辑 JSON、删除事务或换固件编号绕过。</td></tr>
+<tr><td>正在运行</td><td>保持 ACE、U1 和 USB 的供电与连接，继续查询。</td></tr>
+<tr><td><code>SUCCEEDED</code> 且服务已恢复</td><td>核对材料变化。ACE 维护已完成，主机安装另行核对。</td></tr>
+<tr><td><code>FAILED_SAFE</code></td><td>解决网络、空闲或冷却条件，再用同一版本安装包重新准备。</td></tr>
+<tr><td><code>NEEDS_ATTENTION</code> 且 <code>flash_attempted: false</code></td><td>菜单 4 可提供仅检查的恢复。确认一次，然后等待。</td></tr>
+<tr><td><code>NEEDS_ATTENTION</code> 且 <code>flash_attempted: true</code></td><td><strong>不要重刷，不要自动刷回原厂包，不要强行启动 Klipper。</strong> 保留记录，停止正常使用。</td></tr>
+<tr><td>版本不支持或记录损坏</td><td>停止。不要编辑 JSON、删除事务或改动上报的版本。</td></tr>
 </tbody></table></div>
-<p>不想运行 Windows 向导时，也可以继续使用第 1 节的 <code>result</code> 查询。需要尝试仅刷写前恢复时，先确认记录确为 <code>NEEDS_ATTENTION</code>、<code>flash_attempted: false</code>，且后台任务已经停止。</p>
-<p>下面只恢复未开始写入的维护状态，不进行固件更新：</p>
+<p>不用向导时，继续使用第 1 节的只读 <code>result</code> 查询。</p>
+<p>仅检查的恢复要求 <code>NEEDS_ATTENTION</code>、<code>flash_attempted: false</code>，并且后台任务已停止。先确认这三项。</p>
+<p>下面的命令只恢复尚未开始写入的维护状态，不更新固件：</p>
 <pre><code>
 $Raw = &amp; ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 tools/ace_usb/wizard_backend.py result&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: ACE query failed&#x27; }
@@ -1180,32 +772,35 @@ if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Do not repeat recovery; query its r
 ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 tools/ace_usb/wizard_backend.py result --operation $OperationId --wait-seconds 30&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Read the saved result later; do not repeat recovery&#x27; }
 </code></pre>
-<p><strong>期望：</strong> 最终为 <code>CANCELLED_SAFE</code>，<code>ready: true</code>，<code>service_restored: true</code>。</p>
-<p>如果仍在 <code>RECOVERING</code>，只重复第 1 节的 <code>result</code> 查询，不重复 <code>recover</code>。</p>
-<p>若 <code>flash_attempted</code> 为 <code>true</code>，此命令会拒绝；不要改记录。</p>
-<p>超出这个范围的故障可能需要人工维护，不能承诺靠普通安装步骤恢复。高级资料见<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md#uncertain-results-and-recovery">ACE 技术维护说明</a>。</p>
+<p><strong>期望的最终结果：</strong> <code>CANCELLED_SAFE</code>、<code>ready: true</code>、<code>service_restored: true</code>。</p>
+<ul>
+<li><code>RECOVERING</code>：只重复第 1 节的 <code>result</code> 查询，不要重复 <code>recover</code>。</li>
+<li>已经尝试过刷写时，后台会拒绝恢复。不要改它的记录。</li>
+<li>其它故障可能需要人工维护，普通安装步骤不能保证恢复。见 <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/ace-firmware.md#uncertain-results-and-recovery">ACE 技术维护说明</a>。</li>
+</ul>
 <a id="after-an-interrupted-installation"></a>
 <h3 id="3-主机安装中断">3. 主机安装中断</h3>
-<p>查看原窗口或私人日志中的最后结果：</p>
-<div class="table"><table><thead><tr><th>看到什么</th><th>含义及操作</th></tr></thead><tbody>
-<tr><td><code>installed: true</code>、<code>ready_samples: 3</code></td><td>安装程序报告成功；再核对状态及实际功能。</td></tr>
-<tr><td><code>Automatic rollback VERIFIED</code></td><td>安装失败，但原文件和状态已恢复验证。先解决导致失败的问题。</td></tr>
-<tr><td><code>automatic rollback FAILED</code></td><td>自动恢复未完成。保持空闲，保留 <code>Backup ID</code> 和错误信息。</td></tr>
-<tr><td>只有 SSH 断线，没有完整结果</td><td>成功与失败均未知。不要直接重发命令；先查询并核对原进程结果。</td></tr>
+<p>查看原窗口或私人日志里的最后结果：</p>
+<div class="table"><table><thead><tr><th>结果</th><th>含义和操作</th></tr></thead><tbody>
+<tr><td><code>installed: true</code>、<code>ready_samples: 3</code></td><td>安装程序报告成功。再核对当前状态和实际功能。</td></tr>
+<tr><td><code>Automatic rollback VERIFIED</code></td><td>安装失败，但恢复已验证。先解决导致失败的问题，再重试。</td></tr>
+<tr><td><code>automatic rollback FAILED</code></td><td>恢复未完成。保持空闲，保存 <code>Backup ID</code> 和错误信息。</td></tr>
+<tr><td>只有 SSH 断线，没有最终结果</td><td>成功与否未知。不要重发命令。先读取状态，确认原进程的结果。</td></tr>
 </tbody></table></div>
-<p>不要把 ACE 的 <code>SUCCEEDED</code> 当成主机安装成功。原安装没有结束时不要运行回退。</p>
+<p>ACE 的 <code>SUCCEEDED</code> 不等于主机安装成功。原安装还在运行时不要回退。</p>
 <h3 id="4-更新本项目">4. 更新本项目</h3>
 <ol start="1">
-<li>先完成打印及耗材动作，关闭烘干和所有加热，等待实际温度低于 50 °C。</li>
-<li>若送料辅助仍在工作，对相应槽正常退料，动作结束后重新冷却。不要求已有安装的所有槽都退空。</li>
-<li>保留私人配置及备份，下载完整新包并解压到新文件夹。</li>
-<li>向导用户运行新包的菜单 1；它默认保留现有参数。</li>
-<li>手动用户从<a href="MANUAL-INSTALL.zh-CN.html">手动安装</a>第 2 步开始新窗口、新目录，按顺序检查、安装一次。</li>
-<li>不把旧 JSON 整份复制到新模板，也不把 <code>apply_existing_settings</code> 改为 <code>true</code> 来“确保更新”。普通更新保留旧参数；有意调整参数见<a href="START-HERE.html#parameters">参数说明</a>。</li>
+<li>完成打印和耗材操作。关闭烘干，把所有加热目标设为零，冷却到 50 °C 以下。</li>
+<li>送料辅助仍在工作时，对该槽正常退料，等动作结束后再次冷却。不需要退空所有槽。</li>
+<li>保存私人配置和备份。下载完整的新安装包，解压到新文件夹。</li>
+<li>向导用户：运行新包的菜单 1。它默认保留现有参数。</li>
+<li>手动用户：从<a href="MANUAL-INSTALL.zh-CN.html">手动安装</a>第 2 步开始，用新窗口和新目录。先检查计划，再安装一次。</li>
+<li>不要把旧 JSON 整份复制到新模板。不要仅为了更新就把 <code>apply_existing_settings</code> 改为 <code>true</code>。有意调整参数见<a href="START-HERE.html#parameters">参数说明</a>。</li>
 </ol>
-<p>未知核心文件改动会被拒绝，不会自动合并。不要覆盖自己的改动绕过检查。</p>
+<p>核心文件上的未知改动会被拒绝，不会自动合并。保留这些改动，不要为了绕过检查而覆盖它们。</p>
 <h3 id="5-保存私人备份">5. 保存私人备份</h3>
-<p>安装器备份在 <code>/userdata/ultimate-u1-ace-link/backups/</code>。第 1 节连接成功后，可将其复制到电脑“文档”内的唯一新文件夹：</p>
+<p>安装器的备份在 <code>/userdata/ultimate-u1-ace-link/backups/</code>。</p>
+<p>第 1 节连接成功后，把它复制到电脑“文档”里一个唯一的新文件夹：</p>
 <pre><code>
 $BackupDir = Join-Path ([Environment]::GetFolderPath(&#x27;MyDocuments&#x27;)) (&#x27;Ultimate-U1-ACE-private-&#x27; + (Get-Date -Format &#x27;yyyyMMdd-HHmmss&#x27;) + &#x27;-&#x27; + [guid]::NewGuid().ToString(&#x27;N&#x27;).Substring(0,8))
 New-Item -ItemType Directory -Path $BackupDir | Out-Null
@@ -1213,240 +808,200 @@ scp.exe -O -r &quot;${PrinterTarget}:/userdata/ultimate-u1-ace-link/backups&quot
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Backup copy failed&#x27; }
 Write-Host $BackupDir
 </code></pre>
-<p>保存该路径。备份可能包含私人配置，不要上传公开仓库。</p>
+<p>保存显示的路径。备份可能包含私人配置，不要公开发布。</p>
 <p>这是主机文件备份，不是 ACE 固件、U1 固件或整台设备的完整镜像。</p>
 <h3 id="6-回退最近一次主机安装">6. 回退最近一次主机安装</h3>
-<p>仅当原安装已结束、没有未决 ACE 固件事务、设备空闲且冷却时执行。</p>
-<p>先按第 1 节初始化并查询。正常回退要求 ACE 就绪、无烘干或送料辅助；不要跳过这些条件。</p>
-<p>确认要恢复最近备份后，运行一次：</p>
+<p>只有原安装程序已结束、没有未决 ACE 事务、机器空闲且已冷却时才使用。</p>
+<p>正常回退还要求 ACE 就绪、烘干关闭、送料辅助关闭。不要跳过这些条件。</p>
+<p>先按第 1 节连接并查询。确认最近的备份就是要恢复的目标，然后运行一次：</p>
 <pre><code>
 ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py rollback&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Rollback failed; preserve the error&#x27; }
 </code></pre>
-<p>期望输出 <code>rolled_back: true</code> 和备份编号，随后按第 1 节再次查询状态。</p>
-<p>回退到尚未安装本项目的状态时，<code>managed: false</code>、<code>ace_version: null</code> 可以正常。</p>
-<p>已安装后又被手工修改的文件会导致拒绝，防止覆盖后续改动。不要盲目删除这些文件。</p>
+<ul>
+<li>期望 <code>rolled_back: true</code> 和备份编号。然后按第 1 节再次查询状态。</li>
+<li>回退到安装本项目之前的状态后，<code>managed: false</code> 和 <code>ace_version: null</code> 可以是正常的。</li>
+<li>安装后被手工改过的文件会导致拒绝，这是为了保护后来的改动。不要盲目删除这些文件。</li>
+</ul>
 <h3 id="7-klipper-无法就绪时的主机恢复">7. Klipper 无法就绪时的主机恢复</h3>
-<p><strong>这不是 ACE 固件恢复，也不能用于绕过正在打印或未决 ACE 事务。</strong></p>
-<p>只有确认原主机安装已结束、所有运动停止、烘干和加热关闭、实际温度已低于 50 °C，才考虑此路径。</p>
-<p>如果屏幕或独立观察无法确认冷却和无运动，先停止，不能把“网络读不到状态”当成“设备空闲”。</p>
-<p>第 1 节仍可连接 SSH，但正常 <code>status</code> 无法就绪时，命令可以跳过初始在线就绪检查；固件、备份、文件哈希、未决 ACE 事务及恢复后就绪检查仍保留：</p>
+<p><strong>这不能恢复 ACE 固件，也不能绕过正在进行的打印或未决的 ACE 事务。</strong></p>
+<p>只有原安装程序已结束、运动已停止、烘干和加热已关闭、实际温度低于 50 °C 时才使用。</p>
+<p>屏幕或独立观察无法确认已冷却、无运动时，停止。网络读不到状态，不能当作设备空闲的证据。</p>
+<p>第 1 节能连上 SSH，但正常的 <code>status</code> 无法就绪时，下面的命令会跳过最初的在线就绪检查。</p>
+<p>固件、备份、文件哈希、ACE 事务和恢复后就绪检查仍然保留：</p>
 <pre><code>
 ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py rollback --offline-recovery --confirm-idle-and-cold&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Recovery failed; preserve the error&#x27; }
 </code></pre>
-<p>若提示 <code>No managed installation; offline recovery requires an explicit backup ID</code>，仅使用本次失败窗口或日志的准确 <code>Backup ID</code>：</p>
+<p>提示 <code>No managed installation; offline recovery requires an explicit backup ID</code> 时，只使用本次失败操作的窗口或日志里的准确 <code>Backup ID</code>：</p>
 <pre><code>
 $BackupId = (Read-Host &#x27;输入本次失败时显示的备份编号&#x27;).Trim()
 if ($BackupId -notmatch &#x27;^[0-9]{8}T[0-9]{12}Z$&#x27;) { throw &#x27;STOP: Invalid backup identifier&#x27; }
 ssh.exe $PrinterTarget &quot;cd &#x27;$RemoteDir&#x27; &amp;&amp; python3 installer.py rollback --backup &#x27;$BackupId&#x27; --offline-recovery --confirm-idle-and-cold&quot;
 if ($LASTEXITCODE -ne 0) { throw &#x27;STOP: Recovery failed; do not try another backup at random&#x27; }
 </code></pre>
-<p>期望 <code>rolled_back: true</code>。恢复仍失败时，停止后续操作并保留错误信息；不要切换不同备份编号反复尝试。</p>
-<p>本页不保证所有固件、文件损坏或硬件故障都可自动恢复，也不需要用 AI 猜测下一条命令。</p>
+<p>期望 <code>rolled_back: true</code>。恢复仍然失败时，停止并保留错误信息。不要随意换其它备份编号尝试。</p>
+<p>本页不能保证所有固件、文件或硬件故障都能自动恢复。</p>
 <h3 id="u1-固件升级是另一项工作">U1 固件升级是另一项工作</h3>
-<p>升级 U1 前保存私人配置及备份，并确认目标版本在本项目兼容表内。</p>
-<p>按<a href="START-HERE.html#firmware">U1 固件说明</a>操作，重启后重新核对 Wi-Fi、Advanced Mode、Root Access。</p>
-<p>只有本项目检查接受目标固件后才重新安装。恢复主机文件不能回退 U1 或 ACE 固件。</p></details><details id="troubleshooting"><summary>常见问题与排查</summary><h2 id="故障排查">故障排查</h2>
+<p>先保存私人配置和备份，并确认本项目支持目标固件。</p>
+<p>按 <a href="START-HERE.html#firmware">U1 固件准备</a>操作。重启后重新核对 Wi-Fi、Advanced Mode 和 Root Access。</p>
+<p>只有本项目的检查接受目标固件后才重新安装。恢复主机文件不能回退 U1 或 ACE 固件。</p></details><details id="troubleshooting"><summary>常见问题与排查</summary><h2 id="故障排查">故障排查</h2>
 <p><a href="START-HERE.en.html#troubleshooting">English</a> · <a href="START-HERE.html#start">安装向导</a> · <a href="START-HERE.html#daily">日常使用</a></p>
-<p>不知道耗材现在停在哪里时，不要连续重复点击进料或退料。</p>
-<p>先保持机器空闲，保存完整报错，再按下面对应的情况处理。</p>
+<p>不确定耗材停在哪里时，不要重复点进料或退料。</p>
+<p>保持机器空闲，保存完整报错。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
-<p><strong>先区分哪一步出了问题，再选择对应的恢复方法。</strong></p>
-<p><strong>电脑断线不代表需要重新刷一次固件。</strong></p>
+<p><strong>哪一步出了问题，就用哪一步的恢复方法。</strong></p>
+<p><strong>不要因为电脑断线就重新刷一次固件。</strong></p>
 </aside>
 <div class="table"><table><thead><tr><th>问题发生在哪一步</th><th>先做什么</th></tr></thead><tbody>
-<tr><td>U1 屏幕上的固件更新</td><td>保存屏幕报错，按 <a href="START-HERE.html#firmware">U1 更新故障指引</a>处理。</td></tr>
-<tr><td>ACE 固件更新，或不知道更新结果</td><td>保持电源和 USB。用同一版本安装包打开向导，选菜单 <strong>4</strong> 查看已有结果。见 <a href="START-HERE.html#停止或断线后怎么办">ACE 恢复说明</a>。</td></tr>
-<tr><td>U1 主机适配安装</td><td>查看安装成功或恢复结果；重新安装前先按<a href="START-HERE.html#after-an-interrupted-installation">主机恢复说明</a>核对。</td></tr>
-<tr><td>已安装成功，日常送料、退料或 NFC 不正常</td><td>按下面检查，不要先重新刷固件。</td></tr>
+<tr><td>U1 屏幕上的固件更新</td><td>保存屏幕报错，按 <a href="START-HERE.html#firmware">U1 固件恢复说明</a>处理。</td></tr>
+<tr><td>ACE 固件更新，或不知道更新结果</td><td>保持电源和 USB 连接。打开同一版本的安装包，选菜单 <strong>4</strong>，查看保存的结果。见 <a href="START-HERE.html#ace-firmware">ACE 恢复说明</a>。</td></tr>
+<tr><td>U1 主机适配安装</td><td>查看安装成功或恢复的结果。重新安装前先看<a href="START-HERE.html#after-an-interrupted-installation">主机恢复说明</a>。</td></tr>
+<tr><td>安装后日常进料、退料或 NFC 不正常</td><td>按下面检查，不要先去重新刷固件。</td></tr>
 </tbody></table></div>
-<p><code>Automatic rollback VERIFIED</code> 表示主机文件与服务回退已验证，不表示 ACE 或 U1 固件已经回退。</p>
+<p><code>Automatic rollback VERIFIED</code> 只涉及主机文件和服务，不表示 ACE 或 U1 固件已回退。</p>
 <h3 id="连接和安装">连接和安装</h3>
-<div class="table"><table><thead><tr><th>看到什么</th><th>先检查什么</th><th>下一步</th></tr></thead><tbody>
-<tr><td>SSH 拒绝连接</td><td>Root Access、U1 当前 IP、电脑网络</td><td>按<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">首次连接说明</a>核对；电脑与 U1 应在同一局域网。</td></tr>
-<tr><td>输入密码没有字母或星号</td><td>SSH 本来就不显示密码字符。</td><td>正常输入 root SSH 密码，再按回车；这不是 Wi-Fi 密码。</td></tr>
-<tr><td>找不到 <code>ssh</code> 或 <code>scp</code></td><td>Windows 缺少 OpenSSH 客户端。</td><td>按<a href="START-HERE.html#windows-提示缺少-openssh-客户端">Windows 组件步骤</a>安装。</td></tr>
-<tr><td>更新 U1 后找不到机器</td><td>屏幕 Wi-Fi 是否连接、IP 是否变化</td><td>重新连接 Wi-Fi，再使用现在的 IP。</td></tr>
-<tr><td>打不开 <code>/firmware-config/</code></td><td>Advanced Mode 和当前 IP</td><td>在 U1 开启 Advanced Mode，并按要求重启。</td></tr>
-<tr><td>找不到 ACE，或出现多个串口候选</td><td>ACE 电源、第一代硬件、专用连接线</td><td>只接一台 ACE。断电检查接线后再做只读检查，不要猜测或随意修改串口路径。</td></tr>
-<tr><td>安装器拒绝某个核心文件</td><td>文件可能被手动改过，或版本不支持。</td><td>保留文件和报错，核对迁移方案，不要删除或覆盖来绕过检查。</td></tr>
-<tr><td>安装器拒绝固件版本</td><td>是否为指定兼容基线</td><td>保留现有固件，对照 <a href="START-HERE.html#firmware">U1 准备说明</a>，不要强行通过检查。</td></tr>
-<tr><td>安装器拒绝现有配置</td><td>是否存在重复或异常 ACE 配置段</td><td>保存显示的配置路径，核对后再决定修改；不要直接删除其他配置。</td></tr>
-<tr><td>重启后改动消失</td><td>是否更新过固件、持久化是否保留</td><td>先读取<a href="START-HERE.html#read-installation-status">安装状态</a>，不要直接重复安装。</td></tr>
-<tr><td>Klipper 显示未连接</td><td><code>klippy.log</code> 中的启动错误</td><td>先恢复后台就绪，再测试进退料。</td></tr>
+<div class="table"><table><thead><tr><th>看到什么</th><th>检查什么</th><th>下一步</th></tr></thead><tbody>
+<tr><td>SSH 拒绝连接</td><td>Root Access、U1 当前 IP、电脑网络</td><td>按<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">连接步骤</a>核对。电脑和 U1 要在同一局域网。</td></tr>
+<tr><td>输入密码时没有字母或星号</td><td>SSH 本来如此</td><td>输入 root SSH 密码后按回车。这不是 Wi-Fi 密码。</td></tr>
+<tr><td>Windows 找不到 <code>ssh</code> 或 <code>scp</code></td><td>缺少 OpenSSH 客户端</td><td>按<a href="START-HERE.html#start">快速开始</a>里的 Windows 组件步骤安装。</td></tr>
+<tr><td>更新 U1 固件后找不到机器</td><td>屏幕上 Wi-Fi 是否连接、IP 是否变了</td><td>重新连接 Wi-Fi，使用现在的 IP。</td></tr>
+<tr><td>打不开 <code>/firmware-config/</code></td><td>Advanced Mode、当前 IP</td><td>在 U1 上开启 Advanced Mode，并按要求重启。</td></tr>
+<tr><td>找不到 ACE，或出现多个串口候选</td><td>ACE 电源、第一代硬件、经过确认的连接线</td><td>只接一台 ACE。断电检查硬件后，再做只读检查。不要猜测或修改串口路径。</td></tr>
+<tr><td>安装器拒绝某个核心文件</td><td>文件被手动改过，或软件版本不支持</td><td>保留文件和报错，用于兼容迁移。不要删除或覆盖文件来绕过检查。</td></tr>
+<tr><td>安装器拒绝固件版本</td><td>是否为指定的兼容基线</td><td>保留现有固件，对照 <a href="START-HERE.html#firmware">U1 固件准备</a>核对显示的版本。不要强行通过检查。</td></tr>
+<tr><td>安装器拒绝现有配置</td><td>重复或异常的 ACE 配置段</td><td>保存并核对显示的配置路径，再决定修改。不要删除其他配置。</td></tr>
+<tr><td>重启后改动消失</td><td>持久化、最近的固件更新</td><td>重新安装前先读取<a href="START-HERE.html#read-installation-status">安装状态</a>。</td></tr>
+<tr><td>Klipper 显示未连接</td><td><code>klippy.log</code> 里的启动错误</td><td>先解决这个错误，再测试进退料。</td></tr>
 </tbody></table></div>
-<p>摄像头可能在 Klipper 未连接时仍可观看，因此“有画面”不代表耗材控制已经就绪。</p>
-<h3 id="送料和退料">送料和退料</h3>
+<p>Klipper 未连接时摄像头可能仍然能用。有画面不代表耗材控制已就绪。</p>
+<h3 id="进料和退料">进料和退料</h3>
 <div class="table"><table><thead><tr><th>看到什么</th><th>含义或检查方向</th><th>下一步</th></tr></thead><tbody>
-<tr><td>插入耗材后只短咬料就停住</td><td>这是预期行为。</td><td>需要长送料时，在 U1 对该槽点进料。</td></tr>
-<tr><td>NFC 识别期间进料等待</td><td>识别有单独的就绪等待过程。</td><td>等识别结束，不要反复点进料。</td></tr>
-<tr><td>第二槽等待</td><td>同一时间由一路操作占用 ACE 输送。</td><td>等正在执行的操作结束。</td></tr>
-<tr><td>重启后第一次进料较慢</td><td>软件不能确认线材起点，使用慢速寻料。</td><td>观察正常进料；出现卡料或错误时停止，不要强行开启快段。</td></tr>
-<tr><td>回送消松后，下次快段变短</td><td>软件会从快送距离 B 中扣除已回送的距离。</td><td>按自己的 B、C 核对。1150 − 300 = 850 mm 只是示例。</td></tr>
-<tr><td>进料出现行程或超时错误</td><td>头端传感器没有确认到料。</td><td>检查管路与头端传感器，再决定下一步；不要重复长送。</td></tr>
-<tr><td>退料后仍有松圈</td><td>新装默认关闭回送消松；已有回送距离也可能不足。</td><td>先确认正常进退料，再按<a href="START-HERE.html#enable-forward-take-up">回送消松校准</a>设置。</td></tr>
-<tr><td>退料报错后没有回送消松</td><td>没有确认正常回抽完成。</td><td>先处理退料错误。</td></tr>
-<tr><td>退料后耗材仍在 ACE 后方管内</td><td>这是为下次进料保留耗材的设计。</td><td>核对 ACE 入口仍有料、打印头已无料。</td></tr>
-<tr><td>收到停止响应后仍短暂动作</td><td>ACE 某些换挡状态不能立即停住。</td><td>普通进退料测试中动作变得不安全时，关闭 ACE 自身电源。</td></tr>
+<tr><td>插入耗材后只咬一小段就停</td><td>预期行为</td><td>需要完整进料时，在 U1 上对该槽点进料。</td></tr>
+<tr><td>NFC 识别期间进料在等待</td><td>识别有单独的就绪等待。</td><td>等待，不要反复点进料。</td></tr>
+<tr><td>第二个槽在等待</td><td>同一时间只有一个操作占用 ACE 输送。</td><td>等正在执行的操作结束。</td></tr>
+<tr><td>重启后进料较慢</td><td>起点未知，所以使用由传感器控制的慢速进料。</td><td>让它完成。卡料或报错时停止，不要强行开启快段。</td></tr>
+<tr><td>回送消松后，下次快段变短</td><td>软件会从快送距离 B 中扣除已回送的距离。</td><td>按自己的 B、C 值核对。仅为示例：1150 减 300 得 850 mm。</td></tr>
+<tr><td>进料出现行程或超时错误</td><td>打印头传感器没有确认到料。</td><td>先检查管路和打印头传感器。不要重复长送。</td></tr>
+<tr><td>退料后仍有松圈</td><td>新安装默认关闭回送消松；已有的回送距离也可能不够。</td><td>先确认正常进料和退料，再按<a href="START-HERE.html#enable-forward-take-up">回送消松校准</a>设置。</td></tr>
+<tr><td>退料报错后没有回送消松</td><td>没有确认回抽正常完成。</td><td>先处理退料错误。</td></tr>
+<tr><td>退料后耗材仍在后方 PTFE 管里</td><td>这是设计：保留耗材供下次进料。</td><td>核对 ACE 入口有料、打印头无料。</td></tr>
+<tr><td>收到停止响应后仍短暂动作</td><td>ACE 某些换挡状态不能立即停住。</td><td>普通进退料操作中动作变得不安全时，关闭 ACE 的电源开关。</td></tr>
 </tbody></table></div>
-<p>本项目没有独立的滚筒调速参数。回送消松是把线材送入后方 PTFE 管，消耗外面的松圈。</p>
-<p>它不检测张力，不单独控制滚筒，也不是把松散线材重新卷回料盘。</p>
-<p>示例回送距离不适用于所有管路。</p>
+<p>回送消松是把耗材送入后方 PTFE 管，消耗外面的松圈。</p>
+<p>它不检测张力，不单独控制滚筒转动，也不会把松散的耗材卷回料盘。</p>
+<p>主机没有独立的滚筒调速参数。示例回送距离不适用于所有管路。</p>
 <h3 id="nfc-和材料显示">NFC 和材料显示</h3>
-<div class="table"><table><thead><tr><th>看到什么</th><th>检查方向</th><th>下一步</th></tr></thead><tbody>
-<tr><td>类型、颜色正常，但品牌是 Generic</td><td>显示是否已经刷新</td><td>重新打开 U1 该槽详情；仍为 Generic 时核对准确 ACE 构建和标签支持表，保持 External。</td></tr>
-<tr><td>U1 有 Bambu，切片软件里没有</td><td>切片软件自己的品牌和材料预设</td><td>单独核对切片预设，不要因此改 ACE 固件。</td></tr>
-<tr><td>ACE 没有识别标签</td><td>固件、格式、是否确有原装标签、标签位置</td><td>对照 <a href="START-HERE.html#nfc">NFC 支持表</a>；无标签或不支持的料卷可以手填材料。</td></tr>
-<tr><td>U1 内置 OpenRFID 能读，ACE 不能</td><td>两者的读卡器和解码程序不同。</td><td>检查 ACE 支持路径，不要复制 U1 密钥。</td></tr>
-<tr><td>真正拔出 ACE 入口后材料消失</td><td>这是预期清除事件。</td><td>重新插入后等待新的识别。</td></tr>
-<tr><td>只从打印头退料后材料消失</td><td>材料保留模块可能没有生效。</td><td>核对本项目安装版本和状态。</td></tr>
+<div class="table"><table><thead><tr><th>看到什么</th><th>检查什么</th><th>下一步</th></tr></thead><tbody>
+<tr><td>类型和颜色正常，但品牌是 Generic</td><td>显示是否已刷新</td><td>重新打开 U1 上该槽的详情。仍为 Generic 时，核对准确的 ACE 构建和标签支持表。保持选择 External。</td></tr>
+<tr><td>U1 显示 Bambu，切片软件里没有</td><td>切片软件自己的品牌和材料预设</td><td>分别核对切片预设和 U1 槽位详情。不要因此改 ACE 固件。</td></tr>
+<tr><td>ACE 没有识别标签</td><td>ACE 固件、标签格式、是否有原装标签、标签位置</td><td>对照 <a href="START-HERE.html#nfc">NFC 支持表</a>。无标签或不支持的料卷可以手填材料。</td></tr>
+<tr><td>U1 的 OpenRFID 能读，ACE 不能</td><td>两者的读卡器和解码程序不同</td><td>检查 ACE 这条路径。不要复制 U1 的密钥。</td></tr>
+<tr><td>真正拔出 ACE 入口后材料消失</td><td>预期的清除事件</td><td>重新插入，等待新的识别。</td></tr>
+<tr><td>只从打印头退料后材料消失</td><td>材料保留模块可能缺失。</td><td>核对本项目的安装版本和状态。</td></tr>
 <tr><td>后台没有耗材卡片</td><td>Klipper 状态、网页布局、可用组件</td><td>先恢复 Klipper 就绪，再比较界面。</td></tr>
 </tbody></table></div>
-<p>ACE 路径应使用 <strong>External</strong>。改为内置 OpenRFID 不会升级 ACE 的识别能力。</p>
-<p>指定 OpenCubic 固件支持的标签，不需要用户自行寻找或填写 NFC 密钥。</p>
+<p>ACE 材料路径使用 <strong>External</strong> 模式。改回内置 OpenRFID 不会升级 ACE 的读卡能力。</p>
+<p>修改检测设置前，先看 <a href="START-HERE.html#nfc">NFC 说明</a>。</p>
+<p>指定 OpenCubic 固件支持的标签，不需要你提供 NFC 密钥。</p>
 <h3 id="只读查看状态不触发运动">只读查看状态，不触发运动</h3>
-<p>主机安装状态按<a href="START-HERE.html#read-installation-status">状态与连接初始化说明</a>读取。</p>
-<p>该说明会确认正确的打印机暂存目录，不要假设以前的 PowerShell 窗口变量仍然存在。</p>
-<p>中文连接基础见<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">手动安装的首次连接步骤</a>。</p>
-<p>下面是可选的 ACE 只读状态查询。它读取 U1 网页已有的数据，不发送运动命令，也不另开 ACE 串口。</p>
-<p>仅在主机适配已经安装后使用。ACE 固件更新结果未明确时，改用向导菜单 <strong>4</strong>。</p>
+<p><strong>主机安装状态：</strong> 按<a href="START-HERE.html#read-installation-status">读取安装状态</a>操作。它会确认打印机上正确的暂存目录。不要假设以前的 PowerShell 窗口里变量仍然正确。连接基础见<a href="MANUAL-INSTALL.zh-CN.html#confirm-the-connection">确认连接</a>。</p>
+<p><strong>ACE 状态（可选）：</strong> 下面的步骤读取 U1 网页已有的数据。</p>
+<p>不发送运动命令，也不另开 ACE 串口连接。</p>
+<p>只在主机适配安装完成后使用。ACE 固件更新结果未明确时，改用菜单 <strong>4</strong>。</p>
 <ol start="1">
 <li>按 <strong>Windows 键 + R</strong>，输入 <code>powershell</code>，按回车。</li>
-<li>复制下面这一行到窗口，按回车。</li>
-<li>出现地址提示后，输入 U1 Wi-Fi 屏幕当前显示的 IP；不加 <code>http://</code> 或路径，再按回车。</li>
+<li>把下面这一行复制到窗口，按回车。</li>
+<li>出现提示后，输入 U1 Wi-Fi 屏幕上当前的 IP。不要加 <code>http://</code> 或路径。按回车。</li>
 </ol>
 <pre><code>
 $PrinterAddress = (Read-Host &quot;Current printer IP from the Wi-Fi screen&quot;).Trim()
 </code></pre>
 <ol start="4">
-<li>再复制下面这一段到窗口，按回车。</li>
+<li>再把下面这一段复制到窗口，按回车。</li>
 </ol>
 <pre><code>
 $AceStatus = Invoke-RestMethod &quot;http://$PrinterAddress/printer/objects/query?ace&quot;
 $AceStatus.result.status.ace | Format-List
 </code></pre>
-<p>没有结果或返回错误时，先检查 Klipper 是否就绪并保存原文，不要修改运动参数来让查询通过。</p>
-<div class="table"><table><thead><tr><th>字段</th><th>怎么看</th></tr></thead><tbody>
-<tr><td><code>connected</code>、<code>status_fresh</code></td><td>ACE 是否连接、状态是否新鲜；正常运行时两项都应为 True。</td></tr>
-<tr><td><code>status</code>、<code>last_error</code></td><td>当前 ACE 状态，以及最近一次错误。</td></tr>
-<tr><td><code>gate_status</code></td><td>从第 1 到第 4 槽的入口状态：<code>0</code> 无料、<code>1</code> 有料、<code>-1</code> 未知。未知不等于无料。</td></tr>
-<tr><td><code>fast_origins</code>、<code>fast_origin_advance_mm</code></td><td>已知进料起点，以及退料后已经向前送过的距离。</td></tr>
+<p>没有结果或返回错误时，检查 Klipper 是否就绪，并保存报错原文。</p>
+<p>不要为了让查询通过而修改运动参数。</p>
+<div class="table"><table><thead><tr><th>字段</th><th>含义</th></tr></thead><tbody>
+<tr><td><code>connected</code>、<code>status_fresh</code></td><td>ACE 是否连接、状态是否最新。正常运行时两项都应为 True。</td></tr>
+<tr><td><code>status</code>、<code>last_error</code></td><td>当前 ACE 状态和最近一次报告的错误。</td></tr>
+<tr><td><code>gate_status</code></td><td>第 1 到第 4 槽的入口状态：<code>0</code> 无料、<code>1</code> 有料、<code>-1</code> 未知。未知不等于无料。</td></tr>
+<tr><td><code>fast_origins</code>、<code>fast_origin_advance_mm</code></td><td>已知的进料起点，以及退料后已经向前送过的距离。</td></tr>
 <tr><td><code>rfid_sync</code></td><td>各槽材料信息的同步进度。</td></tr>
 </tbody></table></div>
-<h3 id="提交问题时保留哪些信息">提交问题时保留哪些信息</h3>
+<h3 id="准备问题报告">准备问题报告</h3>
 <ol start="1">
-<li>U1 固件完整版本。</li>
-<li>ACE 代际、运行版本和已知固件来源。</li>
-<li>本项目安装版本。</li>
-<li>发生问题的槽号。</li>
-<li>最后一次正常完成的动作。</li>
-<li>分别描述线材和料盘是否移动、何时停止。</li>
+<li>U1 固件的完整版本。</li>
+<li>ACE 的代际、运行版本和已知的固件来源。</li>
+<li>本项目的安装版本。</li>
+<li>出问题的槽号。</li>
+<li>最后一次成功的动作。</li>
+<li>分别描述耗材和料盘或滚筒的动作：是否移动、何时停止。</li>
 <li>报错原文，以及经过检查和脱敏的必要日志片段。</li>
 </ol>
-<p>不要上传私人密钥、完整配置备份、密码或未经检查的设备数据。</p>
-<p>可在<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/issues">项目问题页面</a>报告可以复现的主机适配问题。</p></details><details id="licensing"><summary>使用、分享和再分发许可</summary><h2 id="使用修改与分享许可">使用、修改与分享许可</h2>
+<p>不要上传私人 NFC 密钥、完整配置备份、密码或未经检查的设备数据。</p>
+<p>可复现的主机适配问题，请在<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/issues">项目问题页面</a>报告。</p></details><details id="licensing"><summary>使用、分享和再分发许可</summary><h2 id="使用修改与分享许可">使用、修改与分享许可</h2>
 <p><a href="START-HERE.en.html#licensing">English</a></p>
-<p>审查日期：<strong>2026-10-30</strong>。范围是已标明来源的上游代码，以及本项目公开源码包。</p>
-<p>本文记录能够核实的许可证据，不是对所有地区法律、第三方资产或未来版本的绝对保证。</p>
+<p>审查日期：<strong>2026-10-30</strong>。本页记录能够核实的许可证据，不是法律意见。</p>
 <aside class="alert important"><div class="alert-title">必须确认</div>
 <p><strong>本项目源码包使用 GPLv3；这不等于外部固件镜像也全部属于 GPLv3。</strong></p>
 <p>在遵守 GPLv3 的前提下，可以使用、修改和分享受该许可覆盖的源码，也可以用于商业用途。</p>
 <p>一个固件能公开下载，不代表我们就获得了重新分发、改许可或商业打包该固件的权利。</p>
 </aside>
-<h3 id="这个源码包可以怎样使用">这个源码包可以怎样使用？</h3>
-<p>仓库附带完整的 <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/LICENSE">GNU GPL 第 3 版许可证</a>。</p>
-<p>本次核对的已包含源码没有额外的“仅限非商业使用”或“禁止分享”限制。</p>
-<p>GPLv3 允许为提供副本收费，不要求所有使用都免费或非商业。</p>
-<p>只在自己设备上使用、私下修改，并不要求公开私人修改。</p>
-<p>如果把修改后的版本交给别人，则需要履行分发义务。</p>
-<p>分享原源码或修改版时，应做到：</p>
+<h3 id="本项目自己的代码">本项目自己的代码</h3>
+<p>本仓库的源码按 <a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/LICENSE">GNU GPL 第 3 版</a>发布。</p>
+<p>没有额外的“仅限非商业使用”或“禁止分享”限制。</p>
+<p>私人使用不要求公开你的修改。</p>
+<p>本项目使用 OpenAI Codex 辅助开发。这不能替代上游版权、许可条件或署名。</p>
+<p>本项目不是 Snapmaker 或 Anycubic 的官方发布。</p>
+<h3 id="上游组件">上游组件</h3>
+<p>本包包含的代码：</p>
+<div class="table"><table><thead><tr><th>来源</th><th>许可</th><th>固定的证据</th><th>本项目用于</th></tr></thead><tbody>
+<tr><td>SnapAce，提交 <code>34a06e87bcd59ca3ebc845ed32a794627505437c</code></td><td>GPLv3</td><td><a href="https://github.com/BlackFrogKok/SnapAce/blob/34a06e87bcd59ca3ebc845ed32a794627505437c/LICENSE">LICENSE</a></td><td>改编后的 ACE 控制代码和集成改动。</td></tr>
+<tr><td>Snapmaker U1 Klipper，提交 <code>93cb12fa</code></td><td>GPLv3</td><td><a href="https://github.com/Snapmaker/u1-klipper/blob/93cb12faebf6e74c51bbc5f0be66e95124af14c8/COPYING">COPYING</a></td><td>U1 核心模块和仅用于测试的夹具。</td></tr>
+<tr><td>Paxx12 U1 扩展固件，提交 <code>417e6394f62366e010a3f76f8e567f67db770165</code></td><td>GPLv3</td><td><a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/LICENSE">LICENSE</a></td><td>固件基线改动和公开的 RFID 补丁。</td></tr>
+<tr><td>ACE 第一代 USB/IAP 研究，提交 <code>ec8f37bf9928e7814efaafe6aaa794c69f8216d1</code></td><td>GPLv3</td><td><a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/LICENSE">LICENSE</a> 和 <a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">NOTICE</a></td><td>改编后的 USB/IAP 协议和更新工具源码。</td></tr>
+<tr><td>Ultimate U1-ACE link 新增贡献</td><td>GPLv3</td><td><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/LICENSE">LICENSE</a> 和<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">修改声明</a></td><td>主机改动、安装器、Windows 工具、测试、示意图和文档。</td></tr>
+</tbody></table></div>
+<p>相关但<strong>不包含</strong>在本包内的材料：</p>
+<div class="table"><table><thead><tr><th>材料</th><th>许可证据</th><th>固定的证据</th></tr></thead><tbody>
+<tr><td>OpenRFID</td><td>GPLv3。本包不含 OpenRFID 的解码器、认证代码或用户配置。</td><td><a href="https://github.com/suchmememanyskill/OpenRFID/blob/f2608fa1a2d28abce80c7f1a8fbf7aa184f22bbd/LICENSE">LICENSE</a></td></tr>
+<tr><td>OpenCubic ACE 固件</td><td>源码私有。二进制按现状提供，供用户下载刷写。未找到再分发或商业授权。</td><td><a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/README.md#firmware-source">README</a> 和<a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/docs/how-to-flash.md">刷写指南</a></td></tr>
+<tr><td>OpenCubic Qt 刷写工具</td><td>上游 README 标为 MIT。这个标注不适用于固件。</td><td>同一份 README</td></tr>
+<tr><td>完整的 U1 扩展固件镜像</td><td>主项目为 GPLv3。镜像还包含原厂组件和各有许可的依赖。</td><td><a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/README.md#license">许可声明</a></td></tr>
+<tr><td>Anycubic 原厂 ACE 固件</td><td>第三方厂商的材料。社区仓库存有副本，不会产生新的授权。</td><td><a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">ACE 研究项目 NOTICE</a></td></tr>
+</tbody></table></div>
+<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/SOURCES.json">SOURCES.json</a> 记录来源身份及公开文件的校验值，<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/manifest.json">manifest.json</a> 记录安装允许清单。</p>
+<h3 id="可以分发什么不可以分发什么">可以分发什么，不可以分发什么</h3>
+<p>可以：</p>
+<ul>
+<li>按 GPLv3 使用、修改和分享本项目源码，包括商业用途。GPLv3 允许为提供副本收费。</li>
+</ul>
+<p>本项目没有找到允许下列行为的授权。要这样做，请先取得权利人许可：</p>
+<ul>
+<li>重新分发、修改、改许可或商业打包 OpenCubic ACE 固件镜像。</li>
+<li>把完整 U1 固件镜像或 Anycubic 原厂固件当作本项目 GPL 授权覆盖的内容来分发。它们不在授权范围内。</li>
+<li>把链接可访问、下载成功、校验值一致或“按现状提供”的声明当作许可。</li>
+<li>把 Qt 刷写工具的 MIT 标注套用到固件上。</li>
+<li>公开私人 NFC 密钥或私人密钥文件的哈希值。</li>
+</ul>
+<p>可选下载工具直接从上游取得你选择的固件镜像，并核对大小和校验值。</p>
+<p>这只证明文件完整，不证明版权授权。下载工具自身的许可，不是它下载内容的许可。</p>
+<p>本包不含固件 <code>.bin</code> 文件、NFC 密钥、OpenRFID 配置或 OpenCubic Qt 刷写工具。</p>
+<p>保留的 <code>v0.1.0</code> 和 <code>v0.1.1</code> 压缩包已检查，均不含这些内容。以后的每个包都要重新检查。</p>
+<h3 id="再分发时要保留什么">再分发时要保留什么</h3>
 <ol start="1">
-<li>保留已有版权声明、许可声明和无担保说明。</li>
+<li>保留已有的版权声明、许可声明和无担保说明。</li>
 <li>附带 GPLv3 许可证全文。</li>
-<li>明确标出你的修改及相关日期。</li>
-<li>对受 GPL 覆盖的组合源码遵守一致的 GPLv3 条件。</li>
-<li>提供与你分发的内容相对应的源码。</li>
-<li>同时提供该源码所需的构建和安装脚本。</li>
+<li>用醒目的声明标出你的修改及相关日期。</li>
+<li>对受 GPL 覆盖的组合作品，按与 GPLv3 一致的条件许可。</li>
+<li>提供与你分发的内容相对应的源码，以及它的构建和安装脚本。</li>
 <li>不给接收者的 GPL 权利额外加限制。</li>
-<li>不把私人密钥、凭据或打印机备份一起公开。</li>
+<li>不把凭据、打印机备份、设备专属的写入配置和私人诊断信息放进分享的包里。</li>
 </ol>
-<p>GPLv3 第 4、5 节规定源码分发；分发编译后的目标代码或二进制时，还需遵守第 6 节。</p>
-<p>第 6 节在适用情况下还要求提供安装信息。</p>
-<p>当前项目提供可阅读的源码及构建、安装工具，不把完整打印机固件当作本项目源码包的一部分。</p>
-<p>依据见<a href="https://github.com/BlackFrogKok/SnapAce/blob/34a06e87bcd59ca3ebc845ed32a794627505437c/LICENSE">上游完整 GPLv3 文本</a>。</p>
-<h3 id="已包含的代码分别来自哪里">已包含的代码，分别来自哪里？</h3>
-<div class="table"><table><thead><tr><th>来源</th><th>核对到的许可证据</th><th>本项目包含的内容</th></tr></thead><tbody>
-<tr><td>SnapAce，提交 <code>34a06e87bcd59ca3ebc845ed32a794627505437c</code></td><td><a href="https://github.com/BlackFrogKok/SnapAce/blob/34a06e87bcd59ca3ebc845ed32a794627505437c/LICENSE">该提交的 GPLv3 LICENSE</a></td><td>改编后的 ACE 控制代码和 U1 集成改动。</td></tr>
-<tr><td>Snapmaker U1 Klipper</td><td><a href="https://github.com/Snapmaker/u1-klipper/blob/93cb12faebf6e74c51bbc5f0be66e95124af14c8/COPYING">官方提交 `93cb12fa` 的 GPLv3 COPYING</a></td><td>指定固件基线的 U1 核心模块，以及仅用于测试的源码夹具。</td></tr>
-<tr><td>Paxx12 U1 扩展固件，提交 <code>417e6394f62366e010a3f76f8e567f67db770165</code></td><td><a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/LICENSE">该提交的 GPLv3 LICENSE</a></td><td>主机适配使用的固件基线改动和公开 RFID 补丁。</td></tr>
-<tr><td>ACE 第一代 USB/IAP 研究，提交 <code>ec8f37bf9928e7814efaafe6aaa794c69f8216d1</code></td><td><a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/LICENSE">GPLv3 LICENSE</a>与<a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">授权范围 NOTICE</a></td><td>改编后的 USB/IAP 协议和更新工具源码，以及使用合成数据的离线测试。</td></tr>
-<tr><td>Ultimate U1-ACE link 新增贡献</td><td><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/LICENSE">本项目 LICENSE</a>与<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/THIRD_PARTY.md">修改声明</a></td><td>主机改动、安装器、Windows 工具、测试、示意图和文档。</td></tr>
-</tbody></table></div>
-<p>核对到的上述 GPL 许可证内容一致，都是 GPLv3 正文。</p>
-<p>没有发现这些已包含源码另有商业使用禁令。</p>
-<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/SOURCES.json">SOURCES.json</a>记录来源身份及公开文件校验值；<a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/manifest.json">manifest.json</a>另行记录允许安装的版本和文件。</p>
-<p>U1 核心代码基线来自指定版本的扩展固件。</p>
-<p>引用官方 Klipper 提交是为了确认许可和来源，不表示每个提取文件都与该提交逐字节相同。</p>
-<p><code>payload/extruder.py</code> 保留了 Kevin O&#x27;Connor 的原始版权及 GPL 声明。</p>
-<p>打印任务配置测试夹具保留了 GPL 声明；协议常量夹具标明了来源、摘取日期及仅供测试的范围。</p>
-<p>包内修改声明列出了本项目的改动和日期。</p>
-<h3 id="openrfid独立运行组件和参考来源">OpenRFID：独立运行组件和参考来源</h3>
-<p>OpenRFID 使用 <a href="https://github.com/suchmememanyskill/OpenRFID/blob/f2608fa1a2d28abce80c7f1a8fbf7aa184f22bbd/LICENSE">GPLv3</a>。</p>
-<p>2026-10-30 检查了当前许可证，并确认与该固定许可提交一致。</p>
-<p>本包没有包含 OpenRFID 的标签解码器、认证实现或用户配置文件。</p>
-<p>本次检查的 payload 与测试夹具中，也没有发现导入 OpenRFID 解码器或携带其实现文件。</p>
-<p>与提取的上游参考代码比较后，未发现这些被审查文件存在大段完全相同的实现代码。</p>
-<p>这种比较用于辅助核对当前范围，不能证明全部历史来源关系。</p>
-<p>OpenRFID 是 U1 已有的独立组件，也是文档和技术参考来源。</p>
-<p>ACE 路径接收的是 ACE 固件已经解码的信息。</p>
-<p><a href="START-HERE.html#nfc">NFC 指南</a>说明 ACE 的识别流程及支持范围，不包含密钥填写步骤或专有密钥。</p>
-<p>未来如果实际复制 OpenRFID 代码，仍需保留相应通知、署名和许可条件。</p>
-<h3 id="opencubic固件和-qt-刷写工具不是同一种许可">OpenCubic：固件和 Qt 刷写工具不是同一种许可</h3>
-<p>固定版本的 <a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/README.md#firmware-source">OpenCubic README</a>明确说，固件源码保持私有。</p>
-<p>许可部分把 Qt 刷写工具标为 MIT，把固件二进制描述为按现状提供、使用风险自负。</p>
-<p>本次查看的仓库根目录和刷写工具目录中，没有独立许可证文件。</p>
-<p><strong>不能把 Qt 工具的 MIT 描述套用到 ACE 固件。</strong></p>
-<div class="table"><table><thead><tr><th>材料</th><th>当前能核实的许可或用途证据</th><th>本项目的处理方式</th></tr></thead><tbody>
-<tr><td>OpenCubic ACE 固件</td><td>官方说明邀请用户下载并刷写；未找到明确、全面的固件再分发或商业授权。</td><td>不在本包内分发、修改或重新许可。</td></tr>
-<tr><td>OpenCubic Qt 刷写工具</td><td>上游 README 标为 MIT。</td><td>本项目没有包含该 Qt 工具的源码或可执行文件。</td></tr>
-<tr><td>本项目的 USB 工具</td><td>基于另一个明确使用 GPLv3 的 ACE 协议研究项目。</td><td>作为本项目 GPLv3 源码发布。</td></tr>
-</tbody></table></div>
-<p><a href="https://github.com/Jupsi/OpenCubic/blob/6a97e86eda2872e8f8046cefd9470d89906d9a36/docs/how-to-flash.md">官方刷写指南</a>说明了上游预期的“用户下载并使用”流程。</p>
-<p>但它没有提供不受限制的固件再分发、修改或商业使用许可。</p>
-<p>ACE 研究项目的 <a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">NOTICE</a>也明确排除了第三方固件镜像，不把这些镜像纳入它的 GPL 授权。</p>
-<p>可选下载工具只在用户明确选择后，从标明的上游地址取得镜像。</p>
-<p>它核对公开的大小和校验值；这证明文件一致性，不证明版权授权。</p>
-<p>下载工具本身的源码许可，不会变成下载所得固件的许可。</p>
-<p>本次查看的固件条款中，没有另行找到自动下载的明确许可条款。</p>
-<p>不能仅凭链接可访问、下载成功或“按现状提供”，推导出额外权利。</p>
-<p>要重新分发或商业打包这些固件，应先取得足够的许可依据。</p>
-<h3 id="完整-u1-固件和-anycubic-原厂固件">完整 U1 固件和 Anycubic 原厂固件</h3>
-<p>Paxx12 的<a href="https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/417e6394f62366e010a3f76f8e567f67db770165/README.md#license">许可声明</a>说明：主项目使用 GPLv3，个别工具和依赖需要看各自许可。</p>
-<p>这不能证明完整升级镜像中的每个原厂组件，都统一采用同一许可证。</p>
-<p>完整 U1 镜像混合了原厂内容及其他依赖；本次审计没有逐一确认其中所有组件的再分发权利。</p>
-<p>Anycubic 原厂镜像仍是第三方厂商的材料。</p>
-<p>社区仓库保存了一份镜像，不会因此产生新的授权。</p>
-<p><a href="https://github.com/Godless50/ACE-PRO-v1.-NFC-UID/blob/ec8f37bf9928e7814efaafe6aaa794c69f8216d1/NOTICE.md">ACE 研究项目 NOTICE</a>明确说明了这一点。</p>
-<p>这两类完整固件都不包含在本源码包的 GPL 授权承诺里。</p>
-<p>助手工具可以引导用户从固定上游地址下载，并核对校验值。</p>
-<p>这样保留了上游资产边界，不代表固件获得了不受限制的使用权。</p>
-<p>如果以后制作包含首启自动设置的修改版 U1 镜像，需要另外审查组件许可和分发条件。</p>
-<h3 id="已保留的安装包检查结果">已保留的安装包检查结果</h3>
-<p>本次检查了本地保留的 <strong>v0.1.0</strong> 和 <strong>v0.1.1</strong> 压缩包。</p>
-<p>两者均包含项目 LICENSE 和 THIRD_PARTY 说明。</p>
-<p>两者都没有包含固件 <code>.bin</code>、NFC 密钥文件、OpenRFID 用户配置或 OpenCubic Qt 刷写工具。</p>
-<p>SOURCES.json 中记录的源码校验值与本次检查的文件一致。</p>
-<p>这些结论只覆盖检查过的包。</p>
-<p>后续新增文件或发布新包时，需要重新核对，不能直接沿用旧包结论。</p>
-<p><a href="https://github.com/Alexantry/Ultimate-U1-ACE-link/blob/main/docs/install-options.md">旧版保留政策</a>与新版本的审查结果应分别说明。</p>
-<h3 id="私人数据和署名">私人数据和署名</h3>
-<p>真实 NFC 密钥和私人密钥文件的哈希值不得公开。</p>
-<p>公开源码、固件镜像的校验值用于完整性检查，不是私人密钥文件的审计记录。</p>
-<p>打印机备份、专属设备写入配置、凭据和包含私人信息的原始日志，不应进入公开包。</p>
-<p>本项目使用 OpenAI Codex 辅助开发。</p>
-<p>这不能替代上游版权、许可要求和署名，也不会消除这些义务。</p>
-<p>本项目不声称是 Snapmaker 或 Anycubic 官方发布。</p>
-<p>本次审计为已确认来源的包含源码找到了相容的 GPLv3 依据。</p>
-<p>它不保证外部固件、商标、私人密钥及未来新增内容的全部法律权利。</p></details><footer>外部来源和下载链接需要网络；包内手册、恢复步骤和示意图可以离线阅读。图为概念示意，不是硬件接线尺寸图。</footer>
+<p>GPLv3 第 4、5 节规定源码分发。分发目标代码或二进制时，还需遵守第 6 节。</p></details><footer>外部来源和下载链接需要网络；包内手册、恢复步骤和示意图可以离线阅读。图为概念示意，不是硬件接线尺寸图。</footer>
 </main></body></html>
