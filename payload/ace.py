@@ -38,6 +38,14 @@ class BunnyAce:
     REQUEST_TIMEOUT = 5.0
     STATUS_TIMEOUT = 5.0
     READY_TIMEOUT = 30.0
+    # A brief USB drop (the ACE re-enumerates in about a second) must not
+    # pause a print at a tool change; wait this long for it to come back.
+    RECONNECT_TIMEOUT = 30.0
+    TOOLCHANGE_ATTEMPTS = 3
+    # An ACE that resets itself mid-print comes back with assist off; the
+    # extruder would then drag filament through an idle feeder until the next
+    # tool change. Re-issue the start for the channel that was being assisted.
+    ASSIST_RESTORE_ATTEMPTS = 3
     PORT_VERSION = 'u1-2.0.0-snapace-34a06e87-port8-runout-continue'
     PRELOAD_WAIT_TIMEOUT = 180.0
     FAST_LOAD_LENGTH = 1150
@@ -80,6 +88,8 @@ class BunnyAce:
         self._preload_worker = None
         self.error_msg = None
         self._control_inflight = False
+        self._assist_restore = None
+        self._toolchange_assist = False
         self._status_epoch = 0
         self._last_status_epoch = -1
 
@@ -276,6 +286,10 @@ class BunnyAce:
         return self._request_id
 
     def _serial_disconnect(self):
+        if self._connected and self._feed_assist_index != -1 and not self._toolchange_assist:
+            self._assist_restore = {'index': self._feed_assist_index, 'attempts': 0, 'request': None}
+        elif self._assist_restore is not None:
+            self._assist_restore['request'] = None
         self._connected = False
         self._reset_fast_origins()
         self._cancel_auto_preloads()
@@ -826,6 +840,7 @@ class BunnyAce:
                 self._consider_rfid_sync(i, slots[i])
             if result['status'] == 'ready' and not self._control_inflight:
                 self._motion_pending.clear()
+            self._maybe_restore_assist(result)
         if not self._connected:
             return self.reactor.NEVER
         last = self._last_status_time if self._last_status_time is not None else self._connected_at
@@ -845,6 +860,55 @@ class BunnyAce:
         except AceException:
             return self.reactor.NEVER
         return eventtime + 1
+
+    def _maybe_restore_assist(self, result):
+        restore = self._assist_restore
+        if restore is None:
+            return
+        now = self.reactor.monotonic()
+        if restore['request'] is not None:
+            request_id, sent_at = restore['request']
+            if now - sent_at <= self.REQUEST_TIMEOUT:
+                return
+            self._callback_map.pop(request_id, None)
+            restore['request'] = None
+        index = restore['index']
+        if self._feed_assist_index != index or self._toolchange_assist:
+            self._assist_restore = None
+            return
+        if (getattr(self, '_u1_load_owner', None) is not None or self._u1_unload_depth
+                or self._control_inflight or result['status'] != 'ready'):
+            return
+        print_stats = self.printer.lookup_object('print_stats', None)
+        state = print_stats.get_status(now).get('state') if print_stats is not None else None
+        # Only an active print needs it; resume and tool changes start their own.
+        if state != 'printing' or self.gate_status[index] != GATE_AVAILABLE:
+            self._assist_restore = None
+            return
+        if restore['attempts'] >= self.ASSIST_RESTORE_ATTEMPTS:
+            self._assist_restore = None
+            self.log_error('ACE feed assist could not be restored after reconnect INDEX=%d' % index)
+            return
+        restore['attempts'] += 1
+
+        def callback(self, response):
+            if self._assist_restore is not restore:
+                return
+            restore['request'] = None
+            try:
+                self._check_response(response)
+            except AceException as exc:
+                self.log_always('ACE feed assist restore rejected INDEX=%d: %s' % (index, exc))
+                return
+            self._assist_restore = None
+            self.log_always('ACE feed assist restored after reconnect INDEX=%d' % index)
+
+        request = {'method': 'start_feed_assist', 'params': {'index': index}}
+        self._invalidate_motion_origin(request)
+        try:
+            restore['request'] = (self.send_request(request, callback), now)
+        except AceException as exc:
+            self.log_always('ACE feed assist restore not sent INDEX=%d: %s' % (index, exc))
 
     def _reader_cb(self, eventtime):
         try:
@@ -936,6 +1000,9 @@ class BunnyAce:
     def _command(self, request, ready=True, _poll=None):
         # Invalidate before attempting, including rejected/unsent operations.
         self._invalidate_motion_origin(request)
+        if request.get('method') in ('start_feed_assist', 'stop_feed_assist'):
+            # An explicit assist command supersedes any pending restore.
+            self._assist_restore = None
         if self._control_inflight:
             raise AceException('Another ACE control command is in progress')
         self._control_inflight = True
@@ -1147,6 +1214,47 @@ class BunnyAce:
             self.log_always('ACE slot empty INDEX=%d; toolchange unwind skipped' % rt_index)
             return
         self.dwell(0.3)
+
+    def _wait_reconnected(self):
+        deadline = self.reactor.monotonic() + self.RECONNECT_TIMEOUT
+        while True:
+            if self._shutting_down:
+                raise AceException('ACE is shutting down; command aborted')
+            # A fresh status proves the new transport answers before reuse.
+            if (self._connected and self._serial is not None and self._serial.is_open
+                    and self._last_status_time is not None):
+                return
+            now = self.reactor.monotonic()
+            if now >= deadline:
+                raise AceException('ACE did not reconnect within %.0f s' % self.RECONNECT_TIMEOUT)
+            self.reactor.pause(now + 0.1)
+
+    def toolchange_feed_assist(self, enable, index):
+        # Tool-change entry point. Stop and start are safe to repeat on a new
+        # connection: stop is idempotent and start is the state the freshly
+        # picked head needs. Only transport loss is retried; device rejections
+        # and timeouts on a live connection still propagate to pause the print.
+        action = self._enable_feed_assist if enable else self._disable_feed_assist
+        label = 'start' if enable else 'stop'
+        # The tool change decides the assist state; no background restore.
+        self._assist_restore = None
+        self._toolchange_assist = True
+        try:
+            for attempt in range(1, self.TOOLCHANGE_ATTEMPTS + 1):
+                connected_at = self._connected_at if self._connected else None
+                try:
+                    return action(index)
+                except AceException as exc:
+                    lost = (not self._connected or connected_at is None
+                            or self._connected_at != connected_at)
+                    if not lost or self._shutting_down or attempt == self.TOOLCHANGE_ATTEMPTS:
+                        raise
+                    self.log_always('ACE connection lost during tool-change assist %s (%s); '
+                                    'waiting for reconnect, attempt %d/%d'
+                                    % (label, exc, attempt, self.TOOLCHANGE_ATTEMPTS))
+                    self._wait_reconnected()
+        finally:
+            self._toolchange_assist = False
 
     def _stop_feed_assist_only(self):
         # U1's explicit load/unload owns the transfer distance. Stop assistance

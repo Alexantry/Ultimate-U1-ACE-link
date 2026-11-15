@@ -28,7 +28,7 @@
       "id": "ace.py",
       "payload": "payload/ace.py",
       "destination": "/home/lava/klipper/klippy/extras/ace.py",
-      "sha256": "4f230b89a3b92db85ce080c474efdb084d915502df5a176e5342f4f1d1007fed",
+      "sha256": "a0a4392f0fecb8983ddc6f494c2dc37f71f7af7b81056a723327a2fb9b53d21b",
       "accepted_source_sha256": [
         null,
         "35a2e25a34ea56c6ab929b8cfd5d42ace05022296cfebb7419473ab2419bfc94",
@@ -38,7 +38,8 @@
         "00f04d89e2997d40867ea43d1befc74929d25916d20812ab94c0c2ec878a7bfa",
         "3e34b8c72c4a5a733401e3f9d4b206a9ad85f804bca377ec3c92ffdac5a0de7c",
         "b6b58232b0c0369967cdc327e986a3742c374e4b2a65e313b8242049e13c2471",
-        "4f230b89a3b92db85ce080c474efdb084d915502df5a176e5342f4f1d1007fed"
+        "4f230b89a3b92db85ce080c474efdb084d915502df5a176e5342f4f1d1007fed",
+        "a0a4392f0fecb8983ddc6f494c2dc37f71f7af7b81056a723327a2fb9b53d21b"
       ]
     },
     {
@@ -71,11 +72,12 @@
       "id": "extruder.py",
       "payload": "payload/extruder.py",
       "destination": "/home/lava/klipper/klippy/kinematics/extruder.py",
-      "sha256": "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19",
+      "sha256": "15ea267bc182772317978de72bd6b43a06aaddec75a8f8c867b655011653cd8e",
       "accepted_source_sha256": [
         "2085de67fb9a7d6c799a958c2a2ece639cc8f136f9dec792fa68eb2c359ce8f5",
         "1446278c2a2740f950c52cb66d3386e3f0867386cc98b1a1ba36933148bc0a1c",
-        "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19"
+        "f5f12c353f9ddeb5609afc62d350f23a6acbed885ec1db3b98a2906d6ab76b19",
+        "15ea267bc182772317978de72bd6b43a06aaddec75a8f8c867b655011653cd8e"
       ]
     }
   ]

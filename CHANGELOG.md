@@ -1,5 +1,23 @@
 # Changes
 
+## Unreleased
+
+Tolerate a short ACE disconnection during a print.
+
+**No physical test.** Offline checks only. The package version text is unchanged.
+
+Cause of the fault: the ACE stopped answering for about 3 seconds and then reset
+itself. The USB device disappeared and returned in less than a second. The reset
+happened at a tool change, so the host reported
+`ACE stop assist failed: ACE is disconnected` and paused the print.
+
+- At a tool change, wait up to 30 seconds for the ACE to reconnect, then send the
+  feed-assist stop or start again. Up to 3 attempts.
+- A rejected command or a timeout on a live connection still pauses the print.
+- If the ACE resets at another time during a print, start feed assist again for the
+  same slot after reconnection. Up to 3 attempts. This does not happen when the
+  printer is not printing, when the slot is empty, or during a load or unload.
+
 ## 0.1.7 — 2026-11-13
 
 Runout continuation (`port8-runout-continue`), removal and restore tools, shorter documents.

@@ -1634,7 +1634,7 @@ class PrinterExtruder:
 
             if ace is not None:
                 try:
-                    ace._disable_feed_assist(self.extruder_num)
+                    ace.toolchange_feed_assist(False, self.extruder_num)
                 except Exception as exc:
                     raise gcmd.error("ACE stop assist failed: %s" % (exc,), action="pause") from exc
                 gcmd.respond_info("ACE disable feed_assist for extruder %s" % (self.name,))
@@ -1833,7 +1833,7 @@ class PrinterExtruder:
         # can propagate after physical pickup. Do not run on an aborted switch.
         if switch_complete and ace is not None:
             try:
-                ace._enable_feed_assist(self.extruder_num)
+                ace.toolchange_feed_assist(True, self.extruder_num)
             except Exception as exc:
                 raise gcmd.error("ACE start assist failed: %s" % (exc,), action="pause") from exc
             gcmd.respond_info("ACE enable feed_assist for extruder %s" % (self.name,))

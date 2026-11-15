@@ -106,6 +106,98 @@ class ControlChecks(unittest.TestCase):
         self.assertLess(ace.reactor.t, 100.3)
         self.assertFalse(ace._control_inflight)
 
+    def _reconnect(self, ace, at):
+        from test_protocol import Serial
+        def up():
+            ace._serial = Serial(ace); ace._connected = True
+            ace._connected_at = ace.reactor.t; ace._last_status_time = ace.reactor.t
+            ace._last_status_epoch = ace._status_epoch; ace._info['status'] = 'ready'
+            responding(ace)
+        ace.reactor.pending.append((at, up))
+
+    def test_toolchange_stop_retries_after_usb_drop(self):
+        ace = new(); ace._feed_assist_index = 2
+        ace.reactor.pending.append((100.02, lambda: ace._transport_failed('mock unplug')))
+        self._reconnect(ace, 101.2)
+        ace.toolchange_feed_assist(False, 0)
+        self.assertEqual([(r['method'], r['params']['index']) for r in ace._serial.sent],
+                         [('stop_feed_assist', 2), ('unwind_filament', 2)])
+        self.assertEqual(ace._feed_assist_index, -1)
+        self.assertLess(ace.reactor.t, 105)
+
+    def test_toolchange_start_waits_when_already_disconnected(self):
+        ace = new(); ace._transport_failed('mock unplug')
+        self._reconnect(ace, 101.0)
+        ace.toolchange_feed_assist(True, 1)
+        self.assertEqual([r['method'] for r in ace._serial.sent], ['start_feed_assist'])
+        self.assertEqual(ace._feed_assist_index, 1)
+
+    def test_toolchange_gives_up_when_ace_stays_away(self):
+        ace = new(); ace._feed_assist_index = 2; ace._transport_failed('mock unplug')
+        with self.assertRaisesRegex(mod.AceException, 'did not reconnect'):
+            ace.toolchange_feed_assist(False, 0)
+        self.assertLess(ace.reactor.t, 100 + ace.RECONNECT_TIMEOUT + 1)
+
+    def test_toolchange_rejection_on_live_link_is_not_retried(self):
+        ace = new(); responding(ace, {'stop_feed_assist': 12}); ace._feed_assist_index = 2
+        with self.assertRaisesRegex(mod.AceException, 'stop_feed_assist rejected'):
+            ace.toolchange_feed_assist(False, 0)
+        self.assertEqual([r['method'] for r in ace._serial.sent], ['stop_feed_assist'])
+
+    def _drop_and_status(self, ace, state='printing', slot='ready'):
+        from test_protocol import Serial, frame
+        ace.printer.lookup_object = (lambda name, default=None, _o=ace.printer.lookup_object:
+            SimpleNamespace(get_status=lambda t: {'state': state}) if name == 'print_stats' else _o(name, default))
+        ace._transport_failed('mock ACE reset')
+        ace._serial = Serial(ace); ace._connected = True; ace._connected_at = ace.reactor.t
+        ace._periodic_heartbeat_event(ace.reactor.t)
+        ace._process_data(frame(ace, {'id': ace._serial.sent[-1]['id'], 'code': 0, 'result': {
+            'status': 'ready', 'slots': [{'status': slot, 'rfid': 0}] * 4}}))
+        return [(r['method'], r.get('params', {}).get('index')) for r in ace._serial.sent]
+
+    def test_assist_restored_after_reset_while_printing(self):
+        from test_protocol import frame
+        ace = new(); ace._feed_assist_index = 2
+        self.assertEqual(self._drop_and_status(ace)[-1], ('start_feed_assist', 2))
+        ace._process_data(frame(ace, {'id': ace._serial.sent[-1]['id'], 'code': 0, 'msg': 'success'}))
+        self.assertIsNone(ace._assist_restore)
+        self.assertEqual(ace._feed_assist_index, 2)
+        self.assertTrue(any('restored after reconnect' in m for m in ace.gcode.messages))
+
+    def test_assist_not_restored_when_not_printing_or_slot_empty(self):
+        for kwargs in ({'state': 'paused'}, {'state': 'standby'}, {'slot': 'empty'}):
+            ace = new(); ace._feed_assist_index = 2
+            self.assertNotIn(('start_feed_assist', 2), self._drop_and_status(ace, **kwargs))
+            self.assertIsNone(ace._assist_restore)
+
+    def test_no_restore_without_tracked_assist(self):
+        ace = new()
+        self.assertEqual([m for m, i in self._drop_and_status(ace)], ['get_status'])
+
+    def test_rejected_restore_retries_then_gives_up(self):
+        from test_protocol import frame
+        ace = new(); ace._feed_assist_index = 1
+        self._drop_and_status(ace)
+        for attempt in range(ace.ASSIST_RESTORE_ATTEMPTS):
+            self.assertEqual(ace._serial.sent[-1]['method'], 'start_feed_assist')
+            ace._process_data(frame(ace, {'id': ace._serial.sent[-1]['id'], 'code': 9, 'msg': 'busy'}))
+            ace._heartbeat_request = None
+            ace._periodic_heartbeat_event(ace.reactor.t)
+            ace._process_data(frame(ace, {'id': ace._serial.sent[-1]['id'], 'code': 0, 'result': {
+                'status': 'ready', 'slots': [{'status': 'ready', 'rfid': 0}] * 4}}))
+        self.assertIsNone(ace._assist_restore)
+        self.assertEqual([r['method'] for r in ace._serial.sent].count('start_feed_assist'),
+                         ace.ASSIST_RESTORE_ATTEMPTS)
+
+    def test_toolchange_owns_assist_across_reconnect(self):
+        ace = new(); ace._feed_assist_index = 2
+        ace.reactor.pending.append((100.02, lambda: ace._transport_failed('mock unplug')))
+        self._reconnect(ace, 101.2)
+        ace.toolchange_feed_assist(False, 0)
+        self.assertIsNone(ace._assist_restore)
+        self.assertFalse(ace._toolchange_assist)
+        self.assertNotIn('start_feed_assist', [r['method'] for r in ace._serial.sent])
+
     def test_nested_control_rejected_before_serial_write(self):
         ace = new(); responding(ace); nested = []
         def overlap():
